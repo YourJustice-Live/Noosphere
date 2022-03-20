@@ -2,6 +2,7 @@
 
 - Init project: `graph init --product hosted-service`
 - Install dependencies: `yarn install`
+- Set deployment key: `yarn auth`
 - Update generated code: `yarn codegen`
 - Deploy subgraph: `yarn deploy`
 
