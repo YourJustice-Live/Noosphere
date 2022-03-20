@@ -5,9 +5,13 @@
 - Update generated code: `yarn codegen`
 - Deploy subgraph: `yarn deploy`
 
+## Subgraph
+
+- https://thegraph.com/hosted-service/subgraph/kiv1n/yourjustice
+
 ## Links
 
-- Subgraph - https://thegraph.com/hosted-service/subgraph/kiv1n/yourjustice
+- GraphQL API examples - https://thegraph.com/docs/en/developer/graphql-api/    
 
 ## Useful Information
 
