@@ -8,7 +8,8 @@
 
 ## Subgraph
 
-- https://thegraph.com/hosted-service/subgraph/kiv1n/yourjustice
+- Simple UI - https://thegraph.com/hosted-service/subgraph/kiv1n/yourjustice
+- Advanced UI - https://api.thegraph.com/subgraphs/name/kiv1n/yourjustice/graphql
 
 ## Links
 
