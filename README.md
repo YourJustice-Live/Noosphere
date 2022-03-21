@@ -13,7 +13,13 @@
 
 ## Links
 
-- GraphQL API examples - https://thegraph.com/docs/en/developer/graphql-api/    
+- GraphQL API examples - https://thegraph.com/docs/en/developer/graphql-api/
+
+## Query for check the latest block a subgraph has indexed
+
+```
+{_meta{block{number}}}
+```
 
 ## Useful Information
 
