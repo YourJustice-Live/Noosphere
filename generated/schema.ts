@@ -70,3 +70,67 @@ export class AvatarNftEntity extends Entity {
     }
   }
 }
+
+export class JurisdictionParticipantEntity extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(
+      id != null,
+      "Cannot save JurisdictionParticipantEntity entity without an ID"
+    );
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type JurisdictionParticipantEntity must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("JurisdictionParticipantEntity", id.toString(), this);
+    }
+  }
+
+  static load(id: string): JurisdictionParticipantEntity | null {
+    return changetype<JurisdictionParticipantEntity | null>(
+      store.get("JurisdictionParticipantEntity", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get isAdmin(): boolean {
+    let value = this.get("isAdmin");
+    return value!.toBoolean();
+  }
+
+  set isAdmin(value: boolean) {
+    this.set("isAdmin", Value.fromBoolean(value));
+  }
+
+  get isMember(): boolean {
+    let value = this.get("isMember");
+    return value!.toBoolean();
+  }
+
+  set isMember(value: boolean) {
+    this.set("isMember", Value.fromBoolean(value));
+  }
+
+  get isJudge(): boolean {
+    let value = this.get("isJudge");
+    return value!.toBoolean();
+  }
+
+  set isJudge(value: boolean) {
+    this.set("isJudge", Value.fromBoolean(value));
+  }
+}

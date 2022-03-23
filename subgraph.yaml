@@ -14,26 +14,34 @@ dataSources:
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
-        - Approval
-        - ApprovalForAll
-        - OwnershipTransferred
-        - ReputationChange
         - Transfer
         - URI
       abis:
         - name: AvatarNFT
           file: ./abis/AvatarNFT.json
       eventHandlers:
-#        - event: Approval(indexed address,indexed address,indexed uint256)
-#          handler: handleApproval
-#        - event: ApprovalForAll(indexed address,indexed address,bool)
-#          handler: handleApprovalForAll
-#        - event: OwnershipTransferred(indexed address,indexed address)
-#          handler: handleOwnershipTransferred
-#        - event: ReputationChange(indexed uint256,uint8,uint8,uint256)
-#          handler: handleReputationChange
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
         - event: URI(string,indexed uint256)
           handler: handleURI
-      file: ./src/mapping.ts
+      file: ./src/avatar-nft-mapping.ts
+  - kind: ethereum
+    name: Jurisdiction
+    network: rinkeby
+    source:
+      address: "0xe3ABf940D89DAB100080d087Ab651559a00D6db1"
+      abi: Jurisdiction
+      startBlock: 10374173
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - TransferSingle
+      abis:
+        - name: Jurisdiction
+          file: ./abis/Jurisdiction.json
+      eventHandlers:
+        - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: handleTransferSingle
+      file: ./src/jurisdiction-mappings.ts

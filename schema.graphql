@@ -1,5 +1,12 @@
 type AvatarNftEntity @entity {
-  id: ID!
+  id: ID! # token id
   owner: Bytes! # address
   tokenUri: String
+}
+
+type JurisdictionParticipantEntity @entity {
+  id: ID! # account
+  isAdmin: Boolean
+  isMember: Boolean
+  isJudge: Boolean
 }
