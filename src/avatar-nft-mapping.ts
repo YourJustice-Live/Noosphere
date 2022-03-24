@@ -21,6 +21,6 @@ export function handleURI(event: URI): void {
   if (!entity) {
     return;
   }
-  entity.tokenUri = event.params.value.toString();
+  entity.uri = event.params.value.toString();
   entity.save();
 }

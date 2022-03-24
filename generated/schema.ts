@@ -53,8 +53,8 @@ export class AvatarNftEntity extends Entity {
     this.set("owner", Value.fromBytes(value));
   }
 
-  get tokenUri(): string | null {
-    let value = this.get("tokenUri");
+  get uri(): string | null {
+    let value = this.get("uri");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -62,11 +62,11 @@ export class AvatarNftEntity extends Entity {
     }
   }
 
-  set tokenUri(value: string | null) {
+  set uri(value: string | null) {
     if (!value) {
-      this.unset("tokenUri");
+      this.unset("uri");
     } else {
-      this.set("tokenUri", Value.fromString(<string>value));
+      this.set("uri", Value.fromString(<string>value));
     }
   }
 }
