@@ -1,11 +1,20 @@
 type AvatarNftEntity @entity {
   id: ID! # token id
-  owner: Bytes! # address
-  uri: String
+  owner: Bytes! # account address
+  uri: String # metadata uri
+  reputations: [AvatarNftReputationEntity!]! @derivedFrom(field: "token")
+}
+
+type AvatarNftReputationEntity @entity {
+  id: ID! # combintation of token id and domain id
+  token: AvatarNftEntity!
+  domain: Int!
+  negativeRating: BigInt
+  positiveRating: BigInt
 }
 
 type JurisdictionParticipantEntity @entity {
-  id: ID! # account
+  id: ID! # account address
   isAdmin: Boolean
   isMember: Boolean
   isJudge: Boolean

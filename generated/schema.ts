@@ -69,6 +69,107 @@ export class AvatarNftEntity extends Entity {
       this.set("uri", Value.fromString(<string>value));
     }
   }
+
+  get reputations(): Array<string> {
+    let value = this.get("reputations");
+    return value!.toStringArray();
+  }
+
+  set reputations(value: Array<string>) {
+    this.set("reputations", Value.fromStringArray(value));
+  }
+}
+
+export class AvatarNftReputationEntity extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+
+    this.set("token", Value.fromString(""));
+    this.set("domain", Value.fromI32(0));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(
+      id != null,
+      "Cannot save AvatarNftReputationEntity entity without an ID"
+    );
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type AvatarNftReputationEntity must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("AvatarNftReputationEntity", id.toString(), this);
+    }
+  }
+
+  static load(id: string): AvatarNftReputationEntity | null {
+    return changetype<AvatarNftReputationEntity | null>(
+      store.get("AvatarNftReputationEntity", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get token(): string {
+    let value = this.get("token");
+    return value!.toString();
+  }
+
+  set token(value: string) {
+    this.set("token", Value.fromString(value));
+  }
+
+  get domain(): i32 {
+    let value = this.get("domain");
+    return value!.toI32();
+  }
+
+  set domain(value: i32) {
+    this.set("domain", Value.fromI32(value));
+  }
+
+  get negativeRating(): BigInt | null {
+    let value = this.get("negativeRating");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set negativeRating(value: BigInt | null) {
+    if (!value) {
+      this.unset("negativeRating");
+    } else {
+      this.set("negativeRating", Value.fromBigInt(<BigInt>value));
+    }
+  }
+
+  get positiveRating(): BigInt | null {
+    let value = this.get("positiveRating");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set positiveRating(value: BigInt | null) {
+    if (!value) {
+      this.unset("positiveRating");
+    } else {
+      this.set("positiveRating", Value.fromBigInt(<BigInt>value));
+    }
+  }
 }
 
 export class JurisdictionParticipantEntity extends Entity {
