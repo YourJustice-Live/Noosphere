@@ -19,3 +19,17 @@ type JurisdictionParticipantEntity @entity {
   isMember: Boolean
   isJudge: Boolean
 }
+
+type ActionEntity @entity {
+  id: ID!
+  guid: Bytes!
+  subject: String
+  verb: String
+  object: String
+  tool: String
+  affected: String
+  confirmationRuling: String
+  confirmationEvidence: Boolean
+  confirmationWitenss: Int
+  uri: String
+}

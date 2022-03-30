@@ -235,3 +235,183 @@ export class JurisdictionParticipantEntity extends Entity {
     this.set("isJudge", Value.fromBoolean(value));
   }
 }
+
+export class ActionEntity extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+
+    this.set("guid", Value.fromBytes(Bytes.empty()));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save ActionEntity entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type ActionEntity must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("ActionEntity", id.toString(), this);
+    }
+  }
+
+  static load(id: string): ActionEntity | null {
+    return changetype<ActionEntity | null>(store.get("ActionEntity", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get guid(): Bytes {
+    let value = this.get("guid");
+    return value!.toBytes();
+  }
+
+  set guid(value: Bytes) {
+    this.set("guid", Value.fromBytes(value));
+  }
+
+  get subject(): string | null {
+    let value = this.get("subject");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set subject(value: string | null) {
+    if (!value) {
+      this.unset("subject");
+    } else {
+      this.set("subject", Value.fromString(<string>value));
+    }
+  }
+
+  get verb(): string | null {
+    let value = this.get("verb");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set verb(value: string | null) {
+    if (!value) {
+      this.unset("verb");
+    } else {
+      this.set("verb", Value.fromString(<string>value));
+    }
+  }
+
+  get object(): string | null {
+    let value = this.get("object");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set object(value: string | null) {
+    if (!value) {
+      this.unset("object");
+    } else {
+      this.set("object", Value.fromString(<string>value));
+    }
+  }
+
+  get tool(): string | null {
+    let value = this.get("tool");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set tool(value: string | null) {
+    if (!value) {
+      this.unset("tool");
+    } else {
+      this.set("tool", Value.fromString(<string>value));
+    }
+  }
+
+  get affected(): string | null {
+    let value = this.get("affected");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set affected(value: string | null) {
+    if (!value) {
+      this.unset("affected");
+    } else {
+      this.set("affected", Value.fromString(<string>value));
+    }
+  }
+
+  get confirmationRuling(): string | null {
+    let value = this.get("confirmationRuling");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set confirmationRuling(value: string | null) {
+    if (!value) {
+      this.unset("confirmationRuling");
+    } else {
+      this.set("confirmationRuling", Value.fromString(<string>value));
+    }
+  }
+
+  get confirmationEvidence(): boolean {
+    let value = this.get("confirmationEvidence");
+    return value!.toBoolean();
+  }
+
+  set confirmationEvidence(value: boolean) {
+    this.set("confirmationEvidence", Value.fromBoolean(value));
+  }
+
+  get confirmationWitenss(): i32 {
+    let value = this.get("confirmationWitenss");
+    return value!.toI32();
+  }
+
+  set confirmationWitenss(value: i32) {
+    this.set("confirmationWitenss", Value.fromI32(value));
+  }
+
+  get uri(): string | null {
+    let value = this.get("uri");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set uri(value: string | null) {
+    if (!value) {
+      this.unset("uri");
+    } else {
+      this.set("uri", Value.fromString(<string>value));
+    }
+  }
+}

@@ -47,3 +47,23 @@ dataSources:
         - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
           handler: handleTransferSingle
       file: ./src/jurisdiction-mappings.ts
+  - kind: ethereum
+    name: ActionRepo
+    network: rinkeby
+    source:
+      address: "0xCFeE012952A2ECf7482790aB3EAe15Bd28AE5ae8"
+      abi: ActionRepo
+      startBlock: 10414014
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - ActionAdded
+      abis:
+        - name: ActionRepo
+          file: ./abis/ActionRepo.json
+      eventHandlers:
+        - event: ActionAdded(indexed uint256,indexed bytes32,string,string,string,string,string)
+          handler: handleActionAdded
+      file: ./src/action-repo-mappings.ts
