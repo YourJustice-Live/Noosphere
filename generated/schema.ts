@@ -389,13 +389,13 @@ export class ActionEntity extends Entity {
     this.set("confirmationEvidence", Value.fromBoolean(value));
   }
 
-  get confirmationWitenss(): i32 {
-    let value = this.get("confirmationWitenss");
+  get confirmationWitness(): i32 {
+    let value = this.get("confirmationWitness");
     return value!.toI32();
   }
 
-  set confirmationWitenss(value: i32) {
-    this.set("confirmationWitenss", Value.fromI32(value));
+  set confirmationWitness(value: i32) {
+    this.set("confirmationWitness", Value.fromI32(value));
   }
 
   get uri(): string | null {

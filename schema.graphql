@@ -30,6 +30,6 @@ type ActionEntity @entity {
   affected: String
   confirmationRuling: String
   confirmationEvidence: Boolean
-  confirmationWitenss: Int
+  confirmationWitness: Int
   uri: String
 }
