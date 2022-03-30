@@ -100,6 +100,36 @@ export class ApprovalForAll__Params {
   }
 }
 
+export class Confirmation extends ethereum.Event {
+  get params(): Confirmation__Params {
+    return new Confirmation__Params(this);
+  }
+}
+
+export class Confirmation__Params {
+  _event: Confirmation;
+
+  constructor(event: Confirmation) {
+    this._event = event;
+  }
+
+  get guid(): Bytes {
+    return this._event.parameters[0].value.toBytes();
+  }
+
+  get ruling(): string {
+    return this._event.parameters[1].value.toString();
+  }
+
+  get evidence(): boolean {
+    return this._event.parameters[2].value.toBoolean();
+  }
+
+  get witness(): BigInt {
+    return this._event.parameters[3].value.toBigInt();
+  }
+}
+
 export class GUIDCreated extends ethereum.Event {
   get params(): GUIDCreated__Params {
     return new GUIDCreated__Params(this);
@@ -560,29 +590,6 @@ export class ActionRepo extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toBigIntArray());
-  }
-
-  bytes32ToString(_bytes32: Bytes): string {
-    let result = super.call(
-      "bytes32ToString",
-      "bytes32ToString(bytes32):(string)",
-      [ethereum.Value.fromFixedBytes(_bytes32)]
-    );
-
-    return result[0].toString();
-  }
-
-  try_bytes32ToString(_bytes32: Bytes): ethereum.CallResult<string> {
-    let result = super.tryCall(
-      "bytes32ToString",
-      "bytes32ToString(bytes32):(string)",
-      [ethereum.Value.fromFixedBytes(_bytes32)]
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toString());
   }
 
   isApprovedForAll(account: Address, operator: Address): boolean {

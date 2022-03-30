@@ -240,8 +240,6 @@ export class ActionEntity extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
-
-    this.set("guid", Value.fromBytes(Bytes.empty()));
   }
 
   save(): void {
@@ -267,15 +265,6 @@ export class ActionEntity extends Entity {
 
   set id(value: string) {
     this.set("id", Value.fromString(value));
-  }
-
-  get guid(): Bytes {
-    let value = this.get("guid");
-    return value!.toBytes();
-  }
-
-  set guid(value: Bytes) {
-    this.set("guid", Value.fromBytes(value));
   }
 
   get subject(): string | null {
@@ -389,13 +378,21 @@ export class ActionEntity extends Entity {
     this.set("confirmationEvidence", Value.fromBoolean(value));
   }
 
-  get confirmationWitness(): i32 {
+  get confirmationWitness(): BigInt | null {
     let value = this.get("confirmationWitness");
-    return value!.toI32();
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
   }
 
-  set confirmationWitness(value: i32) {
-    this.set("confirmationWitness", Value.fromI32(value));
+  set confirmationWitness(value: BigInt | null) {
+    if (!value) {
+      this.unset("confirmationWitness");
+    } else {
+      this.set("confirmationWitness", Value.fromBigInt(<BigInt>value));
+    }
   }
 
   get uri(): string | null {

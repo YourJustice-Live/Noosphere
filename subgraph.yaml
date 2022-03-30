@@ -51,7 +51,7 @@ dataSources:
     name: ActionRepo
     network: rinkeby
     source:
-      address: "0xCFeE012952A2ECf7482790aB3EAe15Bd28AE5ae8"
+      address: "0x274e54BFFDbb94442FC8Df155d47b42BEF90c76B"
       abi: ActionRepo
       startBlock: 10414014
     mapping:
@@ -60,10 +60,16 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - ActionAdded
+        - ActionURI
+        - Confirmation
       abis:
         - name: ActionRepo
           file: ./abis/ActionRepo.json
       eventHandlers:
         - event: ActionAdded(indexed uint256,indexed bytes32,string,string,string,string,string)
           handler: handleActionAdded
+        - event: ActionURI(indexed bytes32,string)
+          handler: handleActionURI
+        - event: Confirmation(indexed bytes32,string,bool,uint256)
+          handler: handleConfirmation
       file: ./src/action-repo-mappings.ts

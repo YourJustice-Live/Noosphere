@@ -21,8 +21,7 @@ type JurisdictionParticipantEntity @entity {
 }
 
 type ActionEntity @entity {
-  id: ID!
-  guid: Bytes!
+  id: ID! # guid
   subject: String
   verb: String
   object: String
@@ -30,6 +29,6 @@ type ActionEntity @entity {
   affected: String
   confirmationRuling: String
   confirmationEvidence: Boolean
-  confirmationWitness: Int
+  confirmationWitness: BigInt
   uri: String
 }
