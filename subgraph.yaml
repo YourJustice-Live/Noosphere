@@ -2,6 +2,7 @@ specVersion: 0.0.2
 schema:
   file: ./schema.graphql
 dataSources:
+  # Avatar NFT contract
   - kind: ethereum
     name: AvatarNFT
     network: rinkeby
@@ -27,26 +28,31 @@ dataSources:
         - event: ReputationChange(indexed uint256,uint8,uint8,uint256)
           handler: handleReputationChange
       file: ./src/avatar-nft-mapping.ts
+  # Jurisdiction contract
   - kind: ethereum
     name: Jurisdiction
     network: rinkeby
     source:
-      address: "0xe3ABf940D89DAB100080d087Ab651559a00D6db1"
+      address: "0x621B529DF2a13ADaaf9962180f29694ad137bBCA"
       abi: Jurisdiction
-      startBlock: 10374173
+      startBlock: 10417610
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
         - TransferSingle
+        - RuleAdded
       abis:
         - name: Jurisdiction
           file: ./abis/Jurisdiction.json
       eventHandlers:
         - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
           handler: handleTransferSingle
+        - event: RuleAdded(indexed uint256,bytes32,string,bool)
+          handler: handleRuleAdded
       file: ./src/jurisdiction-mappings.ts
+  # Action repository contract
   - kind: ethereum
     name: ActionRepo
     network: rinkeby

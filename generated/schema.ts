@@ -236,6 +236,113 @@ export class JurisdictionParticipantEntity extends Entity {
   }
 }
 
+export class JurisdictionRuleEntity extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(
+      id != null,
+      "Cannot save JurisdictionRuleEntity entity without an ID"
+    );
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type JurisdictionRuleEntity must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("JurisdictionRuleEntity", id.toString(), this);
+    }
+  }
+
+  static load(id: string): JurisdictionRuleEntity | null {
+    return changetype<JurisdictionRuleEntity | null>(
+      store.get("JurisdictionRuleEntity", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get about(): Bytes | null {
+    let value = this.get("about");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set about(value: Bytes | null) {
+    if (!value) {
+      this.unset("about");
+    } else {
+      this.set("about", Value.fromBytes(<Bytes>value));
+    }
+  }
+
+  get uri(): string | null {
+    let value = this.get("uri");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set uri(value: string | null) {
+    if (!value) {
+      this.unset("uri");
+    } else {
+      this.set("uri", Value.fromString(<string>value));
+    }
+  }
+
+  get effectsProfessional(): i32 {
+    let value = this.get("effectsProfessional");
+    return value!.toI32();
+  }
+
+  set effectsProfessional(value: i32) {
+    this.set("effectsProfessional", Value.fromI32(value));
+  }
+
+  get effectsSocial(): i32 {
+    let value = this.get("effectsSocial");
+    return value!.toI32();
+  }
+
+  set effectsSocial(value: i32) {
+    this.set("effectsSocial", Value.fromI32(value));
+  }
+
+  get effectsPersonal(): i32 {
+    let value = this.get("effectsPersonal");
+    return value!.toI32();
+  }
+
+  set effectsPersonal(value: i32) {
+    this.set("effectsPersonal", Value.fromI32(value));
+  }
+
+  get negation(): boolean {
+    let value = this.get("negation");
+    return value!.toBoolean();
+  }
+
+  set negation(value: boolean) {
+    this.set("negation", Value.fromBoolean(value));
+  }
+}
+
 export class ActionEntity extends Entity {
   constructor(id: string) {
     super();
