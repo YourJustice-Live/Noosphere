@@ -240,6 +240,8 @@ export class JurisdictionRuleEntity extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
+
+    this.set("about", Value.fromString(""));
   }
 
   save(): void {
@@ -272,21 +274,13 @@ export class JurisdictionRuleEntity extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get about(): Bytes | null {
+  get about(): string {
     let value = this.get("about");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toBytes();
-    }
+    return value!.toString();
   }
 
-  set about(value: Bytes | null) {
-    if (!value) {
-      this.unset("about");
-    } else {
-      this.set("about", Value.fromBytes(<Bytes>value));
-    }
+  set about(value: string) {
+    this.set("about", Value.fromString(value));
   }
 
   get uri(): string | null {

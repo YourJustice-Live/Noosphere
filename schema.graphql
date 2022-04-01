@@ -22,7 +22,7 @@ type JurisdictionParticipantEntity @entity {
 
 type JurisdictionRuleEntity @entity {
   id: ID!
-  about: Bytes
+  about: ActionEntity!
   uri: String
   effectsProfessional: Int
   effectsSocial: Int
