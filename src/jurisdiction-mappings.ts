@@ -1,6 +1,15 @@
-import { Address, BigInt, log } from "@graphprotocol/graph-ts";
-import { RuleAdded, TransferSingle } from "../generated/Jurisdiction/Jurisdiction";
-import { ActionEntity, JurisdictionParticipantEntity, JurisdictionRuleEntity } from "../generated/schema";
+import { Address, BigInt } from "@graphprotocol/graph-ts";
+import {
+  Confirmation,
+  Rule,
+  RuleEffects,
+  TransferSingle,
+} from "../generated/Jurisdiction/Jurisdiction";
+import {
+  ActionEntity,
+  JurisdictionParticipantEntity,
+  JurisdictionRuleEntity,
+} from "../generated/schema";
 
 /**
  * Handle a tranfer single event to create or update a participant of jurisdiction.
@@ -34,22 +43,56 @@ export function handleTransferSingle(event: TransferSingle): void {
 }
 
 /**
- * Handle a rule added event to create an rule entity.
+ * Handle a rule event to create or update an rule entity.
  */
-export function handleRuleAdded(event: RuleAdded): void {
-  // Skip if rule entity exists
-  if (JurisdictionRuleEntity.load(event.params.id.toString())) {
-    return;
-  }
+export function handleRuleAdded(event: Rule): void {
   // Skip if action entity not exists
   let actionEntity = ActionEntity.load(event.params.about.toHexString());
   if (!actionEntity) {
     return;
   }
-  // Create entity
-  let entity = new JurisdictionRuleEntity(event.params.id.toString());
+  // Find or create entity
+  let entity = JurisdictionRuleEntity.load(event.params.id.toString());
+  if (!entity) {
+    entity = new JurisdictionRuleEntity(event.params.id.toString());
+  }
+  // Update entity's params
   entity.about = actionEntity.id;
+  entity.affected = event.params.affected;
   entity.uri = event.params.uri;
   entity.negation = event.params.negation;
   entity.save();
+}
+
+/**
+ * Handle a rule effects event to update an rule entity.
+ */
+export function handleRuleEffects(event: RuleEffects): void {
+  // Find entity and return if not found
+  let entity = JurisdictionRuleEntity.load(event.params.id.toString());
+  if (!entity) {
+    return;
+  }
+  // Update entity's params
+  entity.effectsEnvironmental = event.params.environmental;
+  entity.effectsPersonal = event.params.personal;
+  entity.effectsSocial = event.params.social;
+  entity.effectsProfessional = event.params.professional;
+  entity.save();
+}
+
+/**
+ * Handle a confirmation event to update an rule entity.
+ */
+export function handleConfirmation(event: Confirmation): void {
+  // Find entity and return if not found
+  let entity = JurisdictionRuleEntity.load(event.params.id.toString());
+  if (!entity) {
+    return;
+  }
+  // Update entity's params
+  entity.confirmationRuling = event.params.ruling;
+  entity.confirmationEvidence = event.params.evidence;
+  entity.confirmationWitness = event.params.witness;
+  entity.save()
 }

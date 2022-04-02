@@ -23,11 +23,16 @@ type JurisdictionParticipantEntity @entity {
 type JurisdictionRuleEntity @entity {
   id: ID!
   about: ActionEntity!
+  affected: String
   uri: String
-  effectsProfessional: Int
-  effectsSocial: Int
-  effectsPersonal: Int
   negation: Boolean
+  effectsEnvironmental: Int
+  effectsPersonal: Int
+  effectsSocial: Int
+  effectsProfessional: Int
+  confirmationRuling: String
+  confirmationEvidence: Boolean
+  confirmationWitness: BigInt
 }
 
 type ActionEntity @entity {
@@ -36,9 +41,6 @@ type ActionEntity @entity {
   verb: String
   object: String
   tool: String
-  affected: String
-  confirmationRuling: String
-  confirmationEvidence: Boolean
-  confirmationWitness: BigInt
   uri: String
+  rules: [JurisdictionRuleEntity!]! @derivedFrom(field: "about")
 }

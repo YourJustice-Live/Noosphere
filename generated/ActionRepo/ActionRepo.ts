@@ -46,10 +46,6 @@ export class ActionAdded__Params {
   get tool(): string {
     return this._event.parameters[5].value.toString();
   }
-
-  get affected(): string {
-    return this._event.parameters[6].value.toString();
-  }
 }
 
 export class ActionURI extends ethereum.Event {
@@ -97,36 +93,6 @@ export class ApprovalForAll__Params {
 
   get approved(): boolean {
     return this._event.parameters[2].value.toBoolean();
-  }
-}
-
-export class Confirmation extends ethereum.Event {
-  get params(): Confirmation__Params {
-    return new Confirmation__Params(this);
-  }
-}
-
-export class Confirmation__Params {
-  _event: Confirmation;
-
-  constructor(event: Confirmation) {
-    this._event = event;
-  }
-
-  get guid(): Bytes {
-    return this._event.parameters[0].value.toBytes();
-  }
-
-  get ruling(): string {
-    return this._event.parameters[1].value.toString();
-  }
-
-  get evidence(): boolean {
-    return this._event.parameters[2].value.toBoolean();
-  }
-
-  get witness(): BigInt {
-    return this._event.parameters[3].value.toBigInt();
   }
 }
 
@@ -280,23 +246,23 @@ export class ActionRepo__actionAddInputSvoStruct extends ethereum.Tuple {
   get tool(): string {
     return this[3].toString();
   }
-
-  get affected(): string {
-    return this[4].toString();
-  }
 }
 
-export class ActionRepo__actionAddInputConfirmationStruct extends ethereum.Tuple {
-  get ruling(): string {
+export class ActionRepo__actionAddBatchInputSvosStruct extends ethereum.Tuple {
+  get subject(): string {
     return this[0].toString();
   }
 
-  get evidence(): boolean {
-    return this[1].toBoolean();
+  get verb(): string {
+    return this[1].toString();
   }
 
-  get witness(): BigInt {
-    return this[2].toBigInt();
+  get object(): string {
+    return this[2].toString();
+  }
+
+  get tool(): string {
+    return this[3].toString();
   }
 }
 
@@ -316,24 +282,6 @@ export class ActionRepo__actionGetResultValue0Struct extends ethereum.Tuple {
   get tool(): string {
     return this[3].toString();
   }
-
-  get affected(): string {
-    return this[4].toString();
-  }
-}
-
-export class ActionRepo__actionGetConfirmationResultValue0Struct extends ethereum.Tuple {
-  get ruling(): string {
-    return this[0].toString();
-  }
-
-  get evidence(): boolean {
-    return this[1].toBoolean();
-  }
-
-  get witness(): BigInt {
-    return this[2].toBigInt();
-  }
 }
 
 export class ActionRepo__actionHashInputSvoStruct extends ethereum.Tuple {
@@ -351,10 +299,6 @@ export class ActionRepo__actionHashInputSvoStruct extends ethereum.Tuple {
 
   get tool(): string {
     return this[3].toString();
-  }
-
-  get affected(): string {
-    return this[4].toString();
   }
 }
 
@@ -384,19 +328,11 @@ export class ActionRepo extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBoolean());
   }
 
-  actionAdd(
-    svo: ActionRepo__actionAddInputSvoStruct,
-    confirmation: ActionRepo__actionAddInputConfirmationStruct,
-    uri: string
-  ): Bytes {
+  actionAdd(svo: ActionRepo__actionAddInputSvoStruct, uri: string): Bytes {
     let result = super.call(
       "actionAdd",
-      "actionAdd((string,string,string,string,string),(string,bool,uint256),string):(bytes32)",
-      [
-        ethereum.Value.fromTuple(svo),
-        ethereum.Value.fromTuple(confirmation),
-        ethereum.Value.fromString(uri)
-      ]
+      "actionAdd((string,string,string,string),string):(bytes32)",
+      [ethereum.Value.fromTuple(svo), ethereum.Value.fromString(uri)]
     );
 
     return result[0].toBytes();
@@ -404,17 +340,12 @@ export class ActionRepo extends ethereum.SmartContract {
 
   try_actionAdd(
     svo: ActionRepo__actionAddInputSvoStruct,
-    confirmation: ActionRepo__actionAddInputConfirmationStruct,
     uri: string
   ): ethereum.CallResult<Bytes> {
     let result = super.tryCall(
       "actionAdd",
-      "actionAdd((string,string,string,string,string),(string,bool,uint256),string):(bytes32)",
-      [
-        ethereum.Value.fromTuple(svo),
-        ethereum.Value.fromTuple(confirmation),
-        ethereum.Value.fromString(uri)
-      ]
+      "actionAdd((string,string,string,string),string):(bytes32)",
+      [ethereum.Value.fromTuple(svo), ethereum.Value.fromString(uri)]
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -423,10 +354,45 @@ export class ActionRepo extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBytes());
   }
 
+  actionAddBatch(
+    svos: Array<ActionRepo__actionAddBatchInputSvosStruct>,
+    uris: Array<string>
+  ): Array<Bytes> {
+    let result = super.call(
+      "actionAddBatch",
+      "actionAddBatch((string,string,string,string)[],string[]):(bytes32[])",
+      [
+        ethereum.Value.fromTupleArray(svos),
+        ethereum.Value.fromStringArray(uris)
+      ]
+    );
+
+    return result[0].toBytesArray();
+  }
+
+  try_actionAddBatch(
+    svos: Array<ActionRepo__actionAddBatchInputSvosStruct>,
+    uris: Array<string>
+  ): ethereum.CallResult<Array<Bytes>> {
+    let result = super.tryCall(
+      "actionAddBatch",
+      "actionAddBatch((string,string,string,string)[],string[]):(bytes32[])",
+      [
+        ethereum.Value.fromTupleArray(svos),
+        ethereum.Value.fromStringArray(uris)
+      ]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBytesArray());
+  }
+
   actionGet(guid: Bytes): ActionRepo__actionGetResultValue0Struct {
     let result = super.call(
       "actionGet",
-      "actionGet(bytes32):((string,string,string,string,string))",
+      "actionGet(bytes32):((string,string,string,string))",
       [ethereum.Value.fromFixedBytes(guid)]
     );
 
@@ -440,7 +406,7 @@ export class ActionRepo extends ethereum.SmartContract {
   ): ethereum.CallResult<ActionRepo__actionGetResultValue0Struct> {
     let result = super.tryCall(
       "actionGet",
-      "actionGet(bytes32):((string,string,string,string,string))",
+      "actionGet(bytes32):((string,string,string,string))",
       [ethereum.Value.fromFixedBytes(guid)]
     );
     if (result.reverted) {
@@ -449,39 +415,6 @@ export class ActionRepo extends ethereum.SmartContract {
     let value = result.value;
     return ethereum.CallResult.fromValue(
       changetype<ActionRepo__actionGetResultValue0Struct>(value[0].toTuple())
-    );
-  }
-
-  actionGetConfirmation(
-    guid: Bytes
-  ): ActionRepo__actionGetConfirmationResultValue0Struct {
-    let result = super.call(
-      "actionGetConfirmation",
-      "actionGetConfirmation(bytes32):((string,bool,uint256))",
-      [ethereum.Value.fromFixedBytes(guid)]
-    );
-
-    return changetype<ActionRepo__actionGetConfirmationResultValue0Struct>(
-      result[0].toTuple()
-    );
-  }
-
-  try_actionGetConfirmation(
-    guid: Bytes
-  ): ethereum.CallResult<ActionRepo__actionGetConfirmationResultValue0Struct> {
-    let result = super.tryCall(
-      "actionGetConfirmation",
-      "actionGetConfirmation(bytes32):((string,bool,uint256))",
-      [ethereum.Value.fromFixedBytes(guid)]
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(
-      changetype<ActionRepo__actionGetConfirmationResultValue0Struct>(
-        value[0].toTuple()
-      )
     );
   }
 
@@ -509,7 +442,7 @@ export class ActionRepo extends ethereum.SmartContract {
   actionHash(svo: ActionRepo__actionHashInputSvoStruct): Bytes {
     let result = super.call(
       "actionHash",
-      "actionHash((string,string,string,string,string)):(bytes32)",
+      "actionHash((string,string,string,string)):(bytes32)",
       [ethereum.Value.fromTuple(svo)]
     );
 
@@ -521,7 +454,7 @@ export class ActionRepo extends ethereum.SmartContract {
   ): ethereum.CallResult<Bytes> {
     let result = super.tryCall(
       "actionHash",
-      "actionHash((string,string,string,string,string)):(bytes32)",
+      "actionHash((string,string,string,string)):(bytes32)",
       [ethereum.Value.fromTuple(svo)]
     );
     if (result.reverted) {
@@ -799,14 +732,8 @@ export class ActionAddCall__Inputs {
     );
   }
 
-  get confirmation(): ActionAddCallConfirmationStruct {
-    return changetype<ActionAddCallConfirmationStruct>(
-      this._call.inputValues[1].value.toTuple()
-    );
-  }
-
   get uri(): string {
-    return this._call.inputValues[2].value.toString();
+    return this._call.inputValues[1].value.toString();
   }
 }
 
@@ -838,73 +765,63 @@ export class ActionAddCallSvoStruct extends ethereum.Tuple {
   get tool(): string {
     return this[3].toString();
   }
+}
 
-  get affected(): string {
-    return this[4].toString();
+export class ActionAddBatchCall extends ethereum.Call {
+  get inputs(): ActionAddBatchCall__Inputs {
+    return new ActionAddBatchCall__Inputs(this);
+  }
+
+  get outputs(): ActionAddBatchCall__Outputs {
+    return new ActionAddBatchCall__Outputs(this);
   }
 }
 
-export class ActionAddCallConfirmationStruct extends ethereum.Tuple {
-  get ruling(): string {
-    return this[0].toString();
-  }
+export class ActionAddBatchCall__Inputs {
+  _call: ActionAddBatchCall;
 
-  get evidence(): boolean {
-    return this[1].toBoolean();
-  }
-
-  get witness(): BigInt {
-    return this[2].toBigInt();
-  }
-}
-
-export class ActionSetConfirmationCall extends ethereum.Call {
-  get inputs(): ActionSetConfirmationCall__Inputs {
-    return new ActionSetConfirmationCall__Inputs(this);
-  }
-
-  get outputs(): ActionSetConfirmationCall__Outputs {
-    return new ActionSetConfirmationCall__Outputs(this);
-  }
-}
-
-export class ActionSetConfirmationCall__Inputs {
-  _call: ActionSetConfirmationCall;
-
-  constructor(call: ActionSetConfirmationCall) {
+  constructor(call: ActionAddBatchCall) {
     this._call = call;
   }
 
-  get guid(): Bytes {
-    return this._call.inputValues[0].value.toBytes();
+  get svos(): Array<ActionAddBatchCallSvosStruct> {
+    return this._call.inputValues[0].value.toTupleArray<
+      ActionAddBatchCallSvosStruct
+    >();
   }
 
-  get confirmation(): ActionSetConfirmationCallConfirmationStruct {
-    return changetype<ActionSetConfirmationCallConfirmationStruct>(
-      this._call.inputValues[1].value.toTuple()
-    );
+  get uris(): Array<string> {
+    return this._call.inputValues[1].value.toStringArray();
   }
 }
 
-export class ActionSetConfirmationCall__Outputs {
-  _call: ActionSetConfirmationCall;
+export class ActionAddBatchCall__Outputs {
+  _call: ActionAddBatchCall;
 
-  constructor(call: ActionSetConfirmationCall) {
+  constructor(call: ActionAddBatchCall) {
     this._call = call;
   }
+
+  get value0(): Array<Bytes> {
+    return this._call.outputValues[0].value.toBytesArray();
+  }
 }
 
-export class ActionSetConfirmationCallConfirmationStruct extends ethereum.Tuple {
-  get ruling(): string {
+export class ActionAddBatchCallSvosStruct extends ethereum.Tuple {
+  get subject(): string {
     return this[0].toString();
   }
 
-  get evidence(): boolean {
-    return this[1].toBoolean();
+  get verb(): string {
+    return this[1].toString();
   }
 
-  get witness(): BigInt {
-    return this[2].toBigInt();
+  get object(): string {
+    return this[2].toString();
+  }
+
+  get tool(): string {
+    return this[3].toString();
   }
 }
 

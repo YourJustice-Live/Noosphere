@@ -42,12 +42,6 @@
         "internalType": "string",
         "name": "tool",
         "type": "string"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "affected",
-        "type": "string"
       }
     ],
     "name": "ActionAdded",
@@ -95,37 +89,6 @@
       }
     ],
     "name": "ApprovalForAll",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "bytes32",
-        "name": "guid",
-        "type": "bytes32"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "ruling",
-        "type": "string"
-      },
-      {
-        "indexed": false,
-        "internalType": "bool",
-        "name": "evidence",
-        "type": "bool"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "witness",
-        "type": "uint256"
-      }
-    ],
-    "name": "Confirmation",
     "type": "event"
   },
   {
@@ -276,27 +239,38 @@
           { "internalType": "string", "name": "subject", "type": "string" },
           { "internalType": "string", "name": "verb", "type": "string" },
           { "internalType": "string", "name": "object", "type": "string" },
-          { "internalType": "string", "name": "tool", "type": "string" },
-          { "internalType": "string", "name": "affected", "type": "string" }
+          { "internalType": "string", "name": "tool", "type": "string" }
         ],
         "internalType": "struct DataTypes.SVO",
         "name": "svo",
-        "type": "tuple"
-      },
-      {
-        "components": [
-          { "internalType": "string", "name": "ruling", "type": "string" },
-          { "internalType": "bool", "name": "evidence", "type": "bool" },
-          { "internalType": "uint256", "name": "witness", "type": "uint256" }
-        ],
-        "internalType": "struct DataTypes.Confirmation",
-        "name": "confirmation",
         "type": "tuple"
       },
       { "internalType": "string", "name": "uri", "type": "string" }
     ],
     "name": "actionAdd",
     "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          { "internalType": "string", "name": "subject", "type": "string" },
+          { "internalType": "string", "name": "verb", "type": "string" },
+          { "internalType": "string", "name": "object", "type": "string" },
+          { "internalType": "string", "name": "tool", "type": "string" }
+        ],
+        "internalType": "struct DataTypes.SVO[]",
+        "name": "svos",
+        "type": "tuple[]"
+      },
+      { "internalType": "string[]", "name": "uris", "type": "string[]" }
+    ],
+    "name": "actionAddBatch",
+    "outputs": [
+      { "internalType": "bytes32[]", "name": "", "type": "bytes32[]" }
+    ],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -311,30 +285,9 @@
           { "internalType": "string", "name": "subject", "type": "string" },
           { "internalType": "string", "name": "verb", "type": "string" },
           { "internalType": "string", "name": "object", "type": "string" },
-          { "internalType": "string", "name": "tool", "type": "string" },
-          { "internalType": "string", "name": "affected", "type": "string" }
+          { "internalType": "string", "name": "tool", "type": "string" }
         ],
         "internalType": "struct DataTypes.SVO",
-        "name": "",
-        "type": "tuple"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "bytes32", "name": "guid", "type": "bytes32" }
-    ],
-    "name": "actionGetConfirmation",
-    "outputs": [
-      {
-        "components": [
-          { "internalType": "string", "name": "ruling", "type": "string" },
-          { "internalType": "bool", "name": "evidence", "type": "bool" },
-          { "internalType": "uint256", "name": "witness", "type": "uint256" }
-        ],
-        "internalType": "struct DataTypes.Confirmation",
         "name": "",
         "type": "tuple"
       }
@@ -358,8 +311,7 @@
           { "internalType": "string", "name": "subject", "type": "string" },
           { "internalType": "string", "name": "verb", "type": "string" },
           { "internalType": "string", "name": "object", "type": "string" },
-          { "internalType": "string", "name": "tool", "type": "string" },
-          { "internalType": "string", "name": "affected", "type": "string" }
+          { "internalType": "string", "name": "tool", "type": "string" }
         ],
         "internalType": "struct DataTypes.SVO",
         "name": "svo",
@@ -369,25 +321,6 @@
     "name": "actionHash",
     "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
     "stateMutability": "pure",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "bytes32", "name": "guid", "type": "bytes32" },
-      {
-        "components": [
-          { "internalType": "string", "name": "ruling", "type": "string" },
-          { "internalType": "bool", "name": "evidence", "type": "bool" },
-          { "internalType": "uint256", "name": "witness", "type": "uint256" }
-        ],
-        "internalType": "struct DataTypes.Confirmation",
-        "name": "confirmation",
-        "type": "tuple"
-      }
-    ],
-    "name": "actionSetConfirmation",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {

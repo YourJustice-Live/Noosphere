@@ -33,9 +33,9 @@ dataSources:
     name: Jurisdiction
     network: rinkeby
     source:
-      address: "0x621B529DF2a13ADaaf9962180f29694ad137bBCA"
+      address: "0x7BAE28280a53D0519F0AAD1C9653D4C148FFDA59"
       abi: Jurisdiction
-      startBlock: 10417610
+      startBlock: 10430335
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -43,23 +43,29 @@ dataSources:
       entities:
         - TransferSingle
         - RuleAdded
+        - RuleEffects
+        - Confirmation
       abis:
         - name: Jurisdiction
           file: ./abis/Jurisdiction.json
       eventHandlers:
         - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
           handler: handleTransferSingle
-        - event: RuleAdded(indexed uint256,bytes32,string,bool)
+        - event: Rule(indexed uint256,bytes32,string,string,bool)
           handler: handleRuleAdded
+        - event: RuleEffects(indexed uint256,int8,int8,int8,int8)
+          handler: handleRuleEffects
+        - event: Confirmation(indexed uint256,string,bool,uint256)
+          handler: handleConfirmation
       file: ./src/jurisdiction-mappings.ts
   # Action repository contract
   - kind: ethereum
     name: ActionRepo
     network: rinkeby
     source:
-      address: "0x274e54BFFDbb94442FC8Df155d47b42BEF90c76B"
+      address: "0x2454d7d9600036aEA5511fc14d5Ecb481fBBA666"
       abi: ActionRepo
-      startBlock: 10417596
+      startBlock: 10430334
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -67,15 +73,12 @@ dataSources:
       entities:
         - ActionAdded
         - ActionURI
-        - Confirmation
       abis:
         - name: ActionRepo
           file: ./abis/ActionRepo.json
       eventHandlers:
-        - event: ActionAdded(indexed uint256,indexed bytes32,string,string,string,string,string)
+        - event: ActionAdded(indexed uint256,indexed bytes32,string,string,string,string)
           handler: handleActionAdded
         - event: ActionURI(indexed bytes32,string)
           handler: handleActionURI
-        - event: Confirmation(indexed bytes32,string,bool,uint256)
-          handler: handleConfirmation
       file: ./src/action-repo-mappings.ts

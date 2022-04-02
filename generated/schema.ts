@@ -283,6 +283,23 @@ export class JurisdictionRuleEntity extends Entity {
     this.set("about", Value.fromString(value));
   }
 
+  get affected(): string | null {
+    let value = this.get("affected");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set affected(value: string | null) {
+    if (!value) {
+      this.unset("affected");
+    } else {
+      this.set("affected", Value.fromString(<string>value));
+    }
+  }
+
   get uri(): string | null {
     let value = this.get("uri");
     if (!value || value.kind == ValueKind.NULL) {
@@ -300,22 +317,22 @@ export class JurisdictionRuleEntity extends Entity {
     }
   }
 
-  get effectsProfessional(): i32 {
-    let value = this.get("effectsProfessional");
+  get negation(): boolean {
+    let value = this.get("negation");
+    return value!.toBoolean();
+  }
+
+  set negation(value: boolean) {
+    this.set("negation", Value.fromBoolean(value));
+  }
+
+  get effectsEnvironmental(): i32 {
+    let value = this.get("effectsEnvironmental");
     return value!.toI32();
   }
 
-  set effectsProfessional(value: i32) {
-    this.set("effectsProfessional", Value.fromI32(value));
-  }
-
-  get effectsSocial(): i32 {
-    let value = this.get("effectsSocial");
-    return value!.toI32();
-  }
-
-  set effectsSocial(value: i32) {
-    this.set("effectsSocial", Value.fromI32(value));
+  set effectsEnvironmental(value: i32) {
+    this.set("effectsEnvironmental", Value.fromI32(value));
   }
 
   get effectsPersonal(): i32 {
@@ -327,13 +344,65 @@ export class JurisdictionRuleEntity extends Entity {
     this.set("effectsPersonal", Value.fromI32(value));
   }
 
-  get negation(): boolean {
-    let value = this.get("negation");
+  get effectsSocial(): i32 {
+    let value = this.get("effectsSocial");
+    return value!.toI32();
+  }
+
+  set effectsSocial(value: i32) {
+    this.set("effectsSocial", Value.fromI32(value));
+  }
+
+  get effectsProfessional(): i32 {
+    let value = this.get("effectsProfessional");
+    return value!.toI32();
+  }
+
+  set effectsProfessional(value: i32) {
+    this.set("effectsProfessional", Value.fromI32(value));
+  }
+
+  get confirmationRuling(): string | null {
+    let value = this.get("confirmationRuling");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set confirmationRuling(value: string | null) {
+    if (!value) {
+      this.unset("confirmationRuling");
+    } else {
+      this.set("confirmationRuling", Value.fromString(<string>value));
+    }
+  }
+
+  get confirmationEvidence(): boolean {
+    let value = this.get("confirmationEvidence");
     return value!.toBoolean();
   }
 
-  set negation(value: boolean) {
-    this.set("negation", Value.fromBoolean(value));
+  set confirmationEvidence(value: boolean) {
+    this.set("confirmationEvidence", Value.fromBoolean(value));
+  }
+
+  get confirmationWitness(): BigInt | null {
+    let value = this.get("confirmationWitness");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set confirmationWitness(value: BigInt | null) {
+    if (!value) {
+      this.unset("confirmationWitness");
+    } else {
+      this.set("confirmationWitness", Value.fromBigInt(<BigInt>value));
+    }
   }
 }
 
@@ -436,66 +505,6 @@ export class ActionEntity extends Entity {
     }
   }
 
-  get affected(): string | null {
-    let value = this.get("affected");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set affected(value: string | null) {
-    if (!value) {
-      this.unset("affected");
-    } else {
-      this.set("affected", Value.fromString(<string>value));
-    }
-  }
-
-  get confirmationRuling(): string | null {
-    let value = this.get("confirmationRuling");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set confirmationRuling(value: string | null) {
-    if (!value) {
-      this.unset("confirmationRuling");
-    } else {
-      this.set("confirmationRuling", Value.fromString(<string>value));
-    }
-  }
-
-  get confirmationEvidence(): boolean {
-    let value = this.get("confirmationEvidence");
-    return value!.toBoolean();
-  }
-
-  set confirmationEvidence(value: boolean) {
-    this.set("confirmationEvidence", Value.fromBoolean(value));
-  }
-
-  get confirmationWitness(): BigInt | null {
-    let value = this.get("confirmationWitness");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set confirmationWitness(value: BigInt | null) {
-    if (!value) {
-      this.unset("confirmationWitness");
-    } else {
-      this.set("confirmationWitness", Value.fromBigInt(<BigInt>value));
-    }
-  }
-
   get uri(): string | null {
     let value = this.get("uri");
     if (!value || value.kind == ValueKind.NULL) {
@@ -511,5 +520,14 @@ export class ActionEntity extends Entity {
     } else {
       this.set("uri", Value.fromString(<string>value));
     }
+  }
+
+  get rules(): Array<string> {
+    let value = this.get("rules");
+    return value!.toStringArray();
+  }
+
+  set rules(value: Array<string>) {
+    this.set("rules", Value.fromStringArray(value));
   }
 }
