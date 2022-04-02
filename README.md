@@ -4,12 +4,13 @@
 - Install dependencies: `yarn install`
 - Set deployment key: `yarn auth`
 - Update generated code: `yarn codegen`
-- Deploy subgraph: `yarn deploy`
+- Deploy to development subgraph: `yarn deploy`
+- Deploy to production subgraph: `graph deploy --node https://api.thegraph.com/deploy/ kiv1n/yourjustice`
 
 ## Subgraph
 
-- Simple UI - https://thegraph.com/hosted-service/subgraph/kiv1n/yourjustice
-- Advanced UI - https://api.thegraph.com/subgraphs/name/kiv1n/yourjustice/graphql
+- Development - https://thegraph.com/hosted-service/subgraph/kiv1n/yourjustice-dev
+- Production - https://thegraph.com/hosted-service/subgraph/kiv1n/yourjustice
 
 ## Links
 
