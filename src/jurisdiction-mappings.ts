@@ -1,5 +1,6 @@
-import { Address, BigInt } from "@graphprotocol/graph-ts";
+import { Address, BigInt, log } from "@graphprotocol/graph-ts";
 import {
+  CaseCreated,
   Confirmation,
   Rule,
   RuleEffects,
@@ -7,6 +8,7 @@ import {
 } from "../generated/Jurisdiction/Jurisdiction";
 import {
   ActionEntity,
+  JurisdictionCaseEntity,
   JurisdictionParticipantEntity,
   JurisdictionRuleEntity,
 } from "../generated/schema";
@@ -94,5 +96,19 @@ export function handleConfirmation(event: Confirmation): void {
   entity.confirmationRuling = event.params.ruling;
   entity.confirmationEvidence = event.params.evidence;
   entity.confirmationWitness = event.params.witness;
-  entity.save()
+  entity.save();
+}
+
+/**
+ * Handle a case created event to create case entity.
+ */
+export function handleCaseCreated(event: CaseCreated): void {
+  // Skip if case is exists
+  if (JurisdictionCaseEntity.load(event.params.id.toString())) {
+    return;
+  }
+  // Create case entity
+  let entity = new JurisdictionCaseEntity(event.params.id.toString());
+  entity.contractAddress = event.params.contractAddress;
+  entity.save();
 }

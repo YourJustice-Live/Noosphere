@@ -406,6 +406,54 @@ export class JurisdictionRuleEntity extends Entity {
   }
 }
 
+export class JurisdictionCaseEntity extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+
+    this.set("contractAddress", Value.fromBytes(Bytes.empty()));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(
+      id != null,
+      "Cannot save JurisdictionCaseEntity entity without an ID"
+    );
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type JurisdictionCaseEntity must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("JurisdictionCaseEntity", id.toString(), this);
+    }
+  }
+
+  static load(id: string): JurisdictionCaseEntity | null {
+    return changetype<JurisdictionCaseEntity | null>(
+      store.get("JurisdictionCaseEntity", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get contractAddress(): Bytes {
+    let value = this.get("contractAddress");
+    return value!.toBytes();
+  }
+
+  set contractAddress(value: Bytes) {
+    this.set("contractAddress", Value.fromBytes(value));
+  }
+}
+
 export class ActionEntity extends Entity {
   constructor(id: string) {
     super();

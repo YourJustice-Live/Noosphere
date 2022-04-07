@@ -35,6 +35,11 @@ type JurisdictionRuleEntity @entity {
   confirmationWitness: BigInt
 }
 
+type JurisdictionCaseEntity @entity {
+  id: ID! # case id
+  contractAddress: Bytes!
+}
+
 type ActionEntity @entity {
   id: ID! # guid
   subject: String
