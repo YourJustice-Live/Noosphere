@@ -1,4 +1,4 @@
-import { BigInt, log } from "@graphprotocol/graph-ts";
+import { BigInt } from "@graphprotocol/graph-ts";
 import {
   ReputationChange,
   Transfer,
@@ -46,7 +46,6 @@ export function handleReputationChange(event: ReputationChange): void {
   // Find or create entity
   let entity = AvatarNftReputationEntity.load(entityId);
   if (!entity) {
-    log.info("[Dev] create entity", []);
     entity = new AvatarNftReputationEntity(entityId);
     entity.domain = event.params.domain;
     entity.token = event.params.id.toString();
