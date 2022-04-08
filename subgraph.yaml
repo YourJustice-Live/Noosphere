@@ -84,3 +84,23 @@ dataSources:
         - event: ActionURI(indexed bytes32,string)
           handler: handleActionURI
       file: ./src/action-repo-mappings.ts
+templates:
+  # Case contract template
+  - kind: ethereum
+    name: Case
+    network: rinkeby
+    source:
+      abi: Case
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - TransferSingle
+      abis:
+        - name: Case
+          file: ./abis/Case.json
+      eventHandlers:
+        - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: handleTransferSingle
+      file: ./src/case-mappings.ts

@@ -406,54 +406,6 @@ export class JurisdictionRuleEntity extends Entity {
   }
 }
 
-export class JurisdictionCaseEntity extends Entity {
-  constructor(id: string) {
-    super();
-    this.set("id", Value.fromString(id));
-
-    this.set("contractAddress", Value.fromBytes(Bytes.empty()));
-  }
-
-  save(): void {
-    let id = this.get("id");
-    assert(
-      id != null,
-      "Cannot save JurisdictionCaseEntity entity without an ID"
-    );
-    if (id) {
-      assert(
-        id.kind == ValueKind.STRING,
-        `Entities of type JurisdictionCaseEntity must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
-      );
-      store.set("JurisdictionCaseEntity", id.toString(), this);
-    }
-  }
-
-  static load(id: string): JurisdictionCaseEntity | null {
-    return changetype<JurisdictionCaseEntity | null>(
-      store.get("JurisdictionCaseEntity", id)
-    );
-  }
-
-  get id(): string {
-    let value = this.get("id");
-    return value!.toString();
-  }
-
-  set id(value: string) {
-    this.set("id", Value.fromString(value));
-  }
-
-  get contractAddress(): Bytes {
-    let value = this.get("contractAddress");
-    return value!.toBytes();
-  }
-
-  set contractAddress(value: Bytes) {
-    this.set("contractAddress", Value.fromBytes(value));
-  }
-}
-
 export class ActionEntity extends Entity {
   constructor(id: string) {
     super();
@@ -577,5 +529,169 @@ export class ActionEntity extends Entity {
 
   set rules(value: Array<string>) {
     this.set("rules", Value.fromStringArray(value));
+  }
+}
+
+export class CaseEntity extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+
+    this.set("jurisdiction", Value.fromBytes(Bytes.empty()));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save CaseEntity entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type CaseEntity must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("CaseEntity", id.toString(), this);
+    }
+  }
+
+  static load(id: string): CaseEntity | null {
+    return changetype<CaseEntity | null>(store.get("CaseEntity", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get jurisdiction(): Bytes {
+    let value = this.get("jurisdiction");
+    return value!.toBytes();
+  }
+
+  set jurisdiction(value: Bytes) {
+    this.set("jurisdiction", Value.fromBytes(value));
+  }
+
+  get participants(): Array<string> {
+    let value = this.get("participants");
+    return value!.toStringArray();
+  }
+
+  set participants(value: Array<string>) {
+    this.set("participants", Value.fromStringArray(value));
+  }
+}
+
+export class CaseParticipantEntity extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+
+    this.set("caseEntity", Value.fromString(""));
+    this.set("account", Value.fromBytes(Bytes.empty()));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(
+      id != null,
+      "Cannot save CaseParticipantEntity entity without an ID"
+    );
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type CaseParticipantEntity must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("CaseParticipantEntity", id.toString(), this);
+    }
+  }
+
+  static load(id: string): CaseParticipantEntity | null {
+    return changetype<CaseParticipantEntity | null>(
+      store.get("CaseParticipantEntity", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get caseEntity(): string {
+    let value = this.get("caseEntity");
+    return value!.toString();
+  }
+
+  set caseEntity(value: string) {
+    this.set("caseEntity", Value.fromString(value));
+  }
+
+  get account(): Bytes {
+    let value = this.get("account");
+    return value!.toBytes();
+  }
+
+  set account(value: Bytes) {
+    this.set("account", Value.fromBytes(value));
+  }
+
+  get isAdmin(): boolean {
+    let value = this.get("isAdmin");
+    return value!.toBoolean();
+  }
+
+  set isAdmin(value: boolean) {
+    this.set("isAdmin", Value.fromBoolean(value));
+  }
+
+  get isSubject(): boolean {
+    let value = this.get("isSubject");
+    return value!.toBoolean();
+  }
+
+  set isSubject(value: boolean) {
+    this.set("isSubject", Value.fromBoolean(value));
+  }
+
+  get isPlaintiff(): boolean {
+    let value = this.get("isPlaintiff");
+    return value!.toBoolean();
+  }
+
+  set isPlaintiff(value: boolean) {
+    this.set("isPlaintiff", Value.fromBoolean(value));
+  }
+
+  get isJudge(): boolean {
+    let value = this.get("isJudge");
+    return value!.toBoolean();
+  }
+
+  set isJudge(value: boolean) {
+    this.set("isJudge", Value.fromBoolean(value));
+  }
+
+  get isWitness(): boolean {
+    let value = this.get("isWitness");
+    return value!.toBoolean();
+  }
+
+  set isWitness(value: boolean) {
+    this.set("isWitness", Value.fromBoolean(value));
+  }
+
+  get isAffected(): boolean {
+    let value = this.get("isAffected");
+    return value!.toBoolean();
+  }
+
+  set isAffected(value: boolean) {
+    this.set("isAffected", Value.fromBoolean(value));
   }
 }

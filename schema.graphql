@@ -35,11 +35,6 @@ type JurisdictionRuleEntity @entity {
   confirmationWitness: BigInt
 }
 
-type JurisdictionCaseEntity @entity {
-  id: ID! # case id
-  contractAddress: Bytes!
-}
-
 type ActionEntity @entity {
   id: ID! # guid
   subject: String
@@ -48,4 +43,22 @@ type ActionEntity @entity {
   tool: String
   uri: String
   rules: [JurisdictionRuleEntity!]! @derivedFrom(field: "about")
+}
+
+type CaseEntity @entity {
+  id: ID! # contract address
+  jurisdiction: Bytes!
+  participants: [CaseParticipantEntity!]! @derivedFrom(field: "caseEntity")
+}
+
+type CaseParticipantEntity @entity {
+  id: ID! # combination of case address and accout address
+  caseEntity: CaseEntity!
+  account: Bytes!
+  isAdmin: Boolean
+  isSubject: Boolean
+  isPlaintiff: Boolean
+  isJudge: Boolean
+  isWitness: Boolean
+  isAffected: Boolean
 }

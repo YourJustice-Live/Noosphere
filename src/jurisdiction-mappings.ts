@@ -1,17 +1,18 @@
-import { Address, BigInt, log } from "@graphprotocol/graph-ts";
+import { Address, BigInt } from "@graphprotocol/graph-ts";
 import {
   CaseCreated,
   Confirmation,
   Rule,
   RuleEffects,
-  TransferSingle,
+  TransferSingle
 } from "../generated/Jurisdiction/Jurisdiction";
 import {
   ActionEntity,
-  JurisdictionCaseEntity,
+  CaseEntity,
   JurisdictionParticipantEntity,
-  JurisdictionRuleEntity,
+  JurisdictionRuleEntity
 } from "../generated/schema";
+import { Case } from "../generated/templates";
 
 /**
  * Handle a tranfer single event to create or update a participant of jurisdiction.
@@ -100,15 +101,17 @@ export function handleConfirmation(event: Confirmation): void {
 }
 
 /**
- * Handle a case created event to create case entity.
+ * Handle a case created event to create case entities and case contract.
  */
 export function handleCaseCreated(event: CaseCreated): void {
-  // Skip if case is exists
-  if (JurisdictionCaseEntity.load(event.params.id.toString())) {
+  // Skip if case entity is exists
+  if (CaseEntity.load(event.params.contractAddress.toHexString())) {
     return;
   }
   // Create case entity
-  let entity = new JurisdictionCaseEntity(event.params.id.toString());
-  entity.contractAddress = event.params.contractAddress;
-  entity.save();
+  let caseEntity = new CaseEntity(event.params.contractAddress.toHexString());
+  caseEntity.jurisdiction = event.address;
+  caseEntity.save();
+  // Create case contract
+  Case.create(event.params.contractAddress);
 }
