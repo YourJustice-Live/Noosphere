@@ -97,10 +97,13 @@ templates:
       language: wasm/assemblyscript
       entities:
         - TransferSingle
+        - RuleAdded
       abis:
         - name: Case
           file: ./abis/Case.json
       eventHandlers:
         - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
           handler: handleTransferSingle
+        - event: RuleAdded(address,uint256)
+          handler: handleRuleAdded
       file: ./src/case-mappings.ts

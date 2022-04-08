@@ -132,6 +132,28 @@ export class RoleCreated__Params {
   }
 }
 
+export class RuleAdded extends ethereum.Event {
+  get params(): RuleAdded__Params {
+    return new RuleAdded__Params(this);
+  }
+}
+
+export class RuleAdded__Params {
+  _event: RuleAdded;
+
+  constructor(event: RuleAdded) {
+    this._event = event;
+  }
+
+  get jurisdiction(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get ruleId(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+}
+
 export class Stage extends ethereum.Event {
   get params(): Stage__Params {
     return new Stage__Params(this);
@@ -405,6 +427,21 @@ export class Case extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigIntArray());
   }
 
+  contractURI(): string {
+    let result = super.call("contractURI", "contractURI():(string)", []);
+
+    return result[0].toString();
+  }
+
+  try_contractURI(): ethereum.CallResult<string> {
+    let result = super.tryCall("contractURI", "contractURI():(string)", []);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toString());
+  }
+
   isApprovedForAll(account: Address, operator: Address): boolean {
     let result = super.call(
       "isApprovedForAll",
@@ -465,6 +502,25 @@ export class Case extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toAddress());
+  }
+
+  roleExist(role: string): boolean {
+    let result = super.call("roleExist", "roleExist(string):(bool)", [
+      ethereum.Value.fromString(role)
+    ]);
+
+    return result[0].toBoolean();
+  }
+
+  try_roleExist(role: string): ethereum.CallResult<boolean> {
+    let result = super.tryCall("roleExist", "roleExist(string):(bool)", [
+      ethereum.Value.fromString(role)
+    ]);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBoolean());
   }
 
   roleHas(account: Address, role: string): boolean {

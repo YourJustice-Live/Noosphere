@@ -6,7 +6,7 @@ type AvatarNftEntity @entity {
 }
 
 type AvatarNftReputationEntity @entity {
-  id: ID! # combintation of token id and domain id
+  id: ID! # combination of token id and domain id
   token: AvatarNftEntity!
   domain: Int!
   negativeRating: BigInt
@@ -20,6 +20,8 @@ type JurisdictionParticipantEntity @entity {
   isJudge: Boolean
 }
 
+# TODO: ID should be a combination of jurisdiction address and rule id
+# TODO: Add jurisdiction relationship
 type JurisdictionRuleEntity @entity {
   id: ID!
   about: ActionEntity!
@@ -48,6 +50,7 @@ type ActionEntity @entity {
 type CaseEntity @entity {
   id: ID! # contract address
   jurisdiction: Bytes!
+  rules: [JurisdictionRuleEntity!]!
   participants: [CaseParticipantEntity!]! @derivedFrom(field: "caseEntity")
 }
 
