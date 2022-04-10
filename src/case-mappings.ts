@@ -80,7 +80,6 @@ export function handleRuleAdded(event: RuleAdded): void {
  * Handle a post event to add a post to case.
  */
 export function handlePost(event: Post): void {
-  log.info("[Dev] handlePost", []);
   // Skip if case entity not exists
   let caseEntity = CaseEntity.load(event.address.toHexString());
   if (!caseEntity) {
@@ -89,7 +88,7 @@ export function handlePost(event: Post): void {
   // Create post entity
   let casePostEntity = new CasePostEntity(event.transaction.hash.toHexString());
   casePostEntity.caseEntity = caseEntity.id;
-  casePostEntity.entityRole = event.params.entRole.toHexString();
+  casePostEntity.entityRole = event.params.entRole.toString();
   casePostEntity.postRole = event.params.postRole;
   casePostEntity.uri = event.params.uri;
   casePostEntity.save();

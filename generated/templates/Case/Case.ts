@@ -97,8 +97,8 @@ export class Post__Params {
     return this._event.parameters[0].value.toAddress();
   }
 
-  get entRole(): Bytes {
-    return this._event.parameters[1].value.toBytes();
+  get entRole(): string {
+    return this._event.parameters[1].value.toString();
   }
 
   get postRole(): string {
@@ -542,25 +542,6 @@ export class Case extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toBoolean());
-  }
-
-  roleName(param0: string): string {
-    let result = super.call("roleName", "roleName(string):(string)", [
-      ethereum.Value.fromString(param0)
-    ]);
-
-    return result[0].toString();
-  }
-
-  try_roleName(param0: string): ethereum.CallResult<string> {
-    let result = super.tryCall("roleName", "roleName(string):(string)", [
-      ethereum.Value.fromString(param0)
-    ]);
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toString());
   }
 
   rolesHas(account: Address, roles: Array<string>): boolean {

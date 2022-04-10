@@ -109,7 +109,7 @@ templates:
           handler: handleTransferSingle
         - event: RuleAdded(address,uint256)
           handler: handleRuleAdded
-        - event: Post(indexed address,indexed string,string,string)
+        - event: Post(indexed address,string,string,string)
           handler: handlePost
         - event: Stage(uint8)
           handler: handleStage
