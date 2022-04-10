@@ -98,6 +98,7 @@ templates:
       entities:
         - TransferSingle
         - RuleAdded
+        - Post
       abis:
         - name: Case
           file: ./abis/Case.json
@@ -106,4 +107,6 @@ templates:
           handler: handleTransferSingle
         - event: RuleAdded(address,uint256)
           handler: handleRuleAdded
+        - event: Post(indexed address,indexed string,string,string)
+          handler: handlePost
       file: ./src/case-mappings.ts

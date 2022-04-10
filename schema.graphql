@@ -52,6 +52,7 @@ type CaseEntity @entity {
   jurisdiction: Bytes!
   rules: [JurisdictionRuleEntity!]!
   participants: [CaseParticipantEntity!]! @derivedFrom(field: "caseEntity")
+  posts: [CasePostEntity!]! @derivedFrom(field: "caseEntity")
 }
 
 type CaseParticipantEntity @entity {
@@ -64,4 +65,12 @@ type CaseParticipantEntity @entity {
   isJudge: Boolean
   isWitness: Boolean
   isAffected: Boolean
+}
+
+type CasePostEntity @entity {
+  id: ID! # transaction address
+  caseEntity: CaseEntity!
+  entityRole: String
+  postRole: String
+  uri: String
 }

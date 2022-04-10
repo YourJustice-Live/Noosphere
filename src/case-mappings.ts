@@ -1,10 +1,15 @@
-import { BigInt } from "@graphprotocol/graph-ts";
+import { BigInt, log } from "@graphprotocol/graph-ts";
 import {
   CaseEntity,
   CaseParticipantEntity,
-  JurisdictionRuleEntity
+  CasePostEntity,
+  JurisdictionRuleEntity,
 } from "../generated/schema";
-import { RuleAdded, TransferSingle } from "../generated/templates/Case/Case";
+import {
+  Post,
+  RuleAdded,
+  TransferSingle,
+} from "../generated/templates/Case/Case";
 
 /**
  * Handle a transfer single event to add a role to case participant.
@@ -67,4 +72,23 @@ export function handleRuleAdded(event: RuleAdded): void {
   caseEntityRules.push(ruleEntity.id);
   caseEntity.rules = caseEntityRules;
   caseEntity.save();
+}
+
+/**
+ * Handle a post event to add a post to case.
+ */
+export function handlePost(event: Post): void {
+  log.info('[Dev] handlePost', []);
+  // Skip if case entity not exists
+  let caseEntity = CaseEntity.load(event.address.toHexString());
+  if (!caseEntity) {
+    return;
+  }
+  // Create post entity
+  let casePostEntity = new CasePostEntity(event.transaction.hash.toHexString());
+  casePostEntity.caseEntity = caseEntity.id;
+  casePostEntity.entityRole = event.params.entRole.toHexString();
+  casePostEntity.postRole = event.params.postRole;
+  casePostEntity.uri = event.params.uri;
+  casePostEntity.save();
 }
