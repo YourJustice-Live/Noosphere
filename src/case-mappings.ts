@@ -119,6 +119,6 @@ export function handleVerdict(event: Verdict): void {
     return;
   }
   // Set case verdict uri
-  caseEntity.vardictUri = event.params.uri;
+  caseEntity.verdictUri = event.params.uri;
   caseEntity.save();
 }
