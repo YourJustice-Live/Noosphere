@@ -51,6 +51,7 @@ type CaseEntity @entity {
   id: ID! # contract address
   jurisdiction: Bytes!
   stage: Int
+  vardictUri: String
   rules: [JurisdictionRuleEntity!]!
   participants: [CaseParticipantEntity!]! @derivedFrom(field: "caseEntity")
   posts: [CasePostEntity!]! @derivedFrom(field: "caseEntity")

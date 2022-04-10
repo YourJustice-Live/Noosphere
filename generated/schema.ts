@@ -584,6 +584,23 @@ export class CaseEntity extends Entity {
     this.set("stage", Value.fromI32(value));
   }
 
+  get vardictUri(): string | null {
+    let value = this.get("vardictUri");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set vardictUri(value: string | null) {
+    if (!value) {
+      this.unset("vardictUri");
+    } else {
+      this.set("vardictUri", Value.fromString(<string>value));
+    }
+  }
+
   get rules(): Array<string> {
     let value = this.get("rules");
     return value!.toStringArray();

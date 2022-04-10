@@ -10,6 +10,7 @@ import {
   RuleAdded,
   Stage,
   TransferSingle,
+  Verdict,
 } from "../generated/templates/Case/Case";
 
 /**
@@ -79,7 +80,7 @@ export function handleRuleAdded(event: RuleAdded): void {
  * Handle a post event to add a post to case.
  */
 export function handlePost(event: Post): void {
-  log.info('[Dev] handlePost', []);
+  log.info("[Dev] handlePost", []);
   // Skip if case entity not exists
   let caseEntity = CaseEntity.load(event.address.toHexString());
   if (!caseEntity) {
@@ -105,5 +106,19 @@ export function handleStage(event: Stage): void {
   }
   // Update case stage
   caseEntity.stage = event.params.stage;
+  caseEntity.save();
+}
+
+/**
+ * Handle a verdict event to set case verdict uri.
+ */
+export function handleVerdict(event: Verdict): void {
+  // Skip if case entity not exists
+  let caseEntity = CaseEntity.load(event.address.toHexString());
+  if (!caseEntity) {
+    return;
+  }
+  // Set case verdict uri
+  caseEntity.vardictUri = event.params.uri;
   caseEntity.save();
 }
