@@ -50,6 +50,7 @@ type ActionEntity @entity {
 type CaseEntity @entity {
   id: ID! # contract address
   jurisdiction: Bytes!
+  stage: Int
   rules: [JurisdictionRuleEntity!]!
   participants: [CaseParticipantEntity!]! @derivedFrom(field: "caseEntity")
   posts: [CasePostEntity!]! @derivedFrom(field: "caseEntity")

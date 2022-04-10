@@ -8,6 +8,7 @@ import {
 import {
   Post,
   RuleAdded,
+  Stage,
   TransferSingle,
 } from "../generated/templates/Case/Case";
 
@@ -91,4 +92,18 @@ export function handlePost(event: Post): void {
   casePostEntity.postRole = event.params.postRole;
   casePostEntity.uri = event.params.uri;
   casePostEntity.save();
+}
+
+/**
+ * Handle a stage event to update case stage.
+ */
+export function handleStage(event: Stage): void {
+  // Skip if case entity not exists
+  let caseEntity = CaseEntity.load(event.address.toHexString());
+  if (!caseEntity) {
+    return;
+  }
+  // Update case stage
+  caseEntity.stage = event.params.stage;
+  caseEntity.save();
 }

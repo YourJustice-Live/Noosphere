@@ -575,6 +575,15 @@ export class CaseEntity extends Entity {
     this.set("jurisdiction", Value.fromBytes(value));
   }
 
+  get stage(): i32 {
+    let value = this.get("stage");
+    return value!.toI32();
+  }
+
+  set stage(value: i32) {
+    this.set("stage", Value.fromI32(value));
+  }
+
   get rules(): Array<string> {
     let value = this.get("rules");
     return value!.toStringArray();
