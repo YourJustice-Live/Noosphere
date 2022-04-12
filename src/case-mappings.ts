@@ -1,16 +1,15 @@
-import { BigInt, log } from "@graphprotocol/graph-ts";
 import {
   CaseEntity,
-  CaseParticipantEntity,
   CasePostEntity,
-  JurisdictionRuleEntity,
+  CaseRoleEntity,
+  JurisdictionRuleEntity
 } from "../generated/schema";
 import {
   Post,
   RuleAdded,
   Stage,
   TransferSingle,
-  Verdict,
+  Verdict
 } from "../generated/templates/Case/Case";
 
 /**
@@ -22,37 +21,21 @@ export function handleTransferSingle(event: TransferSingle): void {
   if (!caseEntity) {
     return;
   }
-  // Define participant entity id (case address + account address)
-  let caseParticipantEntityId = `${event.address.toHexString()}_${event.params.to.toHexString()}`;
-  // Find or create participant entity
-  let caseParticipantEntity = CaseParticipantEntity.load(
-    caseParticipantEntityId
-  );
-  if (!caseParticipantEntity) {
-    caseParticipantEntity = new CaseParticipantEntity(caseParticipantEntityId);
-    caseParticipantEntity.caseEntity = caseEntity.id;
-    caseParticipantEntity.account = event.params.to;
+  // Define case role entity id (case address + role id)
+  let caseRoleEntityId = `${event.address.toHexString()}_${event.params.id.toString()}`;
+  // Find or create case role entity
+  let caseRoleEntity = CaseRoleEntity.load(caseRoleEntityId);
+  if (!caseRoleEntity) {
+    caseRoleEntity = new CaseRoleEntity(caseRoleEntityId);
+    caseRoleEntity.caseEntity = caseEntity.id;
+    caseRoleEntity.roleId = event.params.id;
+    caseRoleEntity.accounts = [];
   }
-  // Add role to participant entity
-  if (event.params.id.equals(BigInt.fromString("1"))) {
-    caseParticipantEntity.isAdmin = true;
-  }
-  if (event.params.id.equals(BigInt.fromString("2"))) {
-    caseParticipantEntity.isSubject = true;
-  }
-  if (event.params.id.equals(BigInt.fromString("3"))) {
-    caseParticipantEntity.isPlaintiff = true;
-  }
-  if (event.params.id.equals(BigInt.fromString("4"))) {
-    caseParticipantEntity.isJudge = true;
-  }
-  if (event.params.id.equals(BigInt.fromString("5"))) {
-    caseParticipantEntity.isWitness = true;
-  }
-  if (event.params.id.equals(BigInt.fromString("6"))) {
-    caseParticipantEntity.isAffected = true;
-  }
-  caseParticipantEntity.save();
+  // Add event account to case entity accounts
+  let accounts = caseRoleEntity.accounts;
+  accounts.push(event.params.to)
+  caseRoleEntity.accounts = accounts;
+  caseRoleEntity.save();
 }
 
 /**

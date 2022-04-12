@@ -610,13 +610,13 @@ export class CaseEntity extends Entity {
     this.set("rules", Value.fromStringArray(value));
   }
 
-  get participants(): Array<string> {
-    let value = this.get("participants");
+  get roles(): Array<string> {
+    let value = this.get("roles");
     return value!.toStringArray();
   }
 
-  set participants(value: Array<string>) {
-    this.set("participants", Value.fromStringArray(value));
+  set roles(value: Array<string>) {
+    this.set("roles", Value.fromStringArray(value));
   }
 
   get posts(): Array<string> {
@@ -629,34 +629,29 @@ export class CaseEntity extends Entity {
   }
 }
 
-export class CaseParticipantEntity extends Entity {
+export class CaseRoleEntity extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
 
     this.set("caseEntity", Value.fromString(""));
-    this.set("account", Value.fromBytes(Bytes.empty()));
+    this.set("accounts", Value.fromBytesArray(new Array(0)));
   }
 
   save(): void {
     let id = this.get("id");
-    assert(
-      id != null,
-      "Cannot save CaseParticipantEntity entity without an ID"
-    );
+    assert(id != null, "Cannot save CaseRoleEntity entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        `Entities of type CaseParticipantEntity must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type CaseRoleEntity must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
       );
-      store.set("CaseParticipantEntity", id.toString(), this);
+      store.set("CaseRoleEntity", id.toString(), this);
     }
   }
 
-  static load(id: string): CaseParticipantEntity | null {
-    return changetype<CaseParticipantEntity | null>(
-      store.get("CaseParticipantEntity", id)
-    );
+  static load(id: string): CaseRoleEntity | null {
+    return changetype<CaseRoleEntity | null>(store.get("CaseRoleEntity", id));
   }
 
   get id(): string {
@@ -677,67 +672,30 @@ export class CaseParticipantEntity extends Entity {
     this.set("caseEntity", Value.fromString(value));
   }
 
-  get account(): Bytes {
-    let value = this.get("account");
-    return value!.toBytes();
+  get roleId(): BigInt | null {
+    let value = this.get("roleId");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
   }
 
-  set account(value: Bytes) {
-    this.set("account", Value.fromBytes(value));
+  set roleId(value: BigInt | null) {
+    if (!value) {
+      this.unset("roleId");
+    } else {
+      this.set("roleId", Value.fromBigInt(<BigInt>value));
+    }
   }
 
-  get isAdmin(): boolean {
-    let value = this.get("isAdmin");
-    return value!.toBoolean();
+  get accounts(): Array<Bytes> {
+    let value = this.get("accounts");
+    return value!.toBytesArray();
   }
 
-  set isAdmin(value: boolean) {
-    this.set("isAdmin", Value.fromBoolean(value));
-  }
-
-  get isSubject(): boolean {
-    let value = this.get("isSubject");
-    return value!.toBoolean();
-  }
-
-  set isSubject(value: boolean) {
-    this.set("isSubject", Value.fromBoolean(value));
-  }
-
-  get isPlaintiff(): boolean {
-    let value = this.get("isPlaintiff");
-    return value!.toBoolean();
-  }
-
-  set isPlaintiff(value: boolean) {
-    this.set("isPlaintiff", Value.fromBoolean(value));
-  }
-
-  get isJudge(): boolean {
-    let value = this.get("isJudge");
-    return value!.toBoolean();
-  }
-
-  set isJudge(value: boolean) {
-    this.set("isJudge", Value.fromBoolean(value));
-  }
-
-  get isWitness(): boolean {
-    let value = this.get("isWitness");
-    return value!.toBoolean();
-  }
-
-  set isWitness(value: boolean) {
-    this.set("isWitness", Value.fromBoolean(value));
-  }
-
-  get isAffected(): boolean {
-    let value = this.get("isAffected");
-    return value!.toBoolean();
-  }
-
-  set isAffected(value: boolean) {
-    this.set("isAffected", Value.fromBoolean(value));
+  set accounts(value: Array<Bytes>) {
+    this.set("accounts", Value.fromBytesArray(value));
   }
 }
 

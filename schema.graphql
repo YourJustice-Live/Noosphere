@@ -13,6 +13,7 @@ type AvatarNftReputationEntity @entity {
   positiveRating: BigInt
 }
 
+# TODO: Use "JurisdictionRoleEntity" instead of "JurisdictionParticipantEntity" like "CaseRoleEntity"
 type JurisdictionParticipantEntity @entity {
   id: ID! # account address
   isAdmin: Boolean
@@ -21,7 +22,7 @@ type JurisdictionParticipantEntity @entity {
 }
 
 # TODO: ID should be a combination of jurisdiction address and rule id
-# TODO: Add jurisdiction relationship
+# TODO: Add field "ruleId"
 type JurisdictionRuleEntity @entity {
   id: ID!
   about: ActionEntity!
@@ -53,22 +54,18 @@ type CaseEntity @entity {
   stage: Int
   verdictUri: String
   rules: [JurisdictionRuleEntity!]!
-  participants: [CaseParticipantEntity!]! @derivedFrom(field: "caseEntity")
+  roles: [CaseRoleEntity!]! @derivedFrom(field: "caseEntity")
   posts: [CasePostEntity!]! @derivedFrom(field: "caseEntity")
 }
 
-type CaseParticipantEntity @entity {
-  id: ID! # combination of case address and accout address
+type CaseRoleEntity @entity {
+  id: ID! # combination of case address and role id
   caseEntity: CaseEntity!
-  account: Bytes!
-  isAdmin: Boolean
-  isSubject: Boolean
-  isPlaintiff: Boolean
-  isJudge: Boolean
-  isWitness: Boolean
-  isAffected: Boolean
+  roleId: BigInt
+  accounts: [Bytes!]!
 }
 
+# TODO: ID Should be combination of case address and post transaction address
 type CasePostEntity @entity {
   id: ID! # transaction address
   caseEntity: CaseEntity!
