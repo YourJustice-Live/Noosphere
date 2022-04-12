@@ -50,6 +50,7 @@ type ActionEntity @entity {
 
 type CaseEntity @entity {
   id: ID! # contract address
+  createdDate: BigInt
   jurisdiction: Bytes!
   stage: Int
   verdictUri: String

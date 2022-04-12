@@ -112,6 +112,7 @@ export function handleCaseCreated(event: CaseCreated): void {
   let caseEntity = new CaseEntity(event.params.contractAddress.toHexString());
   caseEntity.jurisdiction = event.address;
   caseEntity.rules = [];
+  caseEntity.createdDate = event.block.timestamp;
   caseEntity.save();
   // Create case contract
   Case.create(event.params.contractAddress);
