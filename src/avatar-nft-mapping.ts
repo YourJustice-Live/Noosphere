@@ -19,7 +19,7 @@ export function handleTransfer(event: Transfer): void {
     entity = new AvatarNftEntity(event.params.tokenId.toString());
   }
   // Update entity's params
-  entity.owner = event.params.to;
+  entity.owner = event.params.to.toHexString();
   // Save entity
   entity.save();
 }

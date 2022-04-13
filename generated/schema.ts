@@ -16,7 +16,7 @@ export class AvatarNftEntity extends Entity {
     super();
     this.set("id", Value.fromString(id));
 
-    this.set("owner", Value.fromBytes(Bytes.empty()));
+    this.set("owner", Value.fromString(""));
   }
 
   save(): void {
@@ -44,13 +44,13 @@ export class AvatarNftEntity extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get owner(): Bytes {
+  get owner(): string {
     let value = this.get("owner");
-    return value!.toBytes();
+    return value!.toString();
   }
 
-  set owner(value: Bytes) {
-    this.set("owner", Value.fromBytes(value));
+  set owner(value: string) {
+    this.set("owner", Value.fromString(value));
   }
 
   get uri(): string | null {

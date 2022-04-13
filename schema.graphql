@@ -1,6 +1,6 @@
 type AvatarNftEntity @entity {
   id: ID! # token id
-  owner: Bytes! # account address
+  owner: String! # account address
   uri: String # metadata uri
   uriData: Bytes
   uriImage: String
