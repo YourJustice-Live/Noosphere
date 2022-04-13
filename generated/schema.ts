@@ -70,6 +70,74 @@ export class AvatarNftEntity extends Entity {
     }
   }
 
+  get uriData(): Bytes | null {
+    let value = this.get("uriData");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set uriData(value: Bytes | null) {
+    if (!value) {
+      this.unset("uriData");
+    } else {
+      this.set("uriData", Value.fromBytes(<Bytes>value));
+    }
+  }
+
+  get uriImage(): string | null {
+    let value = this.get("uriImage");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set uriImage(value: string | null) {
+    if (!value) {
+      this.unset("uriImage");
+    } else {
+      this.set("uriImage", Value.fromString(<string>value));
+    }
+  }
+
+  get uriFirstName(): string | null {
+    let value = this.get("uriFirstName");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set uriFirstName(value: string | null) {
+    if (!value) {
+      this.unset("uriFirstName");
+    } else {
+      this.set("uriFirstName", Value.fromString(<string>value));
+    }
+  }
+
+  get uriLastName(): string | null {
+    let value = this.get("uriLastName");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set uriLastName(value: string | null) {
+    if (!value) {
+      this.unset("uriLastName");
+    } else {
+      this.set("uriLastName", Value.fromString(<string>value));
+    }
+  }
+
   get reputations(): Array<string> {
     let value = this.get("reputations");
     return value!.toStringArray();

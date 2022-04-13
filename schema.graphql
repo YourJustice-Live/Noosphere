@@ -2,6 +2,10 @@ type AvatarNftEntity @entity {
   id: ID! # token id
   owner: Bytes! # account address
   uri: String # metadata uri
+  uriData: Bytes
+  uriImage: String
+  uriFirstName: String
+  uriLastName: String
   reputations: [AvatarNftReputationEntity!]! @derivedFrom(field: "token")
 }
 

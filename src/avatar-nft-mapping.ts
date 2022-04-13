@@ -1,4 +1,4 @@
-import { BigInt } from "@graphprotocol/graph-ts";
+import { BigInt, ipfs, json, JSONValue } from "@graphprotocol/graph-ts";
 import {
   ReputationChange,
   Transfer,
@@ -33,8 +33,57 @@ export function handleURI(event: URI): void {
   if (!entity) {
     return;
   }
+  // Parse uri ipfs hash
+  let uriIpfsHash = event.params.value.split("/").at(-1);
+  // Load uri data
+  let uriData = ipfs.cat(uriIpfsHash);
+  // Parse uri json
+  let uriJson = uriData ? json.fromBytes(uriData) : null;
+  let uriJsonObject = uriJson ? uriJson.toObject() : null;
+  // Get uri json image
+  let uriJsonImage = uriJsonObject ? uriJsonObject.get("image") : null;
+  let uriJsonImageString = uriJsonImage ? uriJsonImage.toString() : null;
+  // Parse uri json attributes
+  let uriJsonAttributes = uriJsonObject
+    ? uriJsonObject.get("attributes")
+    : null;
+  let uriJsonAttributesArray = uriJsonAttributes
+    ? uriJsonAttributes.toArray()
+    : new Array<JSONValue>(0);
+  // Get uri first name and last name
+  let uriFirstNameString: string | null = null;
+  let uriLastNameString: string | null = null;
+  for (let i = 0; i < uriJsonAttributesArray.length; i++) {
+    // Get trait type and value
+    let uriAttributeTraitType = uriJsonAttributesArray[i]
+      .toObject()
+      .get("trait_type");
+    let uriAttributeValue = uriJsonAttributesArray[i].toObject().get("value");
+    // Check trait type for getting first name
+    if (
+      uriAttributeTraitType &&
+      uriAttributeTraitType.toString() == "First Name"
+    ) {
+      uriFirstNameString = uriAttributeValue
+        ? uriAttributeValue.toString()
+        : null;
+    }
+    // Check trait type for getting last name
+    if (
+      uriAttributeTraitType &&
+      uriAttributeTraitType.toString() == "Last Name"
+    ) {
+      uriLastNameString = uriAttributeValue
+        ? uriAttributeValue.toString()
+        : null;
+    }
+  }
   // Update entity's params
-  entity.uri = event.params.value.toString();
+  entity.uri = event.params.value;
+  entity.uriData = uriData;
+  entity.uriImage = uriJsonImageString;
+  entity.uriFirstName = uriFirstNameString;
+  entity.uriLastName = uriLastNameString;
   entity.save();
 }
 
