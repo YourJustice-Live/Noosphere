@@ -80,12 +80,6 @@
       {
         "indexed": false,
         "internalType": "string",
-        "name": "postRole",
-        "type": "string"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
         "name": "uri",
         "type": "string"
       }
@@ -453,11 +447,6 @@
       {
         "internalType": "string",
         "name": "entRole",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "postRole",
         "type": "string"
       },
       {
@@ -852,6 +841,25 @@
     "name": "transferOwnership",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      }
+    ],
+    "name": "uniqueMembers",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {

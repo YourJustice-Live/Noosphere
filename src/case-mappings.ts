@@ -72,7 +72,6 @@ export function handlePost(event: Post): void {
   let casePostEntity = new CasePostEntity(event.transaction.hash.toHexString());
   casePostEntity.caseEntity = caseEntity.id;
   casePostEntity.entityRole = event.params.entRole.toString();
-  casePostEntity.postRole = event.params.postRole;
   casePostEntity.uri = event.params.uri;
   casePostEntity.save();
 }

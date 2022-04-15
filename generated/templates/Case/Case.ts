@@ -101,12 +101,8 @@ export class Post__Params {
     return this._event.parameters[1].value.toString();
   }
 
-  get postRole(): string {
-    return this._event.parameters[2].value.toString();
-  }
-
   get uri(): string {
-    return this._event.parameters[3].value.toString();
+    return this._event.parameters[2].value.toString();
   }
 }
 
@@ -685,6 +681,29 @@ export class Case extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toString());
   }
 
+  uniqueMembers(id: BigInt): BigInt {
+    let result = super.call(
+      "uniqueMembers",
+      "uniqueMembers(uint256):(uint256)",
+      [ethereum.Value.fromUnsignedBigInt(id)]
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_uniqueMembers(id: BigInt): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "uniqueMembers",
+      "uniqueMembers(uint256):(uint256)",
+      [ethereum.Value.fromUnsignedBigInt(id)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
   uri(param0: BigInt): string {
     let result = super.call("uri", "uri(uint256):(string)", [
       ethereum.Value.fromUnsignedBigInt(param0)
@@ -796,12 +815,8 @@ export class PostCall__Inputs {
     return this._call.inputValues[0].value.toString();
   }
 
-  get postRole(): string {
-    return this._call.inputValues[1].value.toString();
-  }
-
   get uri(): string {
-    return this._call.inputValues[2].value.toString();
+    return this._call.inputValues[1].value.toString();
   }
 }
 

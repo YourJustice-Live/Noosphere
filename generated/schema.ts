@@ -843,23 +843,6 @@ export class CasePostEntity extends Entity {
     }
   }
 
-  get postRole(): string | null {
-    let value = this.get("postRole");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set postRole(value: string | null) {
-    if (!value) {
-      this.unset("postRole");
-    } else {
-      this.set("postRole", Value.fromString(<string>value));
-    }
-  }
-
   get uri(): string | null {
     let value = this.get("uri");
     if (!value || value.kind == ValueKind.NULL) {

@@ -348,6 +348,100 @@ export class URI__Params {
   }
 }
 
+export class Jurisdiction__caseMakeResult {
+  value0: BigInt;
+  value1: Address;
+
+  constructor(value0: BigInt, value1: Address) {
+    this.value0 = value0;
+    this.value1 = value1;
+  }
+
+  toMap(): TypedMap<string, ethereum.Value> {
+    let map = new TypedMap<string, ethereum.Value>();
+    map.set("value0", ethereum.Value.fromUnsignedBigInt(this.value0));
+    map.set("value1", ethereum.Value.fromAddress(this.value1));
+    return map;
+  }
+}
+
+export class Jurisdiction__caseMakeInputAddRulesStruct extends ethereum.Tuple {
+  get jurisdiction(): Address {
+    return this[0].toAddress();
+  }
+
+  get ruleId(): BigInt {
+    return this[1].toBigInt();
+  }
+}
+
+export class Jurisdiction__caseMakeInputAssignRolesStruct extends ethereum.Tuple {
+  get account(): Address {
+    return this[0].toAddress();
+  }
+
+  get role(): string {
+    return this[1].toString();
+  }
+}
+
+export class Jurisdiction__caseMakeInputPostsStruct extends ethereum.Tuple {
+  get entRole(): string {
+    return this[0].toString();
+  }
+
+  get uri(): string {
+    return this[1].toString();
+  }
+}
+
+export class Jurisdiction__caseMakeOpenResult {
+  value0: BigInt;
+  value1: Address;
+
+  constructor(value0: BigInt, value1: Address) {
+    this.value0 = value0;
+    this.value1 = value1;
+  }
+
+  toMap(): TypedMap<string, ethereum.Value> {
+    let map = new TypedMap<string, ethereum.Value>();
+    map.set("value0", ethereum.Value.fromUnsignedBigInt(this.value0));
+    map.set("value1", ethereum.Value.fromAddress(this.value1));
+    return map;
+  }
+}
+
+export class Jurisdiction__caseMakeOpenInputAddRulesStruct extends ethereum.Tuple {
+  get jurisdiction(): Address {
+    return this[0].toAddress();
+  }
+
+  get ruleId(): BigInt {
+    return this[1].toBigInt();
+  }
+}
+
+export class Jurisdiction__caseMakeOpenInputAssignRolesStruct extends ethereum.Tuple {
+  get account(): Address {
+    return this[0].toAddress();
+  }
+
+  get role(): string {
+    return this[1].toString();
+  }
+}
+
+export class Jurisdiction__caseMakeOpenInputPostsStruct extends ethereum.Tuple {
+  get entRole(): string {
+    return this[0].toString();
+  }
+
+  get uri(): string {
+    return this[1].toString();
+  }
+}
+
 export class Jurisdiction__confirmationGetResultValue0Struct extends ethereum.Tuple {
   get ruling(): string {
     return this[0].toString();
@@ -562,6 +656,108 @@ export class Jurisdiction extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigIntArray());
   }
 
+  caseMake(
+    name_: string,
+    addRules: Array<Jurisdiction__caseMakeInputAddRulesStruct>,
+    assignRoles: Array<Jurisdiction__caseMakeInputAssignRolesStruct>,
+    posts: Array<Jurisdiction__caseMakeInputPostsStruct>
+  ): Jurisdiction__caseMakeResult {
+    let result = super.call(
+      "caseMake",
+      "caseMake(string,(address,uint256)[],(address,string)[],(string,string)[]):(uint256,address)",
+      [
+        ethereum.Value.fromString(name_),
+        ethereum.Value.fromTupleArray(addRules),
+        ethereum.Value.fromTupleArray(assignRoles),
+        ethereum.Value.fromTupleArray(posts)
+      ]
+    );
+
+    return new Jurisdiction__caseMakeResult(
+      result[0].toBigInt(),
+      result[1].toAddress()
+    );
+  }
+
+  try_caseMake(
+    name_: string,
+    addRules: Array<Jurisdiction__caseMakeInputAddRulesStruct>,
+    assignRoles: Array<Jurisdiction__caseMakeInputAssignRolesStruct>,
+    posts: Array<Jurisdiction__caseMakeInputPostsStruct>
+  ): ethereum.CallResult<Jurisdiction__caseMakeResult> {
+    let result = super.tryCall(
+      "caseMake",
+      "caseMake(string,(address,uint256)[],(address,string)[],(string,string)[]):(uint256,address)",
+      [
+        ethereum.Value.fromString(name_),
+        ethereum.Value.fromTupleArray(addRules),
+        ethereum.Value.fromTupleArray(assignRoles),
+        ethereum.Value.fromTupleArray(posts)
+      ]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      new Jurisdiction__caseMakeResult(
+        value[0].toBigInt(),
+        value[1].toAddress()
+      )
+    );
+  }
+
+  caseMakeOpen(
+    name_: string,
+    addRules: Array<Jurisdiction__caseMakeOpenInputAddRulesStruct>,
+    assignRoles: Array<Jurisdiction__caseMakeOpenInputAssignRolesStruct>,
+    posts: Array<Jurisdiction__caseMakeOpenInputPostsStruct>
+  ): Jurisdiction__caseMakeOpenResult {
+    let result = super.call(
+      "caseMakeOpen",
+      "caseMakeOpen(string,(address,uint256)[],(address,string)[],(string,string)[]):(uint256,address)",
+      [
+        ethereum.Value.fromString(name_),
+        ethereum.Value.fromTupleArray(addRules),
+        ethereum.Value.fromTupleArray(assignRoles),
+        ethereum.Value.fromTupleArray(posts)
+      ]
+    );
+
+    return new Jurisdiction__caseMakeOpenResult(
+      result[0].toBigInt(),
+      result[1].toAddress()
+    );
+  }
+
+  try_caseMakeOpen(
+    name_: string,
+    addRules: Array<Jurisdiction__caseMakeOpenInputAddRulesStruct>,
+    assignRoles: Array<Jurisdiction__caseMakeOpenInputAssignRolesStruct>,
+    posts: Array<Jurisdiction__caseMakeOpenInputPostsStruct>
+  ): ethereum.CallResult<Jurisdiction__caseMakeOpenResult> {
+    let result = super.tryCall(
+      "caseMakeOpen",
+      "caseMakeOpen(string,(address,uint256)[],(address,string)[],(string,string)[]):(uint256,address)",
+      [
+        ethereum.Value.fromString(name_),
+        ethereum.Value.fromTupleArray(addRules),
+        ethereum.Value.fromTupleArray(assignRoles),
+        ethereum.Value.fromTupleArray(posts)
+      ]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      new Jurisdiction__caseMakeOpenResult(
+        value[0].toBigInt(),
+        value[1].toAddress()
+      )
+    );
+  }
+
   confirmationGet(id: BigInt): Jurisdiction__confirmationGetResultValue0Struct {
     let result = super.call(
       "confirmationGet",
@@ -591,6 +787,42 @@ export class Jurisdiction extends ethereum.SmartContract {
         value[0].toTuple()
       )
     );
+  }
+
+  contractURI(): string {
+    let result = super.call("contractURI", "contractURI():(string)", []);
+
+    return result[0].toString();
+  }
+
+  try_contractURI(): ethereum.CallResult<string> {
+    let result = super.tryCall("contractURI", "contractURI():(string)", []);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toString());
+  }
+
+  getCaseById(caseId: BigInt): Address {
+    let result = super.call("getCaseById", "getCaseById(uint256):(address)", [
+      ethereum.Value.fromUnsignedBigInt(caseId)
+    ]);
+
+    return result[0].toAddress();
+  }
+
+  try_getCaseById(caseId: BigInt): ethereum.CallResult<Address> {
+    let result = super.tryCall(
+      "getCaseById",
+      "getCaseById(uint256):(address)",
+      [ethereum.Value.fromUnsignedBigInt(caseId)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
   isApprovedForAll(account: Address, operator: Address): boolean {
@@ -653,6 +885,25 @@ export class Jurisdiction extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toAddress());
+  }
+
+  roleExist(role: string): boolean {
+    let result = super.call("roleExist", "roleExist(string):(bool)", [
+      ethereum.Value.fromString(role)
+    ]);
+
+    return result[0].toBoolean();
+  }
+
+  try_roleExist(role: string): ethereum.CallResult<boolean> {
+    let result = super.tryCall("roleExist", "roleExist(string):(bool)", [
+      ethereum.Value.fromString(role)
+    ]);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBoolean());
   }
 
   roleHas(account: Address, role: string): boolean {
@@ -772,6 +1023,29 @@ export class Jurisdiction extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toString());
   }
 
+  uniqueMembers(id: BigInt): BigInt {
+    let result = super.call(
+      "uniqueMembers",
+      "uniqueMembers(uint256):(uint256)",
+      [ethereum.Value.fromUnsignedBigInt(id)]
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_uniqueMembers(id: BigInt): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "uniqueMembers",
+      "uniqueMembers(uint256):(uint256)",
+      [ethereum.Value.fromUnsignedBigInt(id)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
   uri(param0: BigInt): string {
     let result = super.call("uri", "uri(uint256):(string)", [
       ethereum.Value.fromUnsignedBigInt(param0)
@@ -823,6 +1097,178 @@ export class ConstructorCall__Outputs {
 
   constructor(call: ConstructorCall) {
     this._call = call;
+  }
+}
+
+export class CaseMakeCall extends ethereum.Call {
+  get inputs(): CaseMakeCall__Inputs {
+    return new CaseMakeCall__Inputs(this);
+  }
+
+  get outputs(): CaseMakeCall__Outputs {
+    return new CaseMakeCall__Outputs(this);
+  }
+}
+
+export class CaseMakeCall__Inputs {
+  _call: CaseMakeCall;
+
+  constructor(call: CaseMakeCall) {
+    this._call = call;
+  }
+
+  get name_(): string {
+    return this._call.inputValues[0].value.toString();
+  }
+
+  get addRules(): Array<CaseMakeCallAddRulesStruct> {
+    return this._call.inputValues[1].value.toTupleArray<
+      CaseMakeCallAddRulesStruct
+    >();
+  }
+
+  get assignRoles(): Array<CaseMakeCallAssignRolesStruct> {
+    return this._call.inputValues[2].value.toTupleArray<
+      CaseMakeCallAssignRolesStruct
+    >();
+  }
+
+  get posts(): Array<CaseMakeCallPostsStruct> {
+    return this._call.inputValues[3].value.toTupleArray<
+      CaseMakeCallPostsStruct
+    >();
+  }
+}
+
+export class CaseMakeCall__Outputs {
+  _call: CaseMakeCall;
+
+  constructor(call: CaseMakeCall) {
+    this._call = call;
+  }
+
+  get value0(): BigInt {
+    return this._call.outputValues[0].value.toBigInt();
+  }
+
+  get value1(): Address {
+    return this._call.outputValues[1].value.toAddress();
+  }
+}
+
+export class CaseMakeCallAddRulesStruct extends ethereum.Tuple {
+  get jurisdiction(): Address {
+    return this[0].toAddress();
+  }
+
+  get ruleId(): BigInt {
+    return this[1].toBigInt();
+  }
+}
+
+export class CaseMakeCallAssignRolesStruct extends ethereum.Tuple {
+  get account(): Address {
+    return this[0].toAddress();
+  }
+
+  get role(): string {
+    return this[1].toString();
+  }
+}
+
+export class CaseMakeCallPostsStruct extends ethereum.Tuple {
+  get entRole(): string {
+    return this[0].toString();
+  }
+
+  get uri(): string {
+    return this[1].toString();
+  }
+}
+
+export class CaseMakeOpenCall extends ethereum.Call {
+  get inputs(): CaseMakeOpenCall__Inputs {
+    return new CaseMakeOpenCall__Inputs(this);
+  }
+
+  get outputs(): CaseMakeOpenCall__Outputs {
+    return new CaseMakeOpenCall__Outputs(this);
+  }
+}
+
+export class CaseMakeOpenCall__Inputs {
+  _call: CaseMakeOpenCall;
+
+  constructor(call: CaseMakeOpenCall) {
+    this._call = call;
+  }
+
+  get name_(): string {
+    return this._call.inputValues[0].value.toString();
+  }
+
+  get addRules(): Array<CaseMakeOpenCallAddRulesStruct> {
+    return this._call.inputValues[1].value.toTupleArray<
+      CaseMakeOpenCallAddRulesStruct
+    >();
+  }
+
+  get assignRoles(): Array<CaseMakeOpenCallAssignRolesStruct> {
+    return this._call.inputValues[2].value.toTupleArray<
+      CaseMakeOpenCallAssignRolesStruct
+    >();
+  }
+
+  get posts(): Array<CaseMakeOpenCallPostsStruct> {
+    return this._call.inputValues[3].value.toTupleArray<
+      CaseMakeOpenCallPostsStruct
+    >();
+  }
+}
+
+export class CaseMakeOpenCall__Outputs {
+  _call: CaseMakeOpenCall;
+
+  constructor(call: CaseMakeOpenCall) {
+    this._call = call;
+  }
+
+  get value0(): BigInt {
+    return this._call.outputValues[0].value.toBigInt();
+  }
+
+  get value1(): Address {
+    return this._call.outputValues[1].value.toAddress();
+  }
+}
+
+export class CaseMakeOpenCallAddRulesStruct extends ethereum.Tuple {
+  get jurisdiction(): Address {
+    return this[0].toAddress();
+  }
+
+  get ruleId(): BigInt {
+    return this[1].toBigInt();
+  }
+}
+
+export class CaseMakeOpenCallAssignRolesStruct extends ethereum.Tuple {
+  get account(): Address {
+    return this[0].toAddress();
+  }
+
+  get role(): string {
+    return this[1].toString();
+  }
+}
+
+export class CaseMakeOpenCallPostsStruct extends ethereum.Tuple {
+  get entRole(): string {
+    return this[0].toString();
+  }
+
+  get uri(): string {
+    return this[1].toString();
   }
 }
 
