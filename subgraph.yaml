@@ -50,6 +50,8 @@ dataSources:
       abis:
         - name: Jurisdiction
           file: ./abis/Jurisdiction.json
+        - name: Case
+          file: ./abis/Case.json
       eventHandlers:
         - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
           handler: handleTransferSingle

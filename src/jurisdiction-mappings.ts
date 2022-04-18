@@ -1,4 +1,5 @@
 import { Address, BigInt } from "@graphprotocol/graph-ts";
+import { Case as CaseContract } from "../generated/Jurisdiction/Case";
 import {
   CaseCreated,
   Confirmation,
@@ -12,7 +13,7 @@ import {
   JurisdictionParticipantEntity,
   JurisdictionRuleEntity
 } from "../generated/schema";
-import { Case } from "../generated/templates";
+import { Case as CaseTemplate } from "../generated/templates";
 
 /**
  * Handle a tranfer single event to create or update a participant of jurisdiction.
@@ -108,12 +109,16 @@ export function handleCaseCreated(event: CaseCreated): void {
   if (CaseEntity.load(event.params.contractAddress.toHexString())) {
     return;
   }
+  // Load case name from contract
+  let caseContract = CaseContract.bind(event.params.contractAddress);
+  let caseContractName = caseContract.name();
   // Create case entity
   let caseEntity = new CaseEntity(event.params.contractAddress.toHexString());
+  caseEntity.name = caseContractName;
+  caseEntity.createdDate = event.block.timestamp;
   caseEntity.jurisdiction = event.address;
   caseEntity.rules = [];
-  caseEntity.createdDate = event.block.timestamp;
   caseEntity.save();
-  // Create case contract
-  Case.create(event.params.contractAddress);
+  // Create case contract for subgraph using template
+  CaseTemplate.create(event.params.contractAddress);
 }

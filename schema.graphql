@@ -54,6 +54,7 @@ type ActionEntity @entity {
 
 type CaseEntity @entity {
   id: ID! # contract address
+  name: String
   createdDate: BigInt
   jurisdiction: Bytes!
   stage: Int

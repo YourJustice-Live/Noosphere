@@ -634,6 +634,23 @@ export class CaseEntity extends Entity {
     this.set("id", Value.fromString(value));
   }
 
+  get name(): string | null {
+    let value = this.get("name");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set name(value: string | null) {
+    if (!value) {
+      this.unset("name");
+    } else {
+      this.set("name", Value.fromString(<string>value));
+    }
+  }
+
   get createdDate(): BigInt | null {
     let value = this.get("createdDate");
     if (!value || value.kind == ValueKind.NULL) {
