@@ -878,6 +878,23 @@ export class CasePostEntity extends Entity {
     this.set("author", Value.fromBytes(value));
   }
 
+  get createdDate(): BigInt | null {
+    let value = this.get("createdDate");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set createdDate(value: BigInt | null) {
+    if (!value) {
+      this.unset("createdDate");
+    } else {
+      this.set("createdDate", Value.fromBigInt(<BigInt>value));
+    }
+  }
+
   get caseEntity(): string {
     let value = this.get("caseEntity");
     return value!.toString();

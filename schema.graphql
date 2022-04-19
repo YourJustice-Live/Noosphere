@@ -76,6 +76,7 @@ type CaseRoleEntity @entity {
 type CasePostEntity @entity {
   id: ID! # combination of case address and post transaction address
   author: Bytes!
+  createdDate: BigInt
   caseEntity: CaseEntity!
   entityRole: String
   uri: String

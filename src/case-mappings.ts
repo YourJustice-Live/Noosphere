@@ -82,6 +82,7 @@ export function handlePost(event: Post): void {
   // Create post entity
   let casePostEntity = new CasePostEntity(casePostEntityId);
   casePostEntity.author = event.params.account;
+  casePostEntity.createdDate = event.block.timestamp;
   casePostEntity.caseEntity = caseEntity.id;
   casePostEntity.entityRole = event.params.entRole.toString();
   casePostEntity.uri = event.params.uri;
