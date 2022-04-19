@@ -114,7 +114,12 @@ export function handleVerdict(event: Verdict): void {
   if (!caseEntity) {
     return;
   }
+  // Load uri data
+  let uriIpfsHash = event.params.uri.split("/").at(-1);
+  let uriData = ipfs.cat(uriIpfsHash);
   // Set case verdict uri
+  caseEntity.verdictAuthor = event.params.account;
   caseEntity.verdictUri = event.params.uri;
+  caseEntity.verdictUriData = uriData;
   caseEntity.save();
 }

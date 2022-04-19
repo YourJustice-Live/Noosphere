@@ -686,6 +686,23 @@ export class CaseEntity extends Entity {
     this.set("stage", Value.fromI32(value));
   }
 
+  get verdictAuthor(): Bytes | null {
+    let value = this.get("verdictAuthor");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set verdictAuthor(value: Bytes | null) {
+    if (!value) {
+      this.unset("verdictAuthor");
+    } else {
+      this.set("verdictAuthor", Value.fromBytes(<Bytes>value));
+    }
+  }
+
   get verdictUri(): string | null {
     let value = this.get("verdictUri");
     if (!value || value.kind == ValueKind.NULL) {
@@ -700,6 +717,23 @@ export class CaseEntity extends Entity {
       this.unset("verdictUri");
     } else {
       this.set("verdictUri", Value.fromString(<string>value));
+    }
+  }
+
+  get verdictUriData(): Bytes | null {
+    let value = this.get("verdictUriData");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set verdictUriData(value: Bytes | null) {
+    if (!value) {
+      this.unset("verdictUriData");
+    } else {
+      this.set("verdictUriData", Value.fromBytes(<Bytes>value));
     }
   }
 
