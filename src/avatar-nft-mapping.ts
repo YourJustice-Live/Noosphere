@@ -33,17 +33,16 @@ export function handleURI(event: URI): void {
   if (!entity) {
     return;
   }
-  // Parse uri ipfs hash
-  let uriIpfsHash = event.params.value.split("/").at(-1);
   // Load uri data
+  let uriIpfsHash = event.params.value.split("/").at(-1);
   let uriData = ipfs.cat(uriIpfsHash);
   // Parse uri json
   let uriJson = uriData ? json.fromBytes(uriData) : null;
   let uriJsonObject = uriJson ? uriJson.toObject() : null;
-  // Get uri json image
+  // Get image from uri data
   let uriJsonImage = uriJsonObject ? uriJsonObject.get("image") : null;
   let uriJsonImageString = uriJsonImage ? uriJsonImage.toString() : null;
-  // Parse uri json attributes
+  // Get attributes from uri data
   let uriJsonAttributes = uriJsonObject
     ? uriJsonObject.get("attributes")
     : null;
