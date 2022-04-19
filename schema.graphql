@@ -71,10 +71,12 @@ type CaseRoleEntity @entity {
   accounts: [Bytes!]!
 }
 
-# TODO: ID Should be combination of case address and post transaction address
 type CasePostEntity @entity {
-  id: ID! # transaction address
+  id: ID! # combination of case address and post transaction address
+  author: Bytes!
   caseEntity: CaseEntity!
   entityRole: String
   uri: String
+  uriData: Bytes
+  uriType: String
 }

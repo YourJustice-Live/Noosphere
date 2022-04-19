@@ -1,3 +1,4 @@
+import { ipfs, json, log } from "@graphprotocol/graph-ts";
 import {
   CaseEntity,
   CasePostEntity,
@@ -68,11 +69,25 @@ export function handlePost(event: Post): void {
   if (!caseEntity) {
     return;
   }
+  // Load uri data
+  let uriIpfsHash = event.params.uri.split("/").at(-1);
+  let uriData = ipfs.cat(uriIpfsHash);
+  // Get type from uri data
+  let uriJson = uriData ? json.fromBytes(uriData) : null;
+  let uriJsonObject = uriJson ? uriJson.toObject() : null;
+  let uriJsonType = uriJsonObject ? uriJsonObject.get("type") : null;
+  let uriJsonTypeString = uriJsonType ? uriJsonType.toString() : null;
+  // Define case post entity id (case address + post transaction address)
+  let casePostEntityId = `${event.address.toHexString()}_${event.transaction.hash.toHexString()}`;
   // Create post entity
-  let casePostEntity = new CasePostEntity(event.transaction.hash.toHexString());
+  let casePostEntity = new CasePostEntity(casePostEntityId);
+  casePostEntity.author = event.params.account;
   casePostEntity.caseEntity = caseEntity.id;
   casePostEntity.entityRole = event.params.entRole.toString();
   casePostEntity.uri = event.params.uri;
+  casePostEntity.uriData = uriData;
+  casePostEntity.uriType = uriJsonTypeString;
+  // Define uri type
   casePostEntity.save();
 }
 

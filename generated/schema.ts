@@ -806,6 +806,7 @@ export class CasePostEntity extends Entity {
     super();
     this.set("id", Value.fromString(id));
 
+    this.set("author", Value.fromBytes(Bytes.empty()));
     this.set("caseEntity", Value.fromString(""));
   }
 
@@ -832,6 +833,15 @@ export class CasePostEntity extends Entity {
 
   set id(value: string) {
     this.set("id", Value.fromString(value));
+  }
+
+  get author(): Bytes {
+    let value = this.get("author");
+    return value!.toBytes();
+  }
+
+  set author(value: Bytes) {
+    this.set("author", Value.fromBytes(value));
   }
 
   get caseEntity(): string {
@@ -874,6 +884,40 @@ export class CasePostEntity extends Entity {
       this.unset("uri");
     } else {
       this.set("uri", Value.fromString(<string>value));
+    }
+  }
+
+  get uriData(): Bytes | null {
+    let value = this.get("uriData");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set uriData(value: Bytes | null) {
+    if (!value) {
+      this.unset("uriData");
+    } else {
+      this.set("uriData", Value.fromBytes(<Bytes>value));
+    }
+  }
+
+  get uriType(): string | null {
+    let value = this.get("uriType");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set uriType(value: string | null) {
+    if (!value) {
+      this.unset("uriType");
+    } else {
+      this.set("uriType", Value.fromString(<string>value));
     }
   }
 }
