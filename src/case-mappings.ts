@@ -3,14 +3,15 @@ import {
   CaseEntity,
   CasePostEntity,
   CaseRoleEntity,
-  JurisdictionRuleEntity
+  JurisdictionRuleEntity,
 } from "../generated/schema";
 import {
+  Cancelled,
   Post,
   RuleAdded,
   Stage,
   TransferSingle,
-  Verdict
+  Verdict,
 } from "../generated/templates/Case/Case";
 
 /**
@@ -34,7 +35,7 @@ export function handleTransferSingle(event: TransferSingle): void {
   }
   // Add event account to case entity accounts
   let accounts = caseRoleEntity.accounts;
-  accounts.push(event.params.to)
+  accounts.push(event.params.to);
   caseRoleEntity.accounts = accounts;
   caseRoleEntity.save();
 }
@@ -74,7 +75,10 @@ export function handlePost(event: Post): void {
   let uriData = ipfs.cat(uriIpfsHash);
   // Get type from uri data
   let uriParseResult = uriData ? json.try_fromBytes(uriData) : null;
-  let uriJsonObject = uriParseResult && uriParseResult.isOk ? uriParseResult.value.toObject() : null;
+  let uriJsonObject =
+    uriParseResult && uriParseResult.isOk
+      ? uriParseResult.value.toObject()
+      : null;
   let uriJsonType = uriJsonObject ? uriJsonObject.get("type") : null;
   let uriJsonTypeString = uriJsonType ? uriJsonType.toString() : null;
   // Define case post entity id (case address + post transaction address)
@@ -107,7 +111,7 @@ export function handleStage(event: Stage): void {
 }
 
 /**
- * Handle a verdict event to set case verdict uri.
+ * Handle a verdict event to set case verdict params.
  */
 export function handleVerdict(event: Verdict): void {
   // Skip if case entity not exists
@@ -118,9 +122,28 @@ export function handleVerdict(event: Verdict): void {
   // Load uri data
   let uriIpfsHash = event.params.uri.split("/").at(-1);
   let uriData = ipfs.cat(uriIpfsHash);
-  // Set case verdict uri
+  // Set case verdict params
   caseEntity.verdictAuthor = event.params.account;
   caseEntity.verdictUri = event.params.uri;
   caseEntity.verdictUriData = uriData;
+  caseEntity.save();
+}
+
+/**
+ * Handle a cancelled event to set case cancellation params.
+ */
+export function handleCancelled(event: Cancelled): void {
+  // Skip if case entity not exists
+  let caseEntity = CaseEntity.load(event.address.toHexString());
+  if (!caseEntity) {
+    return;
+  }
+  // Load uri data
+  let uriIpfsHash = event.params.uri.split("/").at(-1);
+  let uriData = ipfs.cat(uriIpfsHash);
+  // Set case cancellation params
+  caseEntity.cancellationAuthor = event.params.account;
+  caseEntity.cancellationUri = event.params.uri;
+  caseEntity.cancellationUriData = uriData;
   caseEntity.save();
 }

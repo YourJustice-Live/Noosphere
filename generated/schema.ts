@@ -737,6 +737,57 @@ export class CaseEntity extends Entity {
     }
   }
 
+  get cancellationAuthor(): Bytes | null {
+    let value = this.get("cancellationAuthor");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set cancellationAuthor(value: Bytes | null) {
+    if (!value) {
+      this.unset("cancellationAuthor");
+    } else {
+      this.set("cancellationAuthor", Value.fromBytes(<Bytes>value));
+    }
+  }
+
+  get cancellationUri(): string | null {
+    let value = this.get("cancellationUri");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set cancellationUri(value: string | null) {
+    if (!value) {
+      this.unset("cancellationUri");
+    } else {
+      this.set("cancellationUri", Value.fromString(<string>value));
+    }
+  }
+
+  get cancellationUriData(): Bytes | null {
+    let value = this.get("cancellationUriData");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set cancellationUriData(value: Bytes | null) {
+    if (!value) {
+      this.unset("cancellationUriData");
+    } else {
+      this.set("cancellationUriData", Value.fromBytes(<Bytes>value));
+    }
+  }
+
   get rules(): Array<string> {
     let value = this.get("rules");
     return value!.toStringArray();

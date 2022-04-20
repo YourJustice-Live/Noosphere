@@ -36,6 +36,28 @@ export class ApprovalForAll__Params {
   }
 }
 
+export class Cancelled extends ethereum.Event {
+  get params(): Cancelled__Params {
+    return new Cancelled__Params(this);
+  }
+}
+
+export class Cancelled__Params {
+  _event: Cancelled;
+
+  constructor(event: Cancelled) {
+    this._event = event;
+  }
+
+  get uri(): string {
+    return this._event.parameters[0].value.toString();
+  }
+
+  get account(): Address {
+    return this._event.parameters[1].value.toAddress();
+  }
+}
+
 export class GUIDCreated extends ethereum.Event {
   get params(): GUIDCreated__Params {
     return new GUIDCreated__Params(this);
@@ -436,6 +458,25 @@ export class Case extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toString());
+  }
+
+  decision(param0: BigInt): boolean {
+    let result = super.call("decision", "decision(uint256):(bool)", [
+      ethereum.Value.fromUnsignedBigInt(param0)
+    ]);
+
+    return result[0].toBoolean();
+  }
+
+  try_decision(param0: BigInt): ethereum.CallResult<boolean> {
+    let result = super.tryCall("decision", "decision(uint256):(bool)", [
+      ethereum.Value.fromUnsignedBigInt(param0)
+    ]);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBoolean());
   }
 
   isApprovedForAll(account: Address, operator: Address): boolean {
@@ -1048,6 +1089,36 @@ export class SetApprovalForAllCall__Outputs {
   }
 }
 
+export class StageCancelCall extends ethereum.Call {
+  get inputs(): StageCancelCall__Inputs {
+    return new StageCancelCall__Inputs(this);
+  }
+
+  get outputs(): StageCancelCall__Outputs {
+    return new StageCancelCall__Outputs(this);
+  }
+}
+
+export class StageCancelCall__Inputs {
+  _call: StageCancelCall;
+
+  constructor(call: StageCancelCall) {
+    this._call = call;
+  }
+
+  get uri(): string {
+    return this._call.inputValues[0].value.toString();
+  }
+}
+
+export class StageCancelCall__Outputs {
+  _call: StageCancelCall;
+
+  constructor(call: StageCancelCall) {
+    this._call = call;
+  }
+}
+
 export class StageFileCall extends ethereum.Call {
   get inputs(): StageFileCall__Inputs {
     return new StageFileCall__Inputs(this);
@@ -1091,8 +1162,14 @@ export class StageVerdictCall__Inputs {
     this._call = call;
   }
 
+  get verdict(): Array<StageVerdictCallVerdictStruct> {
+    return this._call.inputValues[0].value.toTupleArray<
+      StageVerdictCallVerdictStruct
+    >();
+  }
+
   get uri(): string {
-    return this._call.inputValues[0].value.toString();
+    return this._call.inputValues[1].value.toString();
   }
 }
 
@@ -1101,6 +1178,16 @@ export class StageVerdictCall__Outputs {
 
   constructor(call: StageVerdictCall) {
     this._call = call;
+  }
+}
+
+export class StageVerdictCallVerdictStruct extends ethereum.Tuple {
+  get ruleId(): BigInt {
+    return this[0].toBigInt();
+  }
+
+  get decision(): boolean {
+    return this[1].toBoolean();
   }
 }
 

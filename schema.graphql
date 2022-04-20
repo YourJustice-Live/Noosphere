@@ -61,6 +61,9 @@ type CaseEntity @entity {
   verdictAuthor: Bytes
   verdictUri: String
   verdictUriData: Bytes
+  cancellationAuthor: Bytes
+  cancellationUri: String
+  cancellationUriData: Bytes
   rules: [JurisdictionRuleEntity!]!
   roles: [CaseRoleEntity!]! @derivedFrom(field: "caseEntity")
   posts: [CasePostEntity!]! @derivedFrom(field: "caseEntity")
