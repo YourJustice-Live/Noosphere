@@ -1,3 +1,5 @@
+# Your Justice Subgraph
+
 ## Commands
 
 - Init project: `graph init --product hosted-service`
