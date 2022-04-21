@@ -151,8 +151,6 @@ export function handleCancelled(event: Cancelled): void {
 
 /**
  * Handle a rule confirmed event to add rule to verdict confirmed rules.
- *
- * TODO: Test it
  */
 export function handleRuleConfirmed(event: RuleConfirmed): void {
   // Skip if case entity not exists
