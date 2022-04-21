@@ -172,6 +172,24 @@ export class RuleAdded__Params {
   }
 }
 
+export class RuleConfirmed extends ethereum.Event {
+  get params(): RuleConfirmed__Params {
+    return new RuleConfirmed__Params(this);
+  }
+}
+
+export class RuleConfirmed__Params {
+  _event: RuleConfirmed;
+
+  constructor(event: RuleConfirmed) {
+    this._event = event;
+  }
+
+  get ruleId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+}
+
 export class Stage extends ethereum.Event {
   get params(): Stage__Params {
     return new Stage__Params(this);

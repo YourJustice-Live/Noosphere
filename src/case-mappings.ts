@@ -9,6 +9,7 @@ import {
   Cancelled,
   Post,
   RuleAdded,
+  RuleConfirmed,
   Stage,
   TransferSingle,
   Verdict,
@@ -145,5 +146,31 @@ export function handleCancelled(event: Cancelled): void {
   caseEntity.cancellationAuthor = event.params.account;
   caseEntity.cancellationUri = event.params.uri;
   caseEntity.cancellationUriData = uriData;
+  caseEntity.save();
+}
+
+/**
+ * Handle a rule confirmed event to add rule to verdict confirmed rules.
+ *
+ * TODO: Test it
+ */
+export function handleRuleConfirmed(event: RuleConfirmed): void {
+  // Skip if case entity not exists
+  let caseEntity = CaseEntity.load(event.address.toHexString());
+  if (!caseEntity) {
+    return;
+  }
+  // Skip if rule not exists
+  let ruleEntity = JurisdictionRuleEntity.load(event.params.ruleId.toString());
+  if (!ruleEntity) {
+    return;
+  }
+  // Add rule to case
+  let verdictConfirmedRules = caseEntity.verdictConfirmedRules;
+  if (!verdictConfirmedRules) {
+    verdictConfirmedRules = [];
+  }
+  verdictConfirmedRules.push(ruleEntity.id);
+  caseEntity.verdictConfirmedRules = verdictConfirmedRules;
   caseEntity.save();
 }

@@ -59,6 +59,7 @@ type CaseEntity @entity {
   jurisdiction: Bytes!
   stage: Int
   verdictAuthor: Bytes
+  verdictConfirmedRules: [JurisdictionRuleEntity!]
   verdictUri: String
   verdictUriData: Bytes
   cancellationAuthor: Bytes

@@ -106,6 +106,7 @@ templates:
         - Stage
         - Verdict
         - Cancelled
+        - RuleConfirmed
       abis:
         - name: Case
           file: ./abis/Case.json
@@ -122,4 +123,6 @@ templates:
           handler: handleVerdict
         - event: Cancelled(string,address)
           handler: handleCancelled
+        - event: RuleConfirmed(uint256)
+          handler: handleRuleConfirmed
       file: ./src/case-mappings.ts

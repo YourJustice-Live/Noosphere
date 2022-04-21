@@ -149,6 +149,19 @@
     "inputs": [
       {
         "indexed": false,
+        "internalType": "uint256",
+        "name": "ruleId",
+        "type": "uint256"
+      }
+    ],
+    "name": "RuleConfirmed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
         "internalType": "enum DataTypes.CaseStage",
         "name": "stage",
         "type": "uint8"

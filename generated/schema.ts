@@ -703,6 +703,26 @@ export class CaseEntity extends Entity {
     }
   }
 
+  get verdictConfirmedRules(): Array<string> | null {
+    let value = this.get("verdictConfirmedRules");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set verdictConfirmedRules(value: Array<string> | null) {
+    if (!value) {
+      this.unset("verdictConfirmedRules");
+    } else {
+      this.set(
+        "verdictConfirmedRules",
+        Value.fromStringArray(<Array<string>>value)
+      );
+    }
+  }
+
   get verdictUri(): string | null {
     let value = this.get("verdictUri");
     if (!value || value.kind == ValueKind.NULL) {
