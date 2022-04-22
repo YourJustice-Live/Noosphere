@@ -607,6 +607,7 @@ export class CaseEntity extends Entity {
 
     this.set("jurisdiction", Value.fromBytes(Bytes.empty()));
     this.set("rules", Value.fromStringArray(new Array(0)));
+    this.set("participantAccounts", Value.fromBytesArray(new Array(0)));
   }
 
   save(): void {
@@ -833,6 +834,15 @@ export class CaseEntity extends Entity {
 
   set posts(value: Array<string>) {
     this.set("posts", Value.fromStringArray(value));
+  }
+
+  get participantAccounts(): Array<Bytes> {
+    let value = this.get("participantAccounts");
+    return value!.toBytesArray();
+  }
+
+  set participantAccounts(value: Array<Bytes>) {
+    this.set("participantAccounts", Value.fromBytesArray(value));
   }
 }
 

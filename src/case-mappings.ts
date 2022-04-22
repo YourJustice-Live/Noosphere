@@ -24,6 +24,13 @@ export function handleTransferSingle(event: TransferSingle): void {
   if (!caseEntity) {
     return;
   }
+  // Add account to case participants if required
+  if (!caseEntity.participantAccounts.includes(event.params.to)) {
+    let caseParticipantAccounts = caseEntity.participantAccounts;
+    caseParticipantAccounts.push(event.params.to);
+    caseEntity.participantAccounts = caseParticipantAccounts;
+    caseEntity.save();
+  }
   // Define case role entity id (case address + role id)
   let caseRoleEntityId = `${event.address.toHexString()}_${event.params.id.toString()}`;
   // Find or create case role entity

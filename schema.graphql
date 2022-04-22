@@ -68,6 +68,7 @@ type CaseEntity @entity {
   rules: [JurisdictionRuleEntity!]!
   roles: [CaseRoleEntity!]! @derivedFrom(field: "caseEntity")
   posts: [CasePostEntity!]! @derivedFrom(field: "caseEntity")
+  participantAccounts: [Bytes!]!
 }
 
 type CaseRoleEntity @entity {
