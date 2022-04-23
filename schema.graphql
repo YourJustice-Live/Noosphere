@@ -88,3 +88,11 @@ type CasePostEntity @entity {
   uriData: Bytes
   uriType: String
 }
+
+type CaseEventEntity @entity {
+  id: ID! # combination of case address and event transaction address
+  caseEntity: CaseEntity!
+  createdDate: BigInt!
+  type: String!
+  data: Bytes
+}

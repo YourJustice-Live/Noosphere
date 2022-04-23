@@ -1053,3 +1053,83 @@ export class CasePostEntity extends Entity {
     }
   }
 }
+
+export class CaseEventEntity extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+
+    this.set("caseEntity", Value.fromString(""));
+    this.set("createdDate", Value.fromBigInt(BigInt.zero()));
+    this.set("type", Value.fromString(""));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save CaseEventEntity entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type CaseEventEntity must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("CaseEventEntity", id.toString(), this);
+    }
+  }
+
+  static load(id: string): CaseEventEntity | null {
+    return changetype<CaseEventEntity | null>(store.get("CaseEventEntity", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get caseEntity(): string {
+    let value = this.get("caseEntity");
+    return value!.toString();
+  }
+
+  set caseEntity(value: string) {
+    this.set("caseEntity", Value.fromString(value));
+  }
+
+  get createdDate(): BigInt {
+    let value = this.get("createdDate");
+    return value!.toBigInt();
+  }
+
+  set createdDate(value: BigInt) {
+    this.set("createdDate", Value.fromBigInt(value));
+  }
+
+  get type(): string {
+    let value = this.get("type");
+    return value!.toString();
+  }
+
+  set type(value: string) {
+    this.set("type", Value.fromString(value));
+  }
+
+  get data(): Bytes | null {
+    let value = this.get("data");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set data(value: Bytes | null) {
+    if (!value) {
+      this.unset("data");
+    } else {
+      this.set("data", Value.fromBytes(<Bytes>value));
+    }
+  }
+}
