@@ -385,6 +385,23 @@ export class JurisdictionRuleEntity extends Entity {
     }
   }
 
+  get uriData(): Bytes | null {
+    let value = this.get("uriData");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set uriData(value: Bytes | null) {
+    if (!value) {
+      this.unset("uriData");
+    } else {
+      this.set("uriData", Value.fromBytes(<Bytes>value));
+    }
+  }
+
   get negation(): boolean {
     let value = this.get("negation");
     return value!.toBoolean();
@@ -587,6 +604,23 @@ export class ActionEntity extends Entity {
       this.unset("uri");
     } else {
       this.set("uri", Value.fromString(<string>value));
+    }
+  }
+
+  get uriData(): Bytes | null {
+    let value = this.get("uriData");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set uriData(value: Bytes | null) {
+    if (!value) {
+      this.unset("uriData");
+    } else {
+      this.set("uriData", Value.fromBytes(<Bytes>value));
     }
   }
 

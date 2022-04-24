@@ -1,4 +1,4 @@
-import { Address, BigInt } from "@graphprotocol/graph-ts";
+import { Address, BigInt, ipfs } from "@graphprotocol/graph-ts";
 import { Case as CaseContract } from "../generated/Jurisdiction/Case";
 import {
   CaseCreated,
@@ -60,10 +60,14 @@ export function handleRuleAdded(event: Rule): void {
   if (!entity) {
     entity = new JurisdictionRuleEntity(event.params.id.toString());
   }
+  // Load uri data
+  let uriIpfsHash = event.params.uri.split("/").at(-1);
+  let uriData = ipfs.cat(uriIpfsHash);
   // Update entity's params
   entity.about = actionEntity.id;
   entity.affected = event.params.affected;
   entity.uri = event.params.uri;
+  entity.uriData = uriData;
   entity.negation = event.params.negation;
   entity.save();
 }

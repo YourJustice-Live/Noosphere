@@ -32,6 +32,7 @@ type JurisdictionRuleEntity @entity {
   about: ActionEntity!
   affected: String
   uri: String
+  uriData: Bytes
   negation: Boolean
   effectsEnvironmental: Int
   effectsPersonal: Int
@@ -49,6 +50,7 @@ type ActionEntity @entity {
   object: String
   tool: String
   uri: String
+  uriData: Bytes
   rules: [JurisdictionRuleEntity!]! @derivedFrom(field: "about")
 }
 

@@ -1,3 +1,4 @@
+import { ipfs } from "@graphprotocol/graph-ts";
 import {
   ActionAdded,
   ActionURI
@@ -30,7 +31,11 @@ export function handleActionURI(event: ActionURI): void {
   if (!entity) {
     return;
   }
+  // Load uri data
+  let uriIpfsHash = event.params.uri.split("/").at(-1);
+  let uriData = ipfs.cat(uriIpfsHash);
   // Update entity's params
   entity.uri = event.params.uri;
+  entity.uriData = uriData;
   entity.save();
 }
