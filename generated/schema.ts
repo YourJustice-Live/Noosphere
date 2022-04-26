@@ -240,7 +240,7 @@ export class AvatarNftReputationEntity extends Entity {
   }
 }
 
-export class JurisdictionParticipantEntity extends Entity {
+export class JurisdictionEntity extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -248,22 +248,19 @@ export class JurisdictionParticipantEntity extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(
-      id != null,
-      "Cannot save JurisdictionParticipantEntity entity without an ID"
-    );
+    assert(id != null, "Cannot save JurisdictionEntity entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        `Entities of type JurisdictionParticipantEntity must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type JurisdictionEntity must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
       );
-      store.set("JurisdictionParticipantEntity", id.toString(), this);
+      store.set("JurisdictionEntity", id.toString(), this);
     }
   }
 
-  static load(id: string): JurisdictionParticipantEntity | null {
-    return changetype<JurisdictionParticipantEntity | null>(
-      store.get("JurisdictionParticipantEntity", id)
+  static load(id: string): JurisdictionEntity | null {
+    return changetype<JurisdictionEntity | null>(
+      store.get("JurisdictionEntity", id)
     );
   }
 
@@ -276,31 +273,90 @@ export class JurisdictionParticipantEntity extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get isAdmin(): boolean {
-    let value = this.get("isAdmin");
-    return value!.toBoolean();
+  get roles(): Array<string> {
+    let value = this.get("roles");
+    return value!.toStringArray();
   }
 
-  set isAdmin(value: boolean) {
-    this.set("isAdmin", Value.fromBoolean(value));
+  set roles(value: Array<string>) {
+    this.set("roles", Value.fromStringArray(value));
   }
 
-  get isMember(): boolean {
-    let value = this.get("isMember");
-    return value!.toBoolean();
+  get rules(): Array<string> {
+    let value = this.get("rules");
+    return value!.toStringArray();
   }
 
-  set isMember(value: boolean) {
-    this.set("isMember", Value.fromBoolean(value));
+  set rules(value: Array<string>) {
+    this.set("rules", Value.fromStringArray(value));
+  }
+}
+
+export class JurisdictionRoleEntity extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+
+    this.set("jurisdiction", Value.fromString(""));
+    this.set("roleId", Value.fromBigInt(BigInt.zero()));
+    this.set("accounts", Value.fromBytesArray(new Array(0)));
   }
 
-  get isJudge(): boolean {
-    let value = this.get("isJudge");
-    return value!.toBoolean();
+  save(): void {
+    let id = this.get("id");
+    assert(
+      id != null,
+      "Cannot save JurisdictionRoleEntity entity without an ID"
+    );
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type JurisdictionRoleEntity must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("JurisdictionRoleEntity", id.toString(), this);
+    }
   }
 
-  set isJudge(value: boolean) {
-    this.set("isJudge", Value.fromBoolean(value));
+  static load(id: string): JurisdictionRoleEntity | null {
+    return changetype<JurisdictionRoleEntity | null>(
+      store.get("JurisdictionRoleEntity", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get jurisdiction(): string {
+    let value = this.get("jurisdiction");
+    return value!.toString();
+  }
+
+  set jurisdiction(value: string) {
+    this.set("jurisdiction", Value.fromString(value));
+  }
+
+  get roleId(): BigInt {
+    let value = this.get("roleId");
+    return value!.toBigInt();
+  }
+
+  set roleId(value: BigInt) {
+    this.set("roleId", Value.fromBigInt(value));
+  }
+
+  get accounts(): Array<Bytes> {
+    let value = this.get("accounts");
+    return value!.toBytesArray();
+  }
+
+  set accounts(value: Array<Bytes>) {
+    this.set("accounts", Value.fromBytesArray(value));
   }
 }
 
@@ -309,7 +365,9 @@ export class JurisdictionRuleEntity extends Entity {
     super();
     this.set("id", Value.fromString(id));
 
+    this.set("jurisdiction", Value.fromString(""));
     this.set("about", Value.fromString(""));
+    this.set("ruleId", Value.fromBigInt(BigInt.zero()));
   }
 
   save(): void {
@@ -342,6 +400,15 @@ export class JurisdictionRuleEntity extends Entity {
     this.set("id", Value.fromString(value));
   }
 
+  get jurisdiction(): string {
+    let value = this.get("jurisdiction");
+    return value!.toString();
+  }
+
+  set jurisdiction(value: string) {
+    this.set("jurisdiction", Value.fromString(value));
+  }
+
   get about(): string {
     let value = this.get("about");
     return value!.toString();
@@ -349,6 +416,15 @@ export class JurisdictionRuleEntity extends Entity {
 
   set about(value: string) {
     this.set("about", Value.fromString(value));
+  }
+
+  get ruleId(): BigInt {
+    let value = this.get("ruleId");
+    return value!.toBigInt();
+  }
+
+  set ruleId(value: BigInt) {
+    this.set("ruleId", Value.fromBigInt(value));
   }
 
   get affected(): string | null {

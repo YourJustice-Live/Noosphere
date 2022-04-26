@@ -17,19 +17,24 @@ type AvatarNftReputationEntity @entity {
   positiveRating: BigInt
 }
 
-# TODO: Use "JurisdictionRoleEntity" instead of "JurisdictionParticipantEntity" like "CaseRoleEntity"
-type JurisdictionParticipantEntity @entity {
-  id: ID! # account address
-  isAdmin: Boolean
-  isMember: Boolean
-  isJudge: Boolean
+type JurisdictionEntity @entity {
+  id: ID! # contract address
+  roles: [JurisdictionRoleEntity!]! @derivedFrom(field: "jurisdiction")
+  rules: [JurisdictionRuleEntity!]! @derivedFrom(field: "jurisdiction")
 }
 
-# TODO: ID should be a combination of jurisdiction address and rule id
-# TODO: Add field "ruleId"
+type JurisdictionRoleEntity @entity {
+  id: ID! # combination of jurisdiction address and role id
+  jurisdiction: JurisdictionEntity!
+  roleId: BigInt!
+  accounts: [Bytes!]!
+}
+
 type JurisdictionRuleEntity @entity {
-  id: ID!
+  id: ID! # combination of jurisdiction address and rule id
+  jurisdiction: JurisdictionEntity!
   about: ActionEntity!
+  ruleId: BigInt!
   affected: String
   uri: String
   uriData: Bytes
