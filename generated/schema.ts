@@ -715,7 +715,7 @@ export class CaseEntity extends Entity {
     super();
     this.set("id", Value.fromString(id));
 
-    this.set("jurisdiction", Value.fromBytes(Bytes.empty()));
+    this.set("jurisdiction", Value.fromString(""));
     this.set("rules", Value.fromStringArray(new Array(0)));
     this.set("participantAccounts", Value.fromBytesArray(new Array(0)));
   }
@@ -779,13 +779,13 @@ export class CaseEntity extends Entity {
     }
   }
 
-  get jurisdiction(): Bytes {
+  get jurisdiction(): string {
     let value = this.get("jurisdiction");
-    return value!.toBytes();
+    return value!.toString();
   }
 
-  set jurisdiction(value: Bytes) {
-    this.set("jurisdiction", Value.fromBytes(value));
+  set jurisdiction(value: string) {
+    this.set("jurisdiction", Value.fromString(value));
   }
 
   get stage(): i32 {

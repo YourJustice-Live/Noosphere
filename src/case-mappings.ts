@@ -67,7 +67,8 @@ export function handleRuleAdded(event: RuleAdded): void {
     return;
   }
   // Skip if rule entity not exists
-  let ruleEntity = JurisdictionRuleEntity.load(event.params.ruleId.toString());
+  let ruleEntityId = `${caseEntity.jurisdiction}_${event.params.ruleId.toString()}`;
+  let ruleEntity = JurisdictionRuleEntity.load(ruleEntityId);
   if (!ruleEntity) {
     return;
   }

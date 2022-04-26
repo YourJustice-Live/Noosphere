@@ -127,6 +127,8 @@ export function handleCaseCreated(event: CaseCreated): void {
   if (CaseEntity.load(event.params.contractAddress.toHexString())) {
     return;
   }
+  // Get jurisdiction
+  let jurisdictionEntity = getJurisdictionEntity(event.address.toHexString());
   // Load case name from contract
   let caseContract = CaseContract.bind(event.params.contractAddress);
   let caseContractName = caseContract.name();
@@ -134,7 +136,7 @@ export function handleCaseCreated(event: CaseCreated): void {
   let caseEntity = new CaseEntity(event.params.contractAddress.toHexString());
   caseEntity.name = caseContractName;
   caseEntity.createdDate = event.block.timestamp;
-  caseEntity.jurisdiction = event.address;
+  caseEntity.jurisdiction = jurisdictionEntity.id;
   caseEntity.rules = [];
   caseEntity.participantAccounts = [];
   caseEntity.save();

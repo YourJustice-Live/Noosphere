@@ -63,7 +63,7 @@ type CaseEntity @entity {
   id: ID! # contract address
   name: String
   createdDate: BigInt
-  jurisdiction: Bytes!
+  jurisdiction: JurisdictionEntity!
   stage: Int
   verdictAuthor: Bytes
   verdictConfirmedRules: [JurisdictionRuleEntity!]
