@@ -1,14 +1,20 @@
 import { Address, BigInt, ByteArray, Bytes } from "@graphprotocol/graph-ts";
+import { Jurisdiction as JurisdictionContract } from "../generated/Jurisdiction/Jurisdiction";
 import {
   CaseEntity,
   CaseEventEntity,
-  JurisdictionEntity,
+  JurisdictionEntity
 } from "../generated/schema";
 
 export function getJurisdictionEntity(id: string): JurisdictionEntity {
   let jurisdictionEntity = JurisdictionEntity.load(id);
   if (!jurisdictionEntity) {
+    // Load jurisdiction name from contract
+    let jurisdictionContract = JurisdictionContract.bind(Address.fromString(id));
+    let jurisdictionContractName = jurisdictionContract.name();
+    // Create jurisdiction enity
     jurisdictionEntity = new JurisdictionEntity(id);
+    jurisdictionEntity.name = jurisdictionContractName;
     jurisdictionEntity.save();
   }
   return jurisdictionEntity;
