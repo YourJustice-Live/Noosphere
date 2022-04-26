@@ -1,10 +1,9 @@
-import { ByteArray, Bytes, ipfs, json } from "@graphprotocol/graph-ts";
+import { ipfs, json } from "@graphprotocol/graph-ts";
 import {
   CaseEntity,
-  CaseEventEntity,
   CasePostEntity,
   CaseRoleEntity,
-  JurisdictionRuleEntity,
+  JurisdictionRuleEntity
 } from "../generated/schema";
 import {
   Cancelled,
@@ -13,8 +12,9 @@ import {
   RuleConfirmed,
   Stage,
   TransferSingle,
-  Verdict,
+  Verdict
 } from "../generated/templates/Case/Case";
+import { saveCaseEventEntity } from "./utils";
 
 /**
  * Handle a transfer single event to add a role to case participant.
@@ -46,18 +46,15 @@ export function handleTransferSingle(event: TransferSingle): void {
   accounts.push(event.params.to);
   caseRoleEntity.accounts = accounts;
   caseRoleEntity.save();
-  // Create case event
-  let caseEventEntityId = `${event.address.toHexString()}_${event.transaction.hash.toHexString()}`;
-  let caseEventEntity = new CaseEventEntity(caseEventEntityId);
-  caseEventEntity.caseEntity = caseEntity.id;
-  caseEventEntity.createdDate = event.block.timestamp;
-  caseEventEntity.type = "accountGotRole";
-  caseEventEntity.data = Bytes.fromByteArray(
-    ByteArray.fromUTF8(
-      `{"account":"${event.params.to.toHexString()}","role":"${event.params.id.toString()}"}`
-    )
+  // Save case event entity
+  saveCaseEventEntity(
+    caseEntity,
+    event.address,
+    event.transaction.hash,
+    event.block.timestamp,
+    "accountGotRole",
+    `{"account":"${event.params.to.toHexString()}","role":"${event.params.id.toString()}"}`
   );
-  caseEventEntity.save();
 }
 
 /**
@@ -113,20 +110,17 @@ export function handlePost(event: Post): void {
   casePostEntity.uriData = uriData;
   casePostEntity.uriType = uriJsonTypeString;
   casePostEntity.save();
-  // Create case event
-  let caseEventEntityId = `${event.address.toHexString()}_${event.transaction.hash.toHexString()}`;
-  let caseEventEntity = new CaseEventEntity(caseEventEntityId);
-  caseEventEntity.caseEntity = caseEntity.id;
-  caseEventEntity.createdDate = event.block.timestamp;
-  caseEventEntity.type = "accountAddedPost";
-  caseEventEntity.data = Bytes.fromByteArray(
-    ByteArray.fromUTF8(
-      `{"account":"${event.params.account.toHexString()}","type":"${
-        uriJsonTypeString ? uriJsonTypeString : "Unknown"
-      }"}`
-    )
+  // Save case event entity
+  saveCaseEventEntity(
+    caseEntity,
+    event.address,
+    event.transaction.hash,
+    event.block.timestamp,
+    "accountAddedPost",
+    `{"account":"${event.params.account.toHexString()}","type":"${
+      uriJsonTypeString ? uriJsonTypeString : "Unknown"
+    }"}`
   );
-  caseEventEntity.save();
 }
 
 /**
@@ -141,16 +135,15 @@ export function handleStage(event: Stage): void {
   // Update case stage
   caseEntity.stage = event.params.stage;
   caseEntity.save();
-  // Create case event
-  let caseEventEntityId = `${event.address.toHexString()}_${event.transaction.hash.toHexString()}`;
-  let caseEventEntity = new CaseEventEntity(caseEventEntityId);
-  caseEventEntity.caseEntity = caseEntity.id;
-  caseEventEntity.createdDate = event.block.timestamp;
-  caseEventEntity.type = "stageChanged";
-  caseEventEntity.data = Bytes.fromByteArray(
-    ByteArray.fromUTF8(`{"stage":"${event.params.stage}"}`)
+  // Save case event entity
+  saveCaseEventEntity(
+    caseEntity,
+    event.address,
+    event.transaction.hash,
+    event.block.timestamp,
+    "stageChanged",
+    `{"stage":"${event.params.stage}"}`
   );
-  caseEventEntity.save();
 }
 
 /**
@@ -170,16 +163,15 @@ export function handleVerdict(event: Verdict): void {
   caseEntity.verdictUri = event.params.uri;
   caseEntity.verdictUriData = uriData;
   caseEntity.save();
-  // Create case event
-  let caseEventEntityId = `${event.address.toHexString()}_${event.transaction.hash.toHexString()}`;
-  let caseEventEntity = new CaseEventEntity(caseEventEntityId);
-  caseEventEntity.caseEntity = caseEntity.id;
-  caseEventEntity.createdDate = event.block.timestamp;
-  caseEventEntity.type = "accountMadeVerdict";
-  caseEventEntity.data = Bytes.fromByteArray(
-    ByteArray.fromUTF8(`{"account":"${event.params.account.toHexString()}"}`)
+  // Save case event entity
+  saveCaseEventEntity(
+    caseEntity,
+    event.address,
+    event.transaction.hash,
+    event.block.timestamp,
+    "accountMadeVerdict",
+    `{"account":"${event.params.account.toHexString()}"}`
   );
-  caseEventEntity.save();
 }
 
 /**
@@ -199,16 +191,15 @@ export function handleCancelled(event: Cancelled): void {
   caseEntity.cancellationUri = event.params.uri;
   caseEntity.cancellationUriData = uriData;
   caseEntity.save();
-  // Create case event
-  let caseEventEntityId = `${event.address.toHexString()}_${event.transaction.hash.toHexString()}`;
-  let caseEventEntity = new CaseEventEntity(caseEventEntityId);
-  caseEventEntity.caseEntity = caseEntity.id;
-  caseEventEntity.createdDate = event.block.timestamp;
-  caseEventEntity.type = "accountCancelledCase";
-  caseEventEntity.data = Bytes.fromByteArray(
-    ByteArray.fromUTF8(`{"account":"${event.params.account.toHexString()}"}`)
+  // Save case event entity
+  saveCaseEventEntity(
+    caseEntity,
+    event.address,
+    event.transaction.hash,
+    event.block.timestamp,
+    "accountCancelledCase",
+    `{"account":"${event.params.account.toHexString()}"}`
   );
-  caseEventEntity.save();
 }
 
 /**
