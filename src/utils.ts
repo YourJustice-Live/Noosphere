@@ -6,6 +6,9 @@ import {
   JurisdictionEntity
 } from "../generated/schema";
 
+/**
+ * Load jurisdiction by id or create new.
+ */
 export function getJurisdictionEntity(id: string): JurisdictionEntity {
   let jurisdictionEntity = JurisdictionEntity.load(id);
   if (!jurisdictionEntity) {
@@ -15,11 +18,16 @@ export function getJurisdictionEntity(id: string): JurisdictionEntity {
     // Create jurisdiction enity
     jurisdictionEntity = new JurisdictionEntity(id);
     jurisdictionEntity.name = jurisdictionContractName;
+    jurisdictionEntity.rulesCount = 0;
+    jurisdictionEntity.casesCount = 0;
     jurisdictionEntity.save();
   }
   return jurisdictionEntity;
 }
 
+/**
+ * Create new case event entity.
+ */
 export function saveCaseEventEntity(
   caseEntity: CaseEntity,
   caseContractAddress: Address,

@@ -244,6 +244,9 @@ export class JurisdictionEntity extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
+
+    this.set("rulesCount", Value.fromI32(0));
+    this.set("casesCount", Value.fromI32(0));
   }
 
   save(): void {
@@ -307,6 +310,24 @@ export class JurisdictionEntity extends Entity {
   set rules(value: Array<string>) {
     this.set("rules", Value.fromStringArray(value));
   }
+
+  get rulesCount(): i32 {
+    let value = this.get("rulesCount");
+    return value!.toI32();
+  }
+
+  set rulesCount(value: i32) {
+    this.set("rulesCount", Value.fromI32(value));
+  }
+
+  get casesCount(): i32 {
+    let value = this.get("casesCount");
+    return value!.toI32();
+  }
+
+  set casesCount(value: i32) {
+    this.set("casesCount", Value.fromI32(value));
+  }
 }
 
 export class JurisdictionRoleEntity extends Entity {
@@ -317,6 +338,7 @@ export class JurisdictionRoleEntity extends Entity {
     this.set("jurisdiction", Value.fromString(""));
     this.set("roleId", Value.fromBigInt(BigInt.zero()));
     this.set("accounts", Value.fromBytesArray(new Array(0)));
+    this.set("accountsCount", Value.fromI32(0));
   }
 
   save(): void {
@@ -374,6 +396,15 @@ export class JurisdictionRoleEntity extends Entity {
 
   set accounts(value: Array<Bytes>) {
     this.set("accounts", Value.fromBytesArray(value));
+  }
+
+  get accountsCount(): i32 {
+    let value = this.get("accountsCount");
+    return value!.toI32();
+  }
+
+  set accountsCount(value: i32) {
+    this.set("accountsCount", Value.fromI32(value));
   }
 }
 

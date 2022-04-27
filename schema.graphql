@@ -22,6 +22,8 @@ type JurisdictionEntity @entity {
   name: String
   roles: [JurisdictionRoleEntity!]! @derivedFrom(field: "jurisdiction")
   rules: [JurisdictionRuleEntity!]! @derivedFrom(field: "jurisdiction")
+  rulesCount: Int!
+  casesCount: Int!
 }
 
 type JurisdictionRoleEntity @entity {
@@ -29,6 +31,7 @@ type JurisdictionRoleEntity @entity {
   jurisdiction: JurisdictionEntity!
   roleId: BigInt!
   accounts: [Bytes!]!
+  accountsCount: Int!
 }
 
 type JurisdictionRuleEntity @entity {

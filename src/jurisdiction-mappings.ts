@@ -5,13 +5,13 @@ import {
   Confirmation,
   Rule,
   RuleEffects,
-  TransferSingle
+  TransferSingle,
 } from "../generated/Jurisdiction/Jurisdiction";
 import {
   ActionEntity,
   CaseEntity,
   JurisdictionRoleEntity,
-  JurisdictionRuleEntity
+  JurisdictionRuleEntity,
 } from "../generated/schema";
 import { Case as CaseTemplate } from "../generated/templates";
 import { getJurisdictionEntity } from "./utils";
@@ -38,12 +38,22 @@ export function handleTransferSingle(event: TransferSingle): void {
       jurisdictionRoleEntity.jurisdiction = jurisdictionEntity.id;
       jurisdictionRoleEntity.roleId = event.params.id;
       jurisdictionRoleEntity.accounts = [];
+      jurisdictionRoleEntity.accountsCount = 0;
     }
-    // Add account to jurisdiction role entity
-    let account = isTokenMinted ? event.params.to : event.params.from;
+    // Update accounts in jurisdiction role entity
     let accounts = jurisdictionRoleEntity.accounts;
-    accounts.push(account);
+    let accountsCount = jurisdictionRoleEntity.accountsCount;
+    if (isTokenMinted) {
+      accounts.push(event.params.to);
+      accountsCount = accountsCount + 1;
+    }
+    if (isTokenBurned) {
+      // TODO: Delete account in role entity
+      accountsCount = accountsCount - 1;
+    }
+    // Update jurisdiction role entity
     jurisdictionRoleEntity.accounts = accounts;
+    jurisdictionRoleEntity.accountsCount = accountsCount;
     jurisdictionRoleEntity.save();
   }
 }
@@ -80,6 +90,9 @@ export function handleRuleAdded(event: Rule): void {
   jurisdictionRuleEntity.uriData = uriData;
   jurisdictionRuleEntity.negation = event.params.negation;
   jurisdictionRuleEntity.save();
+  // Increase rules count
+  jurisdictionEntity.rulesCount = jurisdictionEntity.rulesCount + 1;
+  jurisdictionEntity.save();
 }
 
 /**
@@ -108,7 +121,9 @@ export function handleRuleEffects(event: RuleEffects): void {
 export function handleConfirmation(event: Confirmation): void {
   // Find entity and return if not found
   let jurisdictionRuleEntityId = `${event.address.toHexString()}_${event.params.id.toString()}`;
-  let jurisdictionRuleEntity = JurisdictionRuleEntity.load(jurisdictionRuleEntityId);
+  let jurisdictionRuleEntity = JurisdictionRuleEntity.load(
+    jurisdictionRuleEntityId
+  );
   if (!jurisdictionRuleEntity) {
     return;
   }
@@ -142,4 +157,7 @@ export function handleCaseCreated(event: CaseCreated): void {
   caseEntity.save();
   // Create case contract for subgraph using template
   CaseTemplate.create(event.params.contractAddress);
+  // Increase cases count
+  jurisdictionEntity.casesCount = jurisdictionEntity.casesCount + 1;
+  jurisdictionEntity.save();
 }
