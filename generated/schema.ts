@@ -17,6 +17,8 @@ export class AvatarNftEntity extends Entity {
     this.set("id", Value.fromString(id));
 
     this.set("owner", Value.fromString(""));
+    this.set("totalNegativeRating", Value.fromBigInt(BigInt.zero()));
+    this.set("totalPositiveRating", Value.fromBigInt(BigInt.zero()));
   }
 
   save(): void {
@@ -146,6 +148,24 @@ export class AvatarNftEntity extends Entity {
   set reputations(value: Array<string>) {
     this.set("reputations", Value.fromStringArray(value));
   }
+
+  get totalNegativeRating(): BigInt {
+    let value = this.get("totalNegativeRating");
+    return value!.toBigInt();
+  }
+
+  set totalNegativeRating(value: BigInt) {
+    this.set("totalNegativeRating", Value.fromBigInt(value));
+  }
+
+  get totalPositiveRating(): BigInt {
+    let value = this.get("totalPositiveRating");
+    return value!.toBigInt();
+  }
+
+  set totalPositiveRating(value: BigInt) {
+    this.set("totalPositiveRating", Value.fromBigInt(value));
+  }
 }
 
 export class AvatarNftReputationEntity extends Entity {
@@ -155,6 +175,8 @@ export class AvatarNftReputationEntity extends Entity {
 
     this.set("token", Value.fromString(""));
     this.set("domain", Value.fromI32(0));
+    this.set("negativeRating", Value.fromBigInt(BigInt.zero()));
+    this.set("positiveRating", Value.fromBigInt(BigInt.zero()));
   }
 
   save(): void {
@@ -205,38 +227,22 @@ export class AvatarNftReputationEntity extends Entity {
     this.set("domain", Value.fromI32(value));
   }
 
-  get negativeRating(): BigInt | null {
+  get negativeRating(): BigInt {
     let value = this.get("negativeRating");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toBigInt();
-    }
+    return value!.toBigInt();
   }
 
-  set negativeRating(value: BigInt | null) {
-    if (!value) {
-      this.unset("negativeRating");
-    } else {
-      this.set("negativeRating", Value.fromBigInt(<BigInt>value));
-    }
+  set negativeRating(value: BigInt) {
+    this.set("negativeRating", Value.fromBigInt(value));
   }
 
-  get positiveRating(): BigInt | null {
+  get positiveRating(): BigInt {
     let value = this.get("positiveRating");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toBigInt();
-    }
+    return value!.toBigInt();
   }
 
-  set positiveRating(value: BigInt | null) {
-    if (!value) {
-      this.unset("positiveRating");
-    } else {
-      this.set("positiveRating", Value.fromBigInt(<BigInt>value));
-    }
+  set positiveRating(value: BigInt) {
+    this.set("positiveRating", Value.fromBigInt(value));
   }
 }
 

@@ -7,14 +7,16 @@ type AvatarNftEntity @entity {
   uriFirstName: String
   uriLastName: String
   reputations: [AvatarNftReputationEntity!]! @derivedFrom(field: "token")
+  totalNegativeRating: BigInt!
+  totalPositiveRating: BigInt!
 }
 
 type AvatarNftReputationEntity @entity {
   id: ID! # combination of token id and domain id
   token: AvatarNftEntity!
   domain: Int!
-  negativeRating: BigInt
-  positiveRating: BigInt
+  negativeRating: BigInt!
+  positiveRating: BigInt!
 }
 
 type JurisdictionEntity @entity {
