@@ -1,3 +1,9 @@
+type AccountEntity @entity {
+  id: ID! # account address
+  avatarNft: AvatarNftEntity!
+}
+
+# TODO: Use account entity for owner
 type AvatarNftEntity @entity {
   id: ID! # token id
   owner: String! # account address
@@ -9,8 +15,10 @@ type AvatarNftEntity @entity {
   reputations: [AvatarNftReputationEntity!]! @derivedFrom(field: "token")
   totalNegativeRating: BigInt!
   totalPositiveRating: BigInt!
+  jurisdictions: [JurisdictionEntity!]! # where avatar is a member
 }
 
+# TODO: Rename "token" to "avatarNft"
 type AvatarNftReputationEntity @entity {
   id: ID! # combination of token id and domain id
   token: AvatarNftEntity!

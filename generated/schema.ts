@@ -11,6 +11,49 @@ import {
   BigDecimal
 } from "@graphprotocol/graph-ts";
 
+export class AccountEntity extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+
+    this.set("avatarNft", Value.fromString(""));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save AccountEntity entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type AccountEntity must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("AccountEntity", id.toString(), this);
+    }
+  }
+
+  static load(id: string): AccountEntity | null {
+    return changetype<AccountEntity | null>(store.get("AccountEntity", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get avatarNft(): string {
+    let value = this.get("avatarNft");
+    return value!.toString();
+  }
+
+  set avatarNft(value: string) {
+    this.set("avatarNft", Value.fromString(value));
+  }
+}
+
 export class AvatarNftEntity extends Entity {
   constructor(id: string) {
     super();
@@ -19,6 +62,7 @@ export class AvatarNftEntity extends Entity {
     this.set("owner", Value.fromString(""));
     this.set("totalNegativeRating", Value.fromBigInt(BigInt.zero()));
     this.set("totalPositiveRating", Value.fromBigInt(BigInt.zero()));
+    this.set("jurisdictions", Value.fromStringArray(new Array(0)));
   }
 
   save(): void {
@@ -165,6 +209,15 @@ export class AvatarNftEntity extends Entity {
 
   set totalPositiveRating(value: BigInt) {
     this.set("totalPositiveRating", Value.fromBigInt(value));
+  }
+
+  get jurisdictions(): Array<string> {
+    let value = this.get("jurisdictions");
+    return value!.toStringArray();
+  }
+
+  set jurisdictions(value: Array<string>) {
+    this.set("jurisdictions", Value.fromStringArray(value));
   }
 }
 

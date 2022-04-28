@@ -14,7 +14,10 @@ import {
   JurisdictionRuleEntity,
 } from "../generated/schema";
 import { Case as CaseTemplate } from "../generated/templates";
-import { getJurisdictionEntity } from "./utils";
+import {
+  addJurisdictionToAvatarNftEntity,
+  getJurisdictionEntity,
+} from "./utils";
 
 /**
  * Handle a tranfer single event to create or update jurisdiction roles.
@@ -48,13 +51,20 @@ export function handleTransferSingle(event: TransferSingle): void {
       accountsCount = accountsCount + 1;
     }
     if (isTokenBurned) {
-      // TODO: Delete account in role entity
+      // TODO: Delete account in role entity accounts
       accountsCount = accountsCount - 1;
     }
     // Update jurisdiction role entity
     jurisdictionRoleEntity.accounts = accounts;
     jurisdictionRoleEntity.accountsCount = accountsCount;
     jurisdictionRoleEntity.save();
+    // Update jurisdiction in avatar nft entity
+    if (isTokenMinted) {
+      addJurisdictionToAvatarNftEntity(event.params.to, jurisdictionEntity);
+    }
+    if (isTokenBurned) {
+      // TODO: Remove jurisdiction from avatar nft entity
+    }
   }
 }
 

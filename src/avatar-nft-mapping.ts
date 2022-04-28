@@ -2,28 +2,30 @@ import { BigInt, ipfs, json, JSONValue } from "@graphprotocol/graph-ts";
 import {
   ReputationChange,
   Transfer,
-  URI,
+  URI
 } from "../generated/AvatarNFT/AvatarNFT";
 import {
   AvatarNftEntity,
-  AvatarNftReputationEntity,
+  AvatarNftReputationEntity
 } from "../generated/schema";
+import { addAvatarNftToAccountEntity } from "./utils";
 
 /**
  * Handle a tranfer event to create or update an Avatar NFT entity for the specified account.
  */
 export function handleTransfer(event: Transfer): void {
-  // Find or create entity
-  let entity = AvatarNftEntity.load(event.params.tokenId.toString());
-  if (!entity) {
-    entity = new AvatarNftEntity(event.params.tokenId.toString());
+  // Find or create avatar nft entity
+  let avatarNftEntity = AvatarNftEntity.load(event.params.tokenId.toString());
+  if (!avatarNftEntity) {
+    avatarNftEntity = new AvatarNftEntity(event.params.tokenId.toString());
   }
-  // Update entity's params
-  entity.owner = event.params.to.toHexString();
-  entity.totalNegativeRating = BigInt.zero();
-  entity.totalPositiveRating = BigInt.zero();
-  // Save entity
-  entity.save();
+  // Update avatar nft entity's params
+  avatarNftEntity.owner = event.params.to.toHexString();
+  avatarNftEntity.totalNegativeRating = BigInt.zero();
+  avatarNftEntity.totalPositiveRating = BigInt.zero();
+  avatarNftEntity.save();
+  // Update account entity
+  addAvatarNftToAccountEntity(event.params.to, avatarNftEntity);
 }
 
 /**
