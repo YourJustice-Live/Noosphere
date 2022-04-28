@@ -59,6 +59,7 @@ export class AvatarNftEntity extends Entity {
     super();
     this.set("id", Value.fromString(id));
 
+    this.set("tokenId", Value.fromBigInt(BigInt.zero()));
     this.set("owner", Value.fromString(""));
     this.set("totalNegativeRating", Value.fromBigInt(BigInt.zero()));
     this.set("totalPositiveRating", Value.fromBigInt(BigInt.zero()));
@@ -88,6 +89,15 @@ export class AvatarNftEntity extends Entity {
 
   set id(value: string) {
     this.set("id", Value.fromString(value));
+  }
+
+  get tokenId(): BigInt {
+    let value = this.get("tokenId");
+    return value!.toBigInt();
+  }
+
+  set tokenId(value: BigInt) {
+    this.set("tokenId", Value.fromBigInt(value));
   }
 
   get owner(): string {

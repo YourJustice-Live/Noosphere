@@ -5,7 +5,8 @@ type AccountEntity @entity {
 
 # TODO: Use account entity for owner
 type AvatarNftEntity @entity {
-  id: ID! # token id
+  id: ID! # token id (string)
+  tokenId: BigInt!
   owner: String! # account address
   uri: String # metadata uri
   uriData: Bytes
