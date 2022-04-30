@@ -213,7 +213,8 @@ export function handleRuleConfirmed(event: RuleConfirmed): void {
     return;
   }
   // Skip if rule not exists
-  let ruleEntity = JurisdictionRuleEntity.load(event.params.ruleId.toString());
+  let ruleEntityId = `${caseEntity.jurisdiction}_${event.params.ruleId.toString()}`;
+  let ruleEntity = JurisdictionRuleEntity.load(ruleEntityId);
   if (!ruleEntity) {
     return;
   }
