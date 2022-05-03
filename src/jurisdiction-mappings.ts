@@ -69,7 +69,7 @@ export function handleTransferSingle(event: TransferSingle): void {
 }
 
 /**
- * Handle a rule event to create a rule entity.
+ * Handle a rule event to create or update a jurisdiction rule entity.
  */
 export function handleRuleAdded(event: Rule): void {
   // Skip if action entity not exists
@@ -79,19 +79,22 @@ export function handleRuleAdded(event: Rule): void {
   }
   // Get jurisdiction
   let jurisdictionEntity = getJurisdictionEntity(event.address.toHexString());
-  // Skip if rule entity exists
+  // Find or create jurisdiction rule
+  let isJurisdictionRuleNew = false;
   let jurisdictionRuleEntityId = `${event.address.toHexString()}_${event.params.id.toString()}`;
   let jurisdictionRuleEntity = JurisdictionRuleEntity.load(
     jurisdictionRuleEntityId
   );
-  if (jurisdictionRuleEntity) {
-    return;
+  if (!jurisdictionRuleEntity) {
+    isJurisdictionRuleNew = true;
+    jurisdictionRuleEntity = new JurisdictionRuleEntity(
+      jurisdictionRuleEntityId
+    );
   }
   // Load uri data
   let uriIpfsHash = event.params.uri.split("/").at(-1);
   let uriData = ipfs.cat(uriIpfsHash);
-  // Create jurisdiction rule
-  jurisdictionRuleEntity = new JurisdictionRuleEntity(jurisdictionRuleEntityId);
+  // Update jurisdiction rule
   jurisdictionRuleEntity.jurisdiction = jurisdictionEntity.id;
   jurisdictionRuleEntity.about = actionEntity.id;
   jurisdictionRuleEntity.ruleId = event.params.id;
@@ -100,9 +103,11 @@ export function handleRuleAdded(event: Rule): void {
   jurisdictionRuleEntity.uriData = uriData;
   jurisdictionRuleEntity.negation = event.params.negation;
   jurisdictionRuleEntity.save();
-  // Increase rules count
-  jurisdictionEntity.rulesCount = jurisdictionEntity.rulesCount + 1;
-  jurisdictionEntity.save();
+  // Increase rules count if jurisdiction rule is new
+  if (isJurisdictionRuleNew) {
+    jurisdictionEntity.rulesCount = jurisdictionEntity.rulesCount + 1;
+    jurisdictionEntity.save();
+  }
 }
 
 /**
