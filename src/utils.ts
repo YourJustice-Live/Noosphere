@@ -45,6 +45,30 @@ export function addJurisdictionToAvatarNftEntity(
 }
 
 /**
+ * Find avatar nft entity and remove jurisdiction entity from it.
+ */
+export function removeJurisdctionFromAvatarEntity(
+  account: Address,
+  jurisdiction: JurisdictionEntity
+): void {
+  let accountEntity = AccountEntity.load(account.toHexString());
+  if (!accountEntity) {
+    return;
+  }
+  let avatarNftEntity = AvatarNftEntity.load(accountEntity.avatarNft);
+  if (!avatarNftEntity) {
+    return;
+  }
+  let jurisdictions = avatarNftEntity.jurisdictions;
+  const jurisdictionIndex = jurisdictions.indexOf(jurisdiction.id);
+  if (jurisdictionIndex > -1) {
+    jurisdictions.splice(jurisdictionIndex, 1);
+  }
+  avatarNftEntity.jurisdictions = jurisdictions;
+  avatarNftEntity.save();
+}
+
+/**
  * Load jurisdiction by id or create new.
  */
 export function getJurisdictionEntity(id: string): JurisdictionEntity {

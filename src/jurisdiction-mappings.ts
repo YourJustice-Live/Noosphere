@@ -17,7 +17,8 @@ import {
 import { Case as CaseTemplate } from "../generated/templates";
 import {
   addJurisdictionToAvatarNftEntity,
-  getJurisdictionEntity
+  getJurisdictionEntity,
+  removeJurisdctionFromAvatarEntity
 } from "./utils";
 
 /**
@@ -52,7 +53,10 @@ export function handleTransferSingle(event: TransferSingle): void {
       accountsCount = accountsCount + 1;
     }
     if (isTokenBurned) {
-      // TODO: Delete account in role entity accounts
+      const accountIndex = accounts.indexOf(event.params.from);
+      if (accountIndex > -1) {
+        accounts.splice(accountIndex, 1);
+      }
       accountsCount = accountsCount - 1;
     }
     // Update jurisdiction role entity
@@ -64,7 +68,7 @@ export function handleTransferSingle(event: TransferSingle): void {
       addJurisdictionToAvatarNftEntity(event.params.to, jurisdictionEntity);
     }
     if (isTokenBurned) {
-      // TODO: Remove jurisdiction from avatar nft entity
+      removeJurisdctionFromAvatarEntity(event.params.from, jurisdictionEntity);
     }
   }
 }
