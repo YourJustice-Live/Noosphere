@@ -336,30 +336,6 @@ export class Case__ruleGetResultValue0Struct extends ethereum.Tuple {
   get uri(): string {
     return this[3].toString();
   }
-
-  get effects(): Case__ruleGetResultValue0EffectsStruct {
-    return changetype<Case__ruleGetResultValue0EffectsStruct>(
-      this[4].toTuple()
-    );
-  }
-}
-
-export class Case__ruleGetResultValue0EffectsStruct extends ethereum.Tuple {
-  get environmental(): i32 {
-    return this[0].toI32();
-  }
-
-  get personal(): i32 {
-    return this[1].toI32();
-  }
-
-  get social(): i32 {
-    return this[2].toI32();
-  }
-
-  get professional(): i32 {
-    return this[3].toI32();
-  }
 }
 
 export class Case__ruleGetConfirmationResultValue0Struct extends ethereum.Tuple {
@@ -373,6 +349,20 @@ export class Case__ruleGetConfirmationResultValue0Struct extends ethereum.Tuple 
 
   get witness(): BigInt {
     return this[2].toBigInt();
+  }
+}
+
+export class Case__ruleGetEffectsResultValue0Struct extends ethereum.Tuple {
+  get name(): string {
+    return this[0].toString();
+  }
+
+  get value(): i32 {
+    return this[1].toI32();
+  }
+
+  get direction(): boolean {
+    return this[2].toBoolean();
   }
 }
 
@@ -630,7 +620,7 @@ export class Case extends ethereum.SmartContract {
   ruleGet(ruleRefId: BigInt): Case__ruleGetResultValue0Struct {
     let result = super.call(
       "ruleGet",
-      "ruleGet(uint256):((bytes32,string,bool,string,(int8,int8,int8,int8)))",
+      "ruleGet(uint256):((bytes32,string,bool,string))",
       [ethereum.Value.fromUnsignedBigInt(ruleRefId)]
     );
 
@@ -642,7 +632,7 @@ export class Case extends ethereum.SmartContract {
   ): ethereum.CallResult<Case__ruleGetResultValue0Struct> {
     let result = super.tryCall(
       "ruleGet",
-      "ruleGet(uint256):((bytes32,string,bool,string,(int8,int8,int8,int8)))",
+      "ruleGet(uint256):((bytes32,string,bool,string))",
       [ethereum.Value.fromUnsignedBigInt(ruleRefId)]
     );
     if (result.reverted) {
@@ -684,6 +674,35 @@ export class Case extends ethereum.SmartContract {
       changetype<Case__ruleGetConfirmationResultValue0Struct>(
         value[0].toTuple()
       )
+    );
+  }
+
+  ruleGetEffects(
+    ruleRefId: BigInt
+  ): Array<Case__ruleGetEffectsResultValue0Struct> {
+    let result = super.call(
+      "ruleGetEffects",
+      "ruleGetEffects(uint256):((string,uint8,bool)[])",
+      [ethereum.Value.fromUnsignedBigInt(ruleRefId)]
+    );
+
+    return result[0].toTupleArray<Case__ruleGetEffectsResultValue0Struct>();
+  }
+
+  try_ruleGetEffects(
+    ruleRefId: BigInt
+  ): ethereum.CallResult<Array<Case__ruleGetEffectsResultValue0Struct>> {
+    let result = super.tryCall(
+      "ruleGetEffects",
+      "ruleGetEffects(uint256):((string,uint8,bool)[])",
+      [ethereum.Value.fromUnsignedBigInt(ruleRefId)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      value[0].toTupleArray<Case__ruleGetEffectsResultValue0Struct>()
     );
   }
 
@@ -740,21 +759,90 @@ export class Case extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toString());
   }
 
-  uniqueMembers(id: BigInt): BigInt {
+  uniqueMembers(id: BigInt): Array<Address> {
     let result = super.call(
       "uniqueMembers",
-      "uniqueMembers(uint256):(uint256)",
+      "uniqueMembers(uint256):(address[])",
+      [ethereum.Value.fromUnsignedBigInt(id)]
+    );
+
+    return result[0].toAddressArray();
+  }
+
+  try_uniqueMembers(id: BigInt): ethereum.CallResult<Array<Address>> {
+    let result = super.tryCall(
+      "uniqueMembers",
+      "uniqueMembers(uint256):(address[])",
+      [ethereum.Value.fromUnsignedBigInt(id)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddressArray());
+  }
+
+  uniqueMembersCount(id: BigInt): BigInt {
+    let result = super.call(
+      "uniqueMembersCount",
+      "uniqueMembersCount(uint256):(uint256)",
       [ethereum.Value.fromUnsignedBigInt(id)]
     );
 
     return result[0].toBigInt();
   }
 
-  try_uniqueMembers(id: BigInt): ethereum.CallResult<BigInt> {
+  try_uniqueMembersCount(id: BigInt): ethereum.CallResult<BigInt> {
     let result = super.tryCall(
-      "uniqueMembers",
-      "uniqueMembers(uint256):(uint256)",
+      "uniqueMembersCount",
+      "uniqueMembersCount(uint256):(uint256)",
       [ethereum.Value.fromUnsignedBigInt(id)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
+  uniqueRoleMembers(role: string): Array<Address> {
+    let result = super.call(
+      "uniqueRoleMembers",
+      "uniqueRoleMembers(string):(address[])",
+      [ethereum.Value.fromString(role)]
+    );
+
+    return result[0].toAddressArray();
+  }
+
+  try_uniqueRoleMembers(role: string): ethereum.CallResult<Array<Address>> {
+    let result = super.tryCall(
+      "uniqueRoleMembers",
+      "uniqueRoleMembers(string):(address[])",
+      [ethereum.Value.fromString(role)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddressArray());
+  }
+
+  uniqueRoleMembersCount(role: string): BigInt {
+    let result = super.call(
+      "uniqueRoleMembersCount",
+      "uniqueRoleMembersCount(string):(uint256)",
+      [ethereum.Value.fromString(role)]
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_uniqueRoleMembersCount(role: string): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "uniqueRoleMembersCount",
+      "uniqueRoleMembersCount(string):(uint256)",
+      [ethereum.Value.fromString(role)]
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -822,6 +910,10 @@ export class InitializeCall__Inputs {
     return this._call.inputValues[4].value.toTupleArray<
       InitializeCallAssignRolesStruct
     >();
+  }
+
+  get container(): Address {
+    return this._call.inputValues[5].value.toAddress();
   }
 }
 

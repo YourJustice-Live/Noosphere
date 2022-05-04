@@ -4,19 +4,20 @@ import {
   CaseCreated,
   Confirmation,
   Rule,
-  RuleEffects,
-  TransferSingle,
+  RuleEffect,
+  TransferSingle
 } from "../generated/Jurisdiction/Jurisdiction";
 import {
   ActionEntity,
   CaseEntity,
   JurisdictionRoleEntity,
-  JurisdictionRuleEntity,
+  JurisdictionRuleEffectEntity,
+  JurisdictionRuleEntity
 } from "../generated/schema";
 import { Case as CaseTemplate } from "../generated/templates";
 import {
   addJurisdictionToAvatarNftEntity,
-  getJurisdictionEntity,
+  getJurisdictionEntity
 } from "./utils";
 
 /**
@@ -111,23 +112,26 @@ export function handleRuleAdded(event: Rule): void {
 }
 
 /**
- * Handle a rule effects event to update a rule entity.
+ * Handle a role effect event to update a rule entity.
  */
-export function handleRuleEffects(event: RuleEffects): void {
-  // Find entity and return if not found
-  let jurisdictionRuleEntityId = `${event.address.toHexString()}_${event.params.id.toString()}`;
-  let jurisdictionRuleEntity = JurisdictionRuleEntity.load(
-    jurisdictionRuleEntityId
-  );
-  if (!jurisdictionRuleEntity) {
+export function handleRuleEffect(event: RuleEffect): void {
+  // Find rule entity and return if not found
+  let ruleEntityId = `${event.address.toHexString()}_${event.params.id.toString()}`;
+  let ruleEntity = JurisdictionRuleEntity.load(ruleEntityId);
+  if (!ruleEntity) {
     return;
   }
-  // Update entity's params
-  jurisdictionRuleEntity.effectsEnvironmental = event.params.environmental;
-  jurisdictionRuleEntity.effectsPersonal = event.params.personal;
-  jurisdictionRuleEntity.effectsSocial = event.params.social;
-  jurisdictionRuleEntity.effectsProfessional = event.params.professional;
-  jurisdictionRuleEntity.save();
+  // Find or create rule effect entity
+  let ruleEffectEntityId = `${ruleEntityId}_${event.params.name}`;
+  let ruleEffectEntity = JurisdictionRuleEffectEntity.load(ruleEffectEntityId);
+  if (!ruleEffectEntity) {
+    ruleEffectEntity = new JurisdictionRuleEffectEntity(ruleEffectEntityId);
+    ruleEffectEntity.rule = ruleEntity.id;
+    ruleEffectEntity.name = event.params.name;
+  }
+  ruleEffectEntity.direction = event.params.direction;
+  ruleEffectEntity.value = event.params.value;
+  ruleEffectEntity.save();
 }
 
 /**

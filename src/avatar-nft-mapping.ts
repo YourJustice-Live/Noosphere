@@ -91,40 +91,41 @@ export function handleURI(event: URI): void {
   entity.save();
 }
 
-/**
- * Handle a reputation change event to update avatar reputation.
- */
-export function handleReputationChange(event: ReputationChange): void {
-  // Find avatar nft entity and return if not found
-  let avatarNftEntity = AvatarNftEntity.load(event.params.id.toString());
-  if (!avatarNftEntity) {
-    return;
-  }
-  let reputationEntityId = `${event.params.id.toString()}_${event.params.domain.toString()}`;
-  // Find or create reputation entity
-  let reputationEntity = AvatarNftReputationEntity.load(reputationEntityId);
-  if (!reputationEntity) {
-    reputationEntity = new AvatarNftReputationEntity(reputationEntityId);
-    reputationEntity.domain = event.params.domain;
-    reputationEntity.token = event.params.id.toString();
-    reputationEntity.negativeRating = BigInt.zero();
-    reputationEntity.positiveRating = BigInt.zero();
-  }
-  // Update negative rating (rating=0)
-  if (event.params.rating == 0) {
-    avatarNftEntity.totalNegativeRating = avatarNftEntity.totalNegativeRating
-      .minus(reputationEntity.negativeRating)
-      .plus(event.params.socre);
-    reputationEntity.negativeRating = event.params.socre;
-  }
-  // Update positive rating (rating=1)
-  if (event.params.rating == 1) {
-    avatarNftEntity.totalPositiveRating = avatarNftEntity.totalPositiveRating
-      .minus(reputationEntity.positiveRating)
-      .plus(event.params.socre);
-    reputationEntity.positiveRating = event.params.socre;
-  }
-  // Save entities
-  avatarNftEntity.save();
-  reputationEntity.save();
-}
+// TODO: Fix it
+// /**
+//  * Handle a reputation change event to update avatar reputation.
+//  */
+// export function handleReputationChange(event: ReputationChange): void {
+//   // Find avatar nft entity and return if not found
+//   let avatarNftEntity = AvatarNftEntity.load(event.params.id.toString());
+//   if (!avatarNftEntity) {
+//     return;
+//   }
+//   let reputationEntityId = `${event.params.id.toString()}_${event.params.domain.toString()}`;
+//   // Find or create reputation entity
+//   let reputationEntity = AvatarNftReputationEntity.load(reputationEntityId);
+//   if (!reputationEntity) {
+//     reputationEntity = new AvatarNftReputationEntity(reputationEntityId);
+//     reputationEntity.domain = event.params.domain;
+//     reputationEntity.token = event.params.id.toString();
+//     reputationEntity.negativeRating = BigInt.zero();
+//     reputationEntity.positiveRating = BigInt.zero();
+//   }
+//   // Update negative rating (rating=0)
+//   if (event.params.rating == 0) {
+//     avatarNftEntity.totalNegativeRating = avatarNftEntity.totalNegativeRating
+//       .minus(reputationEntity.negativeRating)
+//       .plus(event.params.socre);
+//     reputationEntity.negativeRating = event.params.socre;
+//   }
+//   // Update positive rating (rating=1)
+//   if (event.params.rating == 1) {
+//     avatarNftEntity.totalPositiveRating = avatarNftEntity.totalPositiveRating
+//       .minus(reputationEntity.positiveRating)
+//       .plus(event.params.socre);
+//     reputationEntity.positiveRating = event.params.socre;
+//   }
+//   // Save entities
+//   avatarNftEntity.save();
+//   reputationEntity.save();
+// }

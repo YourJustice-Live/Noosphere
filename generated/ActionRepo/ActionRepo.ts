@@ -572,21 +572,6 @@ export class ActionRepo extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toString());
   }
 
-  name2(): string {
-    let result = super.call("name2", "name2():(string)", []);
-
-    return result[0].toString();
-  }
-
-  try_name2(): ethereum.CallResult<string> {
-    let result = super.tryCall("name2", "name2():(string)", []);
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toString());
-  }
-
   owner(): Address {
     let result = super.call("owner", "owner():(address)", []);
 
@@ -640,23 +625,50 @@ export class ActionRepo extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toString());
   }
 
-  testBytes(foo: Bytes): Bytes {
-    let result = super.call("testBytes", "testBytes(bytes):(bytes)", [
-      ethereum.Value.fromBytes(foo)
-    ]);
+  uniqueMembers(id: BigInt): Array<Address> {
+    let result = super.call(
+      "uniqueMembers",
+      "uniqueMembers(uint256):(address[])",
+      [ethereum.Value.fromUnsignedBigInt(id)]
+    );
 
-    return result[0].toBytes();
+    return result[0].toAddressArray();
   }
 
-  try_testBytes(foo: Bytes): ethereum.CallResult<Bytes> {
-    let result = super.tryCall("testBytes", "testBytes(bytes):(bytes)", [
-      ethereum.Value.fromBytes(foo)
-    ]);
+  try_uniqueMembers(id: BigInt): ethereum.CallResult<Array<Address>> {
+    let result = super.tryCall(
+      "uniqueMembers",
+      "uniqueMembers(uint256):(address[])",
+      [ethereum.Value.fromUnsignedBigInt(id)]
+    );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBytes());
+    return ethereum.CallResult.fromValue(value[0].toAddressArray());
+  }
+
+  uniqueMembersCount(id: BigInt): BigInt {
+    let result = super.call(
+      "uniqueMembersCount",
+      "uniqueMembersCount(uint256):(uint256)",
+      [ethereum.Value.fromUnsignedBigInt(id)]
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_uniqueMembersCount(id: BigInt): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "uniqueMembersCount",
+      "uniqueMembersCount(uint256):(uint256)",
+      [ethereum.Value.fromUnsignedBigInt(id)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
   uri(param0: BigInt): string {

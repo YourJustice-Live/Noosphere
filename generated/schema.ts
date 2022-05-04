@@ -604,40 +604,13 @@ export class JurisdictionRuleEntity extends Entity {
     this.set("negation", Value.fromBoolean(value));
   }
 
-  get effectsEnvironmental(): i32 {
-    let value = this.get("effectsEnvironmental");
-    return value!.toI32();
+  get effects(): Array<string> {
+    let value = this.get("effects");
+    return value!.toStringArray();
   }
 
-  set effectsEnvironmental(value: i32) {
-    this.set("effectsEnvironmental", Value.fromI32(value));
-  }
-
-  get effectsPersonal(): i32 {
-    let value = this.get("effectsPersonal");
-    return value!.toI32();
-  }
-
-  set effectsPersonal(value: i32) {
-    this.set("effectsPersonal", Value.fromI32(value));
-  }
-
-  get effectsSocial(): i32 {
-    let value = this.get("effectsSocial");
-    return value!.toI32();
-  }
-
-  set effectsSocial(value: i32) {
-    this.set("effectsSocial", Value.fromI32(value));
-  }
-
-  get effectsProfessional(): i32 {
-    let value = this.get("effectsProfessional");
-    return value!.toI32();
-  }
-
-  set effectsProfessional(value: i32) {
-    this.set("effectsProfessional", Value.fromI32(value));
+  set effects(value: Array<string>) {
+    this.set("effects", Value.fromStringArray(value));
   }
 
   get confirmationRuling(): string | null {
@@ -681,6 +654,84 @@ export class JurisdictionRuleEntity extends Entity {
     } else {
       this.set("confirmationWitness", Value.fromBigInt(<BigInt>value));
     }
+  }
+}
+
+export class JurisdictionRuleEffectEntity extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+
+    this.set("rule", Value.fromString(""));
+    this.set("name", Value.fromString(""));
+    this.set("direction", Value.fromBoolean(false));
+    this.set("value", Value.fromI32(0));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(
+      id != null,
+      "Cannot save JurisdictionRuleEffectEntity entity without an ID"
+    );
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type JurisdictionRuleEffectEntity must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("JurisdictionRuleEffectEntity", id.toString(), this);
+    }
+  }
+
+  static load(id: string): JurisdictionRuleEffectEntity | null {
+    return changetype<JurisdictionRuleEffectEntity | null>(
+      store.get("JurisdictionRuleEffectEntity", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get rule(): string {
+    let value = this.get("rule");
+    return value!.toString();
+  }
+
+  set rule(value: string) {
+    this.set("rule", Value.fromString(value));
+  }
+
+  get name(): string {
+    let value = this.get("name");
+    return value!.toString();
+  }
+
+  set name(value: string) {
+    this.set("name", Value.fromString(value));
+  }
+
+  get direction(): boolean {
+    let value = this.get("direction");
+    return value!.toBoolean();
+  }
+
+  set direction(value: boolean) {
+    this.set("direction", Value.fromBoolean(value));
+  }
+
+  get value(): i32 {
+    let value = this.get("value");
+    return value!.toI32();
+  }
+
+  set value(value: i32) {
+    this.set("value", Value.fromI32(value));
   }
 }
 

@@ -62,6 +62,44 @@ export class ApprovalForAll__Params {
   }
 }
 
+export class OpinionChange extends ethereum.Event {
+  get params(): OpinionChange__Params {
+    return new OpinionChange__Params(this);
+  }
+}
+
+export class OpinionChange__Params {
+  _event: OpinionChange;
+
+  constructor(event: OpinionChange) {
+    this._event = event;
+  }
+
+  get chainId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get contractAddr(): Address {
+    return this._event.parameters[1].value.toAddress();
+  }
+
+  get tokenId(): BigInt {
+    return this._event.parameters[2].value.toBigInt();
+  }
+
+  get domain(): string {
+    return this._event.parameters[3].value.toString();
+  }
+
+  get rating(): boolean {
+    return this._event.parameters[4].value.toBoolean();
+  }
+
+  get score(): BigInt {
+    return this._event.parameters[5].value.toBigInt();
+  }
+}
+
 export class OwnershipTransferred extends ethereum.Event {
   get params(): OwnershipTransferred__Params {
     return new OwnershipTransferred__Params(this);
@@ -101,15 +139,15 @@ export class ReputationChange__Params {
     return this._event.parameters[0].value.toBigInt();
   }
 
-  get domain(): i32 {
-    return this._event.parameters[1].value.toI32();
+  get domain(): string {
+    return this._event.parameters[1].value.toString();
   }
 
-  get rating(): i32 {
-    return this._event.parameters[2].value.toI32();
+  get rating(): boolean {
+    return this._event.parameters[2].value.toBoolean();
   }
 
-  get socre(): BigInt {
+  get score(): BigInt {
     return this._event.parameters[3].value.toBigInt();
   }
 }
@@ -226,14 +264,20 @@ export class AvatarNFT extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
-  getRepForDomain(tokenId: BigInt, domain: i32, rating: i32): BigInt {
+  getRepForDomain(
+    contractAddr: Address,
+    tokenId: BigInt,
+    domain: string,
+    rating: boolean
+  ): BigInt {
     let result = super.call(
       "getRepForDomain",
-      "getRepForDomain(uint256,uint8,uint8):(uint256)",
+      "getRepForDomain(address,uint256,string,bool):(uint256)",
       [
+        ethereum.Value.fromAddress(contractAddr),
         ethereum.Value.fromUnsignedBigInt(tokenId),
-        ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(domain)),
-        ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(rating))
+        ethereum.Value.fromString(domain),
+        ethereum.Value.fromBoolean(rating)
       ]
     );
 
@@ -241,17 +285,101 @@ export class AvatarNFT extends ethereum.SmartContract {
   }
 
   try_getRepForDomain(
+    contractAddr: Address,
     tokenId: BigInt,
-    domain: i32,
-    rating: i32
+    domain: string,
+    rating: boolean
   ): ethereum.CallResult<BigInt> {
     let result = super.tryCall(
       "getRepForDomain",
-      "getRepForDomain(uint256,uint8,uint8):(uint256)",
+      "getRepForDomain(address,uint256,string,bool):(uint256)",
+      [
+        ethereum.Value.fromAddress(contractAddr),
+        ethereum.Value.fromUnsignedBigInt(tokenId),
+        ethereum.Value.fromString(domain),
+        ethereum.Value.fromBoolean(rating)
+      ]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
+  getRepForDomain1(
+    chainId: BigInt,
+    contractAddr: Address,
+    tokenId: BigInt,
+    domain: string,
+    rating: boolean
+  ): BigInt {
+    let result = super.call(
+      "getRepForDomain",
+      "getRepForDomain(uint256,address,uint256,string,bool):(uint256)",
+      [
+        ethereum.Value.fromUnsignedBigInt(chainId),
+        ethereum.Value.fromAddress(contractAddr),
+        ethereum.Value.fromUnsignedBigInt(tokenId),
+        ethereum.Value.fromString(domain),
+        ethereum.Value.fromBoolean(rating)
+      ]
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_getRepForDomain1(
+    chainId: BigInt,
+    contractAddr: Address,
+    tokenId: BigInt,
+    domain: string,
+    rating: boolean
+  ): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "getRepForDomain",
+      "getRepForDomain(uint256,address,uint256,string,bool):(uint256)",
+      [
+        ethereum.Value.fromUnsignedBigInt(chainId),
+        ethereum.Value.fromAddress(contractAddr),
+        ethereum.Value.fromUnsignedBigInt(tokenId),
+        ethereum.Value.fromString(domain),
+        ethereum.Value.fromBoolean(rating)
+      ]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
+  getRepForDomain2(tokenId: BigInt, domain: string, rating: boolean): BigInt {
+    let result = super.call(
+      "getRepForDomain",
+      "getRepForDomain(uint256,string,bool):(uint256)",
       [
         ethereum.Value.fromUnsignedBigInt(tokenId),
-        ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(domain)),
-        ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(rating))
+        ethereum.Value.fromString(domain),
+        ethereum.Value.fromBoolean(rating)
+      ]
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_getRepForDomain2(
+    tokenId: BigInt,
+    domain: string,
+    rating: boolean
+  ): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "getRepForDomain",
+      "getRepForDomain(uint256,string,bool):(uint256)",
+      [
+        ethereum.Value.fromUnsignedBigInt(tokenId),
+        ethereum.Value.fromString(domain),
+        ethereum.Value.fromBoolean(rating)
       ]
     );
     if (result.reverted) {
@@ -436,6 +564,29 @@ export class AvatarNFT extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toString());
   }
 
+  tokenByAddress(owner: Address): BigInt {
+    let result = super.call(
+      "tokenByAddress",
+      "tokenByAddress(address):(uint256)",
+      [ethereum.Value.fromAddress(owner)]
+    );
+
+    return result[0].toBigInt();
+  }
+
+  try_tokenByAddress(owner: Address): ethereum.CallResult<BigInt> {
+    let result = super.tryCall(
+      "tokenByAddress",
+      "tokenByAddress(address):(uint256)",
+      [ethereum.Value.fromAddress(owner)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
   tokenURI(tokenId: BigInt): string {
     let result = super.call("tokenURI", "tokenURI(uint256):(string)", [
       ethereum.Value.fromUnsignedBigInt(tokenId)
@@ -575,6 +726,36 @@ export class ApproveCall__Outputs {
   }
 }
 
+export class BurnCall extends ethereum.Call {
+  get inputs(): BurnCall__Inputs {
+    return new BurnCall__Inputs(this);
+  }
+
+  get outputs(): BurnCall__Outputs {
+    return new BurnCall__Outputs(this);
+  }
+}
+
+export class BurnCall__Inputs {
+  _call: BurnCall;
+
+  constructor(call: BurnCall) {
+    this._call = call;
+  }
+
+  get tokenId(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+}
+
+export class BurnCall__Outputs {
+  _call: BurnCall;
+
+  constructor(call: BurnCall) {
+    this._call = call;
+  }
+}
+
 export class MintCall extends ethereum.Call {
   get inputs(): MintCall__Inputs {
     return new MintCall__Inputs(this);
@@ -656,12 +837,12 @@ export class RepAddCall__Inputs {
     return this._call.inputValues[0].value.toBigInt();
   }
 
-  get domain(): i32 {
-    return this._call.inputValues[1].value.toI32();
+  get domain(): string {
+    return this._call.inputValues[1].value.toString();
   }
 
-  get rating(): i32 {
-    return this._call.inputValues[2].value.toI32();
+  get rating(): boolean {
+    return this._call.inputValues[2].value.toBoolean();
   }
 
   get amount(): i32 {
@@ -787,6 +968,40 @@ export class SetApprovalForAllCall__Outputs {
   _call: SetApprovalForAllCall;
 
   constructor(call: SetApprovalForAllCall) {
+    this._call = call;
+  }
+}
+
+export class TokenOwnerAddCall extends ethereum.Call {
+  get inputs(): TokenOwnerAddCall__Inputs {
+    return new TokenOwnerAddCall__Inputs(this);
+  }
+
+  get outputs(): TokenOwnerAddCall__Outputs {
+    return new TokenOwnerAddCall__Outputs(this);
+  }
+}
+
+export class TokenOwnerAddCall__Inputs {
+  _call: TokenOwnerAddCall;
+
+  constructor(call: TokenOwnerAddCall) {
+    this._call = call;
+  }
+
+  get owner(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+
+  get tokenId(): BigInt {
+    return this._call.inputValues[1].value.toBigInt();
+  }
+}
+
+export class TokenOwnerAddCall__Outputs {
+  _call: TokenOwnerAddCall;
+
+  constructor(call: TokenOwnerAddCall) {
     this._call = call;
   }
 }

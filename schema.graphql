@@ -54,13 +54,18 @@ type JurisdictionRuleEntity @entity {
   uri: String
   uriData: Bytes
   negation: Boolean
-  effectsEnvironmental: Int
-  effectsPersonal: Int
-  effectsSocial: Int
-  effectsProfessional: Int
+  effects: [JurisdictionRuleEffectEntity!]! @derivedFrom(field: "rule")
   confirmationRuling: String
   confirmationEvidence: Boolean
   confirmationWitness: BigInt
+}
+
+type JurisdictionRuleEffectEntity @entity {
+  id: ID! # combination of jurisdiction address, rule id, effect name
+  rule: JurisdictionRuleEntity!
+  name: String!
+  direction: Boolean!
+  value: Int!
 }
 
 type ActionEntity @entity {
