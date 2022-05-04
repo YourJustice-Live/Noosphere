@@ -212,8 +212,9 @@ export function handleRuleConfirmed(event: RuleConfirmed): void {
   if (!caseEntity) {
     return;
   }
-  // Skip if rule not exists
-  let ruleEntityId = `${caseEntity.jurisdiction}_${event.params.ruleId.toString()}`;
+  // Find rule and skip if rule not exists
+  let caseEntityRuleIndex = event.params.ruleId.toU32() - 1;
+  let ruleEntityId = caseEntity.rules[caseEntityRuleIndex];
   let ruleEntity = JurisdictionRuleEntity.load(ruleEntityId);
   if (!ruleEntity) {
     return;
