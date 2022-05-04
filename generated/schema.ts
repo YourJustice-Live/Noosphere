@@ -236,8 +236,8 @@ export class AvatarNftReputationEntity extends Entity {
     super();
     this.set("id", Value.fromString(id));
 
-    this.set("token", Value.fromString(""));
-    this.set("domain", Value.fromI32(0));
+    this.set("avatarNft", Value.fromString(""));
+    this.set("domain", Value.fromString(""));
     this.set("negativeRating", Value.fromBigInt(BigInt.zero()));
     this.set("positiveRating", Value.fromBigInt(BigInt.zero()));
   }
@@ -272,22 +272,22 @@ export class AvatarNftReputationEntity extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get token(): string {
-    let value = this.get("token");
+  get avatarNft(): string {
+    let value = this.get("avatarNft");
     return value!.toString();
   }
 
-  set token(value: string) {
-    this.set("token", Value.fromString(value));
+  set avatarNft(value: string) {
+    this.set("avatarNft", Value.fromString(value));
   }
 
-  get domain(): i32 {
+  get domain(): string {
     let value = this.get("domain");
-    return value!.toI32();
+    return value!.toString();
   }
 
-  set domain(value: i32) {
-    this.set("domain", Value.fromI32(value));
+  set domain(value: string) {
+    this.set("domain", Value.fromString(value));
   }
 
   get negativeRating(): BigInt {

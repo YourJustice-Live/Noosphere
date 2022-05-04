@@ -27,6 +27,8 @@ dataSources:
           handler: handleTransfer
         - event: URI(string,indexed uint256)
           handler: handleURI
+        - event: OpinionChange(uint256,indexed address,indexed uint256,string,bool,uint256)
+          handler: handleOpinionChange
       file: ./src/avatar-nft-mapping.ts
   # Jurisdiction contract
   - kind: ethereum

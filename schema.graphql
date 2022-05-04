@@ -13,17 +13,16 @@ type AvatarNftEntity @entity {
   uriImage: String
   uriFirstName: String
   uriLastName: String
-  reputations: [AvatarNftReputationEntity!]! @derivedFrom(field: "token")
+  reputations: [AvatarNftReputationEntity!]! @derivedFrom(field: "avatarNft")
   totalNegativeRating: BigInt!
   totalPositiveRating: BigInt!
   jurisdictions: [JurisdictionEntity!]! # where avatar is a member
 }
 
-# TODO: Rename "token" to "avatarNft"
 type AvatarNftReputationEntity @entity {
   id: ID! # combination of token id and domain id
-  token: AvatarNftEntity!
-  domain: Int!
+  avatarNft: AvatarNftEntity!
+  domain: String!
   negativeRating: BigInt!
   positiveRating: BigInt!
 }
