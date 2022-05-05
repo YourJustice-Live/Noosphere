@@ -237,6 +237,7 @@ export class AvatarNftReputationEntity extends Entity {
     this.set("id", Value.fromString(id));
 
     this.set("avatarNft", Value.fromString(""));
+    this.set("jurisdiction", Value.fromString(""));
     this.set("domain", Value.fromString(""));
     this.set("negativeRating", Value.fromBigInt(BigInt.zero()));
     this.set("positiveRating", Value.fromBigInt(BigInt.zero()));
@@ -279,6 +280,15 @@ export class AvatarNftReputationEntity extends Entity {
 
   set avatarNft(value: string) {
     this.set("avatarNft", Value.fromString(value));
+  }
+
+  get jurisdiction(): string {
+    let value = this.get("jurisdiction");
+    return value!.toString();
+  }
+
+  set jurisdiction(value: string) {
+    this.set("jurisdiction", Value.fromString(value));
   }
 
   get domain(): string {

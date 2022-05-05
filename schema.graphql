@@ -20,8 +20,9 @@ type AvatarNftEntity @entity {
 }
 
 type AvatarNftReputationEntity @entity {
-  id: ID! # combination of token id and domain id
+  id: ID! # combination of token id, jurisdiction id, and domain name
   avatarNft: AvatarNftEntity!
+  jurisdiction: JurisdictionEntity!
   domain: String!
   negativeRating: BigInt!
   positiveRating: BigInt!

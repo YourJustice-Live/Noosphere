@@ -1,8 +1,7 @@
-import { BigInt, ipfs, json, JSONValue, log } from "@graphprotocol/graph-ts";
-import { OpinionChange, Transfer, URI } from "../generated/AvatarNFT/AvatarNFT";
+import { BigInt, ipfs, json, JSONValue } from "@graphprotocol/graph-ts";
+import { Transfer, URI } from "../generated/AvatarNFT/AvatarNFT";
 import {
-  AvatarNftEntity,
-  AvatarNftReputationEntity,
+  AvatarNftEntity
 } from "../generated/schema";
 import { addAvatarNftToAccountEntity } from "./utils";
 
@@ -85,46 +84,4 @@ export function handleURI(event: URI): void {
   entity.uriFirstName = uriFirstNameString;
   entity.uriLastName = uriLastNameString;
   entity.save();
-}
-
-/**
- * Handle a opinion change event to update avatar reputation.
- */
-export function handleOpinionChange(event: OpinionChange): void {
-  // Find avatar nft entity and return if not found
-  let avatarNftEntity = AvatarNftEntity.load(event.params.tokenId.toString());
-  if (!avatarNftEntity) {
-    return;
-  }
-  // Find or create reputation entity
-  let reputationEntityId = `${event.params.tokenId.toString()}_${event.params.domain.toString()}`;
-  let reputationEntity = AvatarNftReputationEntity.load(reputationEntityId);
-  if (!reputationEntity) {
-    reputationEntity = new AvatarNftReputationEntity(reputationEntityId);
-    reputationEntity.domain = event.params.domain;
-    reputationEntity.avatarNft = avatarNftEntity.id;
-    reputationEntity.negativeRating = BigInt.zero();
-    reputationEntity.positiveRating = BigInt.zero();
-  }
-  // Update negative rating (rating=false)
-  if (event.params.rating === false) {
-    avatarNftEntity.totalNegativeRating = avatarNftEntity.totalNegativeRating.plus(
-      event.params.score
-    );
-    reputationEntity.negativeRating = reputationEntity.negativeRating.plus(
-      event.params.score
-    );
-  }
-  // Update positive rating (rating=1)
-  if (event.params.rating === true) {
-    avatarNftEntity.totalPositiveRating = avatarNftEntity.totalPositiveRating.plus(
-      event.params.score
-    );
-    reputationEntity.positiveRating = reputationEntity.positiveRating.plus(
-      event.params.score
-    );
-  }
-  // Save entities
-  avatarNftEntity.save();
-  reputationEntity.save();
 }

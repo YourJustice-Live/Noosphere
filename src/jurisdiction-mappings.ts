@@ -1,14 +1,17 @@
-import { Address, ipfs } from "@graphprotocol/graph-ts";
+import { Address, BigInt, ipfs } from "@graphprotocol/graph-ts";
 import { Case as CaseContract } from "../generated/Jurisdiction/Case";
 import {
   CaseCreated,
   Confirmation,
+  OpinionChange,
   Rule,
   RuleEffect,
   TransferSingle
 } from "../generated/Jurisdiction/Jurisdiction";
 import {
   ActionEntity,
+  AvatarNftEntity,
+  AvatarNftReputationEntity,
   CaseEntity,
   JurisdictionRoleEntity,
   JurisdictionRuleEffectEntity,
@@ -183,4 +186,49 @@ export function handleCaseCreated(event: CaseCreated): void {
   // Increase cases count
   jurisdictionEntity.casesCount = jurisdictionEntity.casesCount + 1;
   jurisdictionEntity.save();
+}
+
+/**
+ * Handle a opinion change event to update avatar reputation.
+ */
+export function handleOpinionChange(event: OpinionChange): void {
+  // Find avatar nft entity and return if not found
+  let avatarNftEntity = AvatarNftEntity.load(event.params.tokenId.toString());
+  if (!avatarNftEntity) {
+    return;
+  }
+  // Get jurisdiction
+  let jurisdictionEntity = getJurisdictionEntity(event.address.toHexString());
+  // Find or create reputation entity
+  let reputationEntityId = `${event.params.tokenId.toString()}_${jurisdictionEntity.id}_${event.params.domain.toString()}`;
+  let reputationEntity = AvatarNftReputationEntity.load(reputationEntityId);
+  if (!reputationEntity) {
+    reputationEntity = new AvatarNftReputationEntity(reputationEntityId);
+    reputationEntity.jurisdiction = jurisdictionEntity.id;
+    reputationEntity.domain = event.params.domain;
+    reputationEntity.avatarNft = avatarNftEntity.id;
+    reputationEntity.negativeRating = BigInt.zero();
+    reputationEntity.positiveRating = BigInt.zero();
+  }
+  // Update negative rating (rating=false)
+  if (event.params.rating === false) {
+    avatarNftEntity.totalNegativeRating = avatarNftEntity.totalNegativeRating.plus(
+      event.params.score
+    );
+    reputationEntity.negativeRating = reputationEntity.negativeRating.plus(
+      event.params.score
+    );
+  }
+  // Update positive rating (rating=true)
+  if (event.params.rating === true) {
+    avatarNftEntity.totalPositiveRating = avatarNftEntity.totalPositiveRating.plus(
+      event.params.score
+    );
+    reputationEntity.positiveRating = reputationEntity.positiveRating.plus(
+      event.params.score
+    );
+  }
+  // Save entities
+  avatarNftEntity.save();
+  reputationEntity.save();
 }
