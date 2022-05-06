@@ -9,6 +9,12 @@ import { addAvatarNftToAccountEntity } from "./utils";
  * Handle a tranfer event to create or update an Avatar NFT entity for the specified account.
  */
 export function handleTransfer(event: Transfer): void {
+  // TODO: Delete next skip when bug "89ada" will be fixed
+  // Skip if owner is avatar nft contract
+  let avatarNftContract = "0xe7254468763a8d4f791f30f5e8dca635df850772"
+  if (event.params.to.toHexString() == avatarNftContract) {
+    return;
+  }
   // Find or create avatar nft entity
   let avatarNftEntity = AvatarNftEntity.load(event.params.tokenId.toString());
   if (!avatarNftEntity) {
