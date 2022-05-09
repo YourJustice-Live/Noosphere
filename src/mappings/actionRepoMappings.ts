@@ -2,8 +2,8 @@ import { ipfs } from "@graphprotocol/graph-ts";
 import {
   ActionAdded,
   ActionURI
-} from "../generated/ActionRepo/ActionRepo";
-import { ActionEntity } from "../generated/schema";
+} from "../../generated/ActionRepo/ActionRepo";
+import { ActionEntity } from "../../generated/schema";
 
 /**
  * Handle a action added event to create an action entity.

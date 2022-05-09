@@ -4,7 +4,7 @@ import {
   CasePostEntity,
   CaseRoleEntity,
   JurisdictionRuleEntity
-} from "../generated/schema";
+} from "../../generated/schema";
 import {
   Cancelled,
   Post,
@@ -13,8 +13,8 @@ import {
   Stage,
   TransferSingle,
   Verdict
-} from "../generated/templates/Case/Case";
-import { saveCaseEventEntity } from "./utils";
+} from "../../generated/templates/Case/Case";
+import { saveCaseEventEntity } from "../utils";
 
 /**
  * Handle a transfer single event to add a role to case participant.

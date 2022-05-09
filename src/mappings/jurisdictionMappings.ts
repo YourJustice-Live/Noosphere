@@ -1,5 +1,5 @@
 import { Address, BigInt, ipfs } from "@graphprotocol/graph-ts";
-import { Case as CaseContract } from "../generated/Jurisdiction/Case";
+import { Case as CaseContract } from "../../generated/Jurisdiction/Case";
 import {
   CaseCreated,
   Confirmation,
@@ -7,7 +7,7 @@ import {
   Rule,
   RuleEffect,
   TransferSingle
-} from "../generated/Jurisdiction/Jurisdiction";
+} from "../../generated/Jurisdiction/Jurisdiction";
 import {
   ActionEntity,
   AvatarNftEntity,
@@ -16,13 +16,13 @@ import {
   JurisdictionRoleEntity,
   JurisdictionRuleEffectEntity,
   JurisdictionRuleEntity
-} from "../generated/schema";
-import { Case as CaseTemplate } from "../generated/templates";
+} from "../../generated/schema";
+import { Case as CaseTemplate } from "../../generated/templates";
 import {
   addJurisdictionToAvatarNftEntity,
   getJurisdictionEntity,
   removeJurisdctionFromAvatarEntity
-} from "./utils";
+} from "../utils";
 
 /**
  * Handle a tranfer single event to create or update jurisdiction roles.

@@ -27,7 +27,7 @@ dataSources:
           handler: handleTransfer
         - event: URI(string,indexed uint256)
           handler: handleURI
-      file: ./src/avatar-nft-mapping.ts
+      file: ./src/mappings/avatarNftMappings.ts
   # Jurisdiction contract
   - kind: ethereum
     name: Jurisdiction
@@ -63,7 +63,7 @@ dataSources:
           handler: handleCaseCreated
         - event: OpinionChange(uint256,indexed address,indexed uint256,string,bool,uint256)
           handler: handleOpinionChange
-      file: ./src/jurisdiction-mappings.ts
+      file: ./src/mappings/jurisdictionMappings.ts
   # Action repository contract
   - kind: ethereum
     name: ActionRepo
@@ -87,7 +87,7 @@ dataSources:
           handler: handleActionAdded
         - event: ActionURI(indexed bytes32,string)
           handler: handleActionURI
-      file: ./src/action-repo-mappings.ts
+      file: ./src/mappings/actionRepoMappings.ts
 templates:
   # Case contract template
   - kind: ethereum
@@ -125,4 +125,4 @@ templates:
           handler: handleCancelled
         - event: RuleConfirmed(uint256)
           handler: handleRuleConfirmed
-      file: ./src/case-mappings.ts
+      file: ./src/mappings/caseMappings.ts

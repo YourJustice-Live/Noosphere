@@ -1,9 +1,9 @@
 import { BigInt, ipfs, json, JSONValue } from "@graphprotocol/graph-ts";
-import { Transfer, URI } from "../generated/AvatarNFT/AvatarNFT";
+import { Transfer, URI } from "../../generated/AvatarNFT/AvatarNFT";
 import {
   AvatarNftEntity
-} from "../generated/schema";
-import { addAvatarNftToAccountEntity } from "./utils";
+} from "../../generated/schema";
+import { addAvatarNftToAccountEntity } from "../utils";
 
 /**
  * Handle a tranfer event to create or update an Avatar NFT entity for the specified account.
