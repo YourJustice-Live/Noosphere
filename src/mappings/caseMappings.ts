@@ -2,8 +2,7 @@ import { ipfs, json } from "@graphprotocol/graph-ts";
 import {
   CaseEntity,
   CasePostEntity,
-  CaseRoleEntity,
-  JurisdictionRuleEntity
+  JurisdictionRuleEntity,
 } from "../../generated/schema";
 import {
   Cancelled,
@@ -12,8 +11,16 @@ import {
   RuleConfirmed,
   Stage,
   TransferSingle,
-  Verdict
+  Verdict,
 } from "../../generated/templates/Case/Case";
+import {
+  CASE_ROLE_ADMIN_ID,
+  CASE_ROLE_AFFECTED_ID,
+  CASE_ROLE_JUDGE_ID,
+  CASE_ROLE_PLAINTIFF_ID,
+  CASE_ROLE_SUBJECT_ID,
+  CASE_ROLE_WITNESS_ID,
+} from "../constants";
 import { saveCaseEventEntity } from "../utils";
 
 /**
@@ -25,27 +32,56 @@ export function handleTransferSingle(event: TransferSingle): void {
   if (!caseEntity) {
     return;
   }
-  // Add account to case participants if required
-  if (!caseEntity.participantAccounts.includes(event.params.to)) {
-    let caseParticipantAccounts = caseEntity.participantAccounts;
-    caseParticipantAccounts.push(event.params.to);
-    caseEntity.participantAccounts = caseParticipantAccounts;
-    caseEntity.save();
+  // Add account to case role accounts
+  if (
+    event.params.id.toString() == CASE_ROLE_ADMIN_ID &&
+    !caseEntity.adminAccounts.includes(event.params.to)
+  ) {
+    let accounts = caseEntity.adminAccounts;
+    accounts.push(event.params.to);
+    caseEntity.adminAccounts = accounts;
   }
-  // Find or create case role entity
-  let caseRoleEntityId = `${event.address.toHexString()}_${event.params.id.toString()}`;
-  let caseRoleEntity = CaseRoleEntity.load(caseRoleEntityId);
-  if (!caseRoleEntity) {
-    caseRoleEntity = new CaseRoleEntity(caseRoleEntityId);
-    caseRoleEntity.caseEntity = caseEntity.id;
-    caseRoleEntity.roleId = event.params.id;
-    caseRoleEntity.accounts = [];
+  if (
+    event.params.id.toString() == CASE_ROLE_SUBJECT_ID &&
+    !caseEntity.subjectAccounts.includes(event.params.to)
+  ) {
+    let accounts = caseEntity.subjectAccounts;
+    accounts.push(event.params.to);
+    caseEntity.subjectAccounts = accounts;
   }
-  // Add event account to case entity accounts
-  let accounts = caseRoleEntity.accounts;
-  accounts.push(event.params.to);
-  caseRoleEntity.accounts = accounts;
-  caseRoleEntity.save();
+  if (
+    event.params.id.toString() == CASE_ROLE_PLAINTIFF_ID &&
+    !caseEntity.plaintiffAccounts.includes(event.params.to)
+  ) {
+    let accounts = caseEntity.plaintiffAccounts;
+    accounts.push(event.params.to);
+    caseEntity.plaintiffAccounts = accounts;
+  }
+  if (
+    event.params.id.toString() == CASE_ROLE_JUDGE_ID &&
+    !caseEntity.judgeAccounts.includes(event.params.to)
+  ) {
+    let accounts = caseEntity.judgeAccounts;
+    accounts.push(event.params.to);
+    caseEntity.judgeAccounts = accounts;
+  }
+  if (
+    event.params.id.toString() == CASE_ROLE_WITNESS_ID &&
+    !caseEntity.witnessAccounts.includes(event.params.to)
+  ) {
+    let accounts = caseEntity.judgeAccounts;
+    accounts.push(event.params.to);
+    caseEntity.witnessAccounts = accounts;
+  }
+  if (
+    event.params.id.toString() == CASE_ROLE_AFFECTED_ID &&
+    !caseEntity.affectedAccounts.includes(event.params.to)
+  ) {
+    let accounts = caseEntity.affectedAccounts;
+    accounts.push(event.params.to);
+    caseEntity.affectedAccounts = accounts;
+  }
+  caseEntity.save();
   // Save case event entity
   saveCaseEventEntity(
     caseEntity,
@@ -67,7 +103,9 @@ export function handleRuleAdded(event: RuleAdded): void {
     return;
   }
   // Skip if rule entity not exists
-  let ruleEntityId = `${caseEntity.jurisdiction}_${event.params.ruleId.toString()}`;
+  let ruleEntityId = `${
+    caseEntity.jurisdiction
+  }_${event.params.ruleId.toString()}`;
   let ruleEntity = JurisdictionRuleEntity.load(ruleEntityId);
   if (!ruleEntity) {
     return;

@@ -895,7 +895,12 @@ export class CaseEntity extends Entity {
 
     this.set("jurisdiction", Value.fromString(""));
     this.set("rules", Value.fromStringArray(new Array(0)));
-    this.set("participantAccounts", Value.fromBytesArray(new Array(0)));
+    this.set("adminAccounts", Value.fromBytesArray(new Array(0)));
+    this.set("subjectAccounts", Value.fromBytesArray(new Array(0)));
+    this.set("plaintiffAccounts", Value.fromBytesArray(new Array(0)));
+    this.set("judgeAccounts", Value.fromBytesArray(new Array(0)));
+    this.set("witnessAccounts", Value.fromBytesArray(new Array(0)));
+    this.set("affectedAccounts", Value.fromBytesArray(new Array(0)));
   }
 
   save(): void {
@@ -1106,15 +1111,6 @@ export class CaseEntity extends Entity {
     this.set("rules", Value.fromStringArray(value));
   }
 
-  get roles(): Array<string> {
-    let value = this.get("roles");
-    return value!.toStringArray();
-  }
-
-  set roles(value: Array<string>) {
-    this.set("roles", Value.fromStringArray(value));
-  }
-
   get posts(): Array<string> {
     let value = this.get("posts");
     return value!.toStringArray();
@@ -1124,83 +1120,58 @@ export class CaseEntity extends Entity {
     this.set("posts", Value.fromStringArray(value));
   }
 
-  get participantAccounts(): Array<Bytes> {
-    let value = this.get("participantAccounts");
+  get adminAccounts(): Array<Bytes> {
+    let value = this.get("adminAccounts");
     return value!.toBytesArray();
   }
 
-  set participantAccounts(value: Array<Bytes>) {
-    this.set("participantAccounts", Value.fromBytesArray(value));
-  }
-}
-
-export class CaseRoleEntity extends Entity {
-  constructor(id: string) {
-    super();
-    this.set("id", Value.fromString(id));
-
-    this.set("caseEntity", Value.fromString(""));
-    this.set("accounts", Value.fromBytesArray(new Array(0)));
+  set adminAccounts(value: Array<Bytes>) {
+    this.set("adminAccounts", Value.fromBytesArray(value));
   }
 
-  save(): void {
-    let id = this.get("id");
-    assert(id != null, "Cannot save CaseRoleEntity entity without an ID");
-    if (id) {
-      assert(
-        id.kind == ValueKind.STRING,
-        `Entities of type CaseRoleEntity must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
-      );
-      store.set("CaseRoleEntity", id.toString(), this);
-    }
-  }
-
-  static load(id: string): CaseRoleEntity | null {
-    return changetype<CaseRoleEntity | null>(store.get("CaseRoleEntity", id));
-  }
-
-  get id(): string {
-    let value = this.get("id");
-    return value!.toString();
-  }
-
-  set id(value: string) {
-    this.set("id", Value.fromString(value));
-  }
-
-  get caseEntity(): string {
-    let value = this.get("caseEntity");
-    return value!.toString();
-  }
-
-  set caseEntity(value: string) {
-    this.set("caseEntity", Value.fromString(value));
-  }
-
-  get roleId(): BigInt | null {
-    let value = this.get("roleId");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set roleId(value: BigInt | null) {
-    if (!value) {
-      this.unset("roleId");
-    } else {
-      this.set("roleId", Value.fromBigInt(<BigInt>value));
-    }
-  }
-
-  get accounts(): Array<Bytes> {
-    let value = this.get("accounts");
+  get subjectAccounts(): Array<Bytes> {
+    let value = this.get("subjectAccounts");
     return value!.toBytesArray();
   }
 
-  set accounts(value: Array<Bytes>) {
-    this.set("accounts", Value.fromBytesArray(value));
+  set subjectAccounts(value: Array<Bytes>) {
+    this.set("subjectAccounts", Value.fromBytesArray(value));
+  }
+
+  get plaintiffAccounts(): Array<Bytes> {
+    let value = this.get("plaintiffAccounts");
+    return value!.toBytesArray();
+  }
+
+  set plaintiffAccounts(value: Array<Bytes>) {
+    this.set("plaintiffAccounts", Value.fromBytesArray(value));
+  }
+
+  get judgeAccounts(): Array<Bytes> {
+    let value = this.get("judgeAccounts");
+    return value!.toBytesArray();
+  }
+
+  set judgeAccounts(value: Array<Bytes>) {
+    this.set("judgeAccounts", Value.fromBytesArray(value));
+  }
+
+  get witnessAccounts(): Array<Bytes> {
+    let value = this.get("witnessAccounts");
+    return value!.toBytesArray();
+  }
+
+  set witnessAccounts(value: Array<Bytes>) {
+    this.set("witnessAccounts", Value.fromBytesArray(value));
+  }
+
+  get affectedAccounts(): Array<Bytes> {
+    let value = this.get("affectedAccounts");
+    return value!.toBytesArray();
+  }
+
+  set affectedAccounts(value: Array<Bytes>) {
+    this.set("affectedAccounts", Value.fromBytesArray(value));
   }
 }
 

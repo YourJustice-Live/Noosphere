@@ -179,7 +179,12 @@ export function handleCaseCreated(event: CaseCreated): void {
   caseEntity.createdDate = event.block.timestamp;
   caseEntity.jurisdiction = jurisdictionEntity.id;
   caseEntity.rules = [];
-  caseEntity.participantAccounts = [];
+  caseEntity.adminAccounts = [];
+  caseEntity.subjectAccounts = [];
+  caseEntity.plaintiffAccounts = [];
+  caseEntity.judgeAccounts = [];
+  caseEntity.witnessAccounts = [];
+  caseEntity.affectedAccounts = [];
   caseEntity.save();
   // Create case contract for subgraph using template
   CaseTemplate.create(event.params.contractAddress);

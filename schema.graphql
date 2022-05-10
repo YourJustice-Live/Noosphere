@@ -93,16 +93,13 @@ type CaseEntity @entity {
   cancellationUri: String
   cancellationUriData: Bytes
   rules: [JurisdictionRuleEntity!]!
-  roles: [CaseRoleEntity!]! @derivedFrom(field: "caseEntity")
   posts: [CasePostEntity!]! @derivedFrom(field: "caseEntity")
-  participantAccounts: [Bytes!]!
-}
-
-type CaseRoleEntity @entity {
-  id: ID! # combination of case address and role id
-  caseEntity: CaseEntity!
-  roleId: BigInt
-  accounts: [Bytes!]!
+  adminAccounts: [Bytes!]!
+  subjectAccounts: [Bytes!]!
+  plaintiffAccounts: [Bytes!]!
+  judgeAccounts: [Bytes!]!
+  witnessAccounts: [Bytes!]!
+  affectedAccounts: [Bytes!]!
 }
 
 type CasePostEntity @entity {
