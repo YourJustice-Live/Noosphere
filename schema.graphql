@@ -94,6 +94,7 @@ type CaseEntity @entity {
   cancellationUriData: Bytes
   rules: [JurisdictionRuleEntity!]!
   posts: [CasePostEntity!]! @derivedFrom(field: "caseEntity")
+  participantAccounts: [Bytes!]!
   adminAccounts: [Bytes!]!
   subjectAccounts: [Bytes!]!
   plaintiffAccounts: [Bytes!]!

@@ -32,6 +32,12 @@ export function handleTransferSingle(event: TransferSingle): void {
   if (!caseEntity) {
     return;
   }
+  // Add account to case participant accounts
+  if (!caseEntity.participantAccounts.includes(event.params.to)) {
+    let accounts = caseEntity.participantAccounts;
+    accounts.push(event.params.to);
+    caseEntity.participantAccounts = accounts;
+  }
   // Add account to case role accounts
   if (
     event.params.id.toString() == CASE_ROLE_ADMIN_ID &&
@@ -69,7 +75,7 @@ export function handleTransferSingle(event: TransferSingle): void {
     event.params.id.toString() == CASE_ROLE_WITNESS_ID &&
     !caseEntity.witnessAccounts.includes(event.params.to)
   ) {
-    let accounts = caseEntity.judgeAccounts;
+    let accounts = caseEntity.witnessAccounts;
     accounts.push(event.params.to);
     caseEntity.witnessAccounts = accounts;
   }

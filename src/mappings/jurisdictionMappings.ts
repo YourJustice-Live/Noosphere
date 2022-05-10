@@ -179,6 +179,7 @@ export function handleCaseCreated(event: CaseCreated): void {
   caseEntity.createdDate = event.block.timestamp;
   caseEntity.jurisdiction = jurisdictionEntity.id;
   caseEntity.rules = [];
+  caseEntity.participantAccounts = [];
   caseEntity.adminAccounts = [];
   caseEntity.subjectAccounts = [];
   caseEntity.plaintiffAccounts = [];

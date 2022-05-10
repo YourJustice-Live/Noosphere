@@ -895,6 +895,7 @@ export class CaseEntity extends Entity {
 
     this.set("jurisdiction", Value.fromString(""));
     this.set("rules", Value.fromStringArray(new Array(0)));
+    this.set("participantAccounts", Value.fromBytesArray(new Array(0)));
     this.set("adminAccounts", Value.fromBytesArray(new Array(0)));
     this.set("subjectAccounts", Value.fromBytesArray(new Array(0)));
     this.set("plaintiffAccounts", Value.fromBytesArray(new Array(0)));
@@ -1118,6 +1119,15 @@ export class CaseEntity extends Entity {
 
   set posts(value: Array<string>) {
     this.set("posts", Value.fromStringArray(value));
+  }
+
+  get participantAccounts(): Array<Bytes> {
+    let value = this.get("participantAccounts");
+    return value!.toBytesArray();
+  }
+
+  set participantAccounts(value: Array<Bytes>) {
+    this.set("participantAccounts", Value.fromBytesArray(value));
   }
 
   get adminAccounts(): Array<Bytes> {
