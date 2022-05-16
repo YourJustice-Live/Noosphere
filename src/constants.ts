@@ -4,3 +4,5 @@ export const CASE_ROLE_PLAINTIFF_ID = "3";
 export const CASE_ROLE_JUDGE_ID = "4";
 export const CASE_ROLE_WITNESS_ID = "5";
 export const CASE_ROLE_AFFECTED_ID = "6";
+
+export const JURISDICTION_CONTRACT_TYPE_NAME = "jurisdiction"

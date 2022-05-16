@@ -6,6 +6,20 @@ import {
   DataSourceContext
 } from "@graphprotocol/graph-ts";
 
+export class Jurisdiction extends DataSourceTemplate {
+  static create(address: Address): void {
+    DataSourceTemplate.create("Jurisdiction", [address.toHex()]);
+  }
+
+  static createWithContext(address: Address, context: DataSourceContext): void {
+    DataSourceTemplate.createWithContext(
+      "Jurisdiction",
+      [address.toHex()],
+      context
+    );
+  }
+}
+
 export class Case extends DataSourceTemplate {
   static create(address: Address): void {
     DataSourceTemplate.create("Case", [address.toHex()]);

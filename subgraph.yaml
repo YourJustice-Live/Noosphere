@@ -4,6 +4,29 @@ schema:
 features:
   - ipfsOnEthereumContracts
 dataSources:
+  # Hub contract
+  - kind: ethereum
+    name: Hub
+    network: rinkeby
+    source:
+      address: "0xD062b90B1Dd4d2A41e8829Cf3779aFd4C234e6E1"
+      abi: Hub
+      startBlock: 10658964
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - ContractCreated
+      abis:
+        - name: Hub
+          file: ./abis/Hub.json
+        - name: Jurisdiction
+          file: ./abis/Jurisdiction.json
+      eventHandlers:
+        - event: ContractCreated(string,address)
+          handler: handleContractCreated
+      file: ./src/mappings/hubMappings.ts
   # Avatar NFT contract
   - kind: ethereum
     name: AvatarNFT
@@ -89,6 +112,40 @@ dataSources:
           handler: handleActionURI
       file: ./src/mappings/actionRepoMappings.ts
 templates:
+  # Jurisdiction contract template
+  - kind: ethereum
+    name: Jurisdiction
+    network: rinkeby
+    source:
+      abi: Jurisdiction
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - TransferSingle
+        - RuleAdded
+        - RuleEffects
+        - Confirmation
+      abis:
+        - name: Jurisdiction
+          file: ./abis/Jurisdiction.json
+        - name: Case
+          file: ./abis/Case.json
+      eventHandlers:
+        - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: handleTransferSingle
+        - event: Rule(indexed uint256,bytes32,string,string,bool)
+          handler: handleRuleAdded
+        - event: RuleEffect(indexed uint256,bool,uint8,string)
+          handler: handleRuleEffect
+        - event: Confirmation(indexed uint256,string,bool,uint256)
+          handler: handleConfirmation
+        - event: CaseCreated(indexed uint256,address)
+          handler: handleCaseCreated
+        - event: OpinionChange(uint256,indexed address,indexed uint256,string,bool,uint256)
+          handler: handleOpinionChange
+      file: ./src/mappings/jurisdictionMappings.ts
   # Case contract template
   - kind: ethereum
     name: Case
