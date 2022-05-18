@@ -6,6 +6,8 @@ import {
   CaseEntity,
   CaseEventEntity,
   JurisdictionEntity,
+  JurisdictionRuleEffectEntity,
+  JurisdictionRuleEntity,
 } from "../generated/schema";
 
 /**
@@ -87,6 +89,41 @@ export function getJurisdictionEntity(id: string): JurisdictionEntity {
     jurisdictionEntity.save();
   }
   return jurisdictionEntity;
+}
+
+/**
+ * Update the positivity of jurisdiction rule after a extra rule effect is received.
+ */
+export function updateJurisdictionRuleEntityPositivity(
+  rule: JurisdictionRuleEntity,
+  extraRuleEffect: JurisdictionRuleEffectEntity
+): void {
+  let isRulePositive = true;
+  // Prepare array with rule effect ids
+  let ruleEffects = rule.effects;
+  let fixedRuleEffects: Array<string> = ruleEffects
+    ? ruleEffects
+    : new Array<string>();
+  // Check rule effects
+  for (let i = 0; i < fixedRuleEffects.length; i++) {
+    let ruleEffect = JurisdictionRuleEffectEntity.load(fixedRuleEffects[i]);
+    if (!ruleEffect) {
+      continue;
+    }
+    if (ruleEffect.name == extraRuleEffect.name) {
+      continue;
+    }
+    if (!ruleEffect.direction) {
+      isRulePositive = false;
+    }
+  }
+  // Check new rule effect
+  if (!extraRuleEffect.direction) {
+    isRulePositive = false;
+  }
+  // Save result
+  rule.isPositive = isRulePositive;
+  rule.save();
 }
 
 /**

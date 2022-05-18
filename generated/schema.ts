@@ -614,13 +614,21 @@ export class JurisdictionRuleEntity extends Entity {
     this.set("negation", Value.fromBoolean(value));
   }
 
-  get effects(): Array<string> {
+  get effects(): Array<string> | null {
     let value = this.get("effects");
-    return value!.toStringArray();
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
   }
 
-  set effects(value: Array<string>) {
-    this.set("effects", Value.fromStringArray(value));
+  set effects(value: Array<string> | null) {
+    if (!value) {
+      this.unset("effects");
+    } else {
+      this.set("effects", Value.fromStringArray(<Array<string>>value));
+    }
   }
 
   get confirmationRuling(): string | null {
@@ -664,6 +672,15 @@ export class JurisdictionRuleEntity extends Entity {
     } else {
       this.set("confirmationWitness", Value.fromBigInt(<BigInt>value));
     }
+  }
+
+  get isPositive(): boolean {
+    let value = this.get("isPositive");
+    return value!.toBoolean();
+  }
+
+  set isPositive(value: boolean) {
+    this.set("isPositive", Value.fromBoolean(value));
   }
 }
 

@@ -77,7 +77,7 @@ dataSources:
         - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
           handler: handleTransferSingle
         - event: Rule(indexed uint256,bytes32,string,string,bool)
-          handler: handleRuleAdded
+          handler: handleRule
         - event: RuleEffect(indexed uint256,bool,uint8,string)
           handler: handleRuleEffect
         - event: Confirmation(indexed uint256,string,bool,uint256)
@@ -136,7 +136,7 @@ templates:
         - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
           handler: handleTransferSingle
         - event: Rule(indexed uint256,bytes32,string,string,bool)
-          handler: handleRuleAdded
+          handler: handleRule
         - event: RuleEffect(indexed uint256,bool,uint8,string)
           handler: handleRuleEffect
         - event: Confirmation(indexed uint256,string,bool,uint256)

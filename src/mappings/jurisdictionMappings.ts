@@ -21,7 +21,8 @@ import { Case as CaseTemplate } from "../../generated/templates";
 import {
   addJurisdictionToAvatarNftEntity,
   getJurisdictionEntity,
-  removeJurisdctionFromAvatarEntity
+  removeJurisdctionFromAvatarEntity,
+  updateJurisdictionRuleEntityPositivity
 } from "../utils";
 
 /**
@@ -79,7 +80,7 @@ export function handleTransferSingle(event: TransferSingle): void {
 /**
  * Handle a rule event to create or update a jurisdiction rule entity.
  */
-export function handleRuleAdded(event: Rule): void {
+export function handleRule(event: Rule): void {
   // Skip if action entity not exists
   let actionEntity = ActionEntity.load(event.params.about.toHexString());
   if (!actionEntity) {
@@ -139,6 +140,8 @@ export function handleRuleEffect(event: RuleEffect): void {
   ruleEffectEntity.direction = event.params.direction;
   ruleEffectEntity.value = event.params.value;
   ruleEffectEntity.save();
+  // Update rule positive
+  updateJurisdictionRuleEntityPositivity(ruleEntity, ruleEffectEntity);
 }
 
 /**
@@ -206,7 +209,9 @@ export function handleOpinionChange(event: OpinionChange): void {
   // Get jurisdiction
   let jurisdictionEntity = getJurisdictionEntity(event.address.toHexString());
   // Find or create reputation entity
-  let reputationEntityId = `${event.params.tokenId.toString()}_${jurisdictionEntity.id}_${event.params.domain.toString()}`;
+  let reputationEntityId = `${event.params.tokenId.toString()}_${
+    jurisdictionEntity.id
+  }_${event.params.domain.toString()}`;
   let reputationEntity = AvatarNftReputationEntity.load(reputationEntityId);
   if (!reputationEntity) {
     reputationEntity = new AvatarNftReputationEntity(reputationEntityId);
