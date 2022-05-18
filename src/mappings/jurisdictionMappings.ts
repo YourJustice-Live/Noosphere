@@ -1,4 +1,4 @@
-import { Address, BigInt, ipfs } from "@graphprotocol/graph-ts";
+import { Address, BigInt, ipfs, json } from "@graphprotocol/graph-ts";
 import { Case as CaseContract } from "../../generated/Jurisdiction/Case";
 import {
   CaseCreated,
@@ -103,13 +103,20 @@ export function handleRule(event: Rule): void {
   // Load uri data
   let uriIpfsHash = event.params.uri.split("/").at(-1);
   let uriData = ipfs.cat(uriIpfsHash);
+  let uriJson = uriData ? json.fromBytes(uriData) : null;
+  let uriJsonObject = uriJson ? uriJson.toObject() : null;
+  let uriName = uriJsonObject ? uriJsonObject.get("name") : null;
+  let uriNameString = uriName ? uriName.toString() : null;
   // Update jurisdiction rule
   jurisdictionRuleEntity.jurisdiction = jurisdictionEntity.id;
   jurisdictionRuleEntity.about = actionEntity.id;
+  jurisdictionRuleEntity.aboutSubject = actionEntity.subject;
+  jurisdictionRuleEntity.aboutUriName = actionEntity.uriName;
   jurisdictionRuleEntity.ruleId = event.params.id;
   jurisdictionRuleEntity.affected = event.params.affected;
   jurisdictionRuleEntity.uri = event.params.uri;
   jurisdictionRuleEntity.uriData = uriData;
+  jurisdictionRuleEntity.uriName = uriNameString;
   jurisdictionRuleEntity.negation = event.params.negation;
   jurisdictionRuleEntity.save();
   // Increase rules count if jurisdiction rule is new

@@ -49,10 +49,13 @@ type JurisdictionRuleEntity @entity {
   id: ID! # combination of jurisdiction address and rule id
   jurisdiction: JurisdictionEntity!
   about: ActionEntity!
+  aboutSubject: String
+  aboutUriName: String
   ruleId: BigInt!
   affected: String
   uri: String
   uriData: Bytes
+  uriName: String
   negation: Boolean
   effects: [JurisdictionRuleEffectEntity!] @derivedFrom(field: "rule")
   confirmationRuling: String
@@ -77,6 +80,7 @@ type ActionEntity @entity {
   tool: String
   uri: String
   uriData: Bytes
+  uriName: String
   rules: [JurisdictionRuleEntity!]! @derivedFrom(field: "about")
 }
 
