@@ -987,6 +987,10 @@ export class CaseEntity extends Entity {
     this.set("judgeAccounts", Value.fromBytesArray(new Array(0)));
     this.set("witnessAccounts", Value.fromBytesArray(new Array(0)));
     this.set("affectedAccounts", Value.fromBytesArray(new Array(0)));
+    this.set(
+      "accountsWithConfirmationPosts",
+      Value.fromBytesArray(new Array(0))
+    );
   }
 
   save(): void {
@@ -1267,6 +1271,15 @@ export class CaseEntity extends Entity {
 
   set affectedAccounts(value: Array<Bytes>) {
     this.set("affectedAccounts", Value.fromBytesArray(value));
+  }
+
+  get accountsWithConfirmationPosts(): Array<Bytes> {
+    let value = this.get("accountsWithConfirmationPosts");
+    return value!.toBytesArray();
+  }
+
+  set accountsWithConfirmationPosts(value: Array<Bytes>) {
+    this.set("accountsWithConfirmationPosts", Value.fromBytesArray(value));
   }
 }
 

@@ -196,6 +196,7 @@ export function handleCaseCreated(event: CaseCreated): void {
   caseEntity.judgeAccounts = [];
   caseEntity.witnessAccounts = [];
   caseEntity.affectedAccounts = [];
+  caseEntity.accountsWithConfirmationPosts = [];
   caseEntity.save();
   // Create case contract for subgraph using template
   CaseTemplate.create(event.params.contractAddress);

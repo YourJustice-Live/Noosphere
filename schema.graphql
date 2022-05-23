@@ -106,6 +106,7 @@ type CaseEntity @entity {
   judgeAccounts: [Bytes!]!
   witnessAccounts: [Bytes!]!
   affectedAccounts: [Bytes!]!
+  accountsWithConfirmationPosts: [Bytes!]!
 }
 
 type CasePostEntity @entity {

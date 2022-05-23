@@ -14,6 +14,7 @@ import {
   Verdict,
 } from "../../generated/templates/Case/Case";
 import {
+  CASE_POST_TYPE_CONFIRMATION,
   CASE_ROLE_ADMIN_ID,
   CASE_ROLE_AFFECTED_ID,
   CASE_ROLE_JUDGE_ID,
@@ -155,6 +156,13 @@ export function handlePost(event: Post): void {
   casePostEntity.uriData = uriData;
   casePostEntity.uriType = uriJsonTypeString;
   casePostEntity.save();
+  // Save author account in case if the post is confirmation
+  if (uriJsonTypeString == CASE_POST_TYPE_CONFIRMATION) {
+    let accounts = caseEntity.accountsWithConfirmationPosts;
+    accounts.push(event.params.account);
+    caseEntity.accountsWithConfirmationPosts = accounts;
+    caseEntity.save();
+  }
   // Save case event entity
   saveCaseEventEntity(
     caseEntity,
