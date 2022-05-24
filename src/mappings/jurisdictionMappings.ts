@@ -1,4 +1,4 @@
-import { Address, BigInt, ipfs, json } from "@graphprotocol/graph-ts";
+import { Address, BigInt, Bytes, ipfs, json } from "@graphprotocol/graph-ts";
 import { Case as CaseContract } from "../../generated/Jurisdiction/Case";
 import {
   CaseCreated,
@@ -18,6 +18,7 @@ import {
   JurisdictionRuleEntity
 } from "../../generated/schema";
 import { Case as CaseTemplate } from "../../generated/templates";
+import { JURISDICTION_ROLE_ADMIN_ID, JURISDICTION_ROLE_JUDGE_ID, JURISDICTION_ROLE_MEMBER_ID } from "../constants";
 import {
   addJurisdictionToAvatarNftEntity,
   getJurisdictionEntity,
@@ -67,6 +68,33 @@ export function handleTransferSingle(event: TransferSingle): void {
     jurisdictionRoleEntity.accounts = accounts;
     jurisdictionRoleEntity.accountsCount = accountsCount;
     jurisdictionRoleEntity.save();
+    // Add or remove account in jurisdiction entity role accounts
+    let jurisdictionRoleAccounts: Bytes[] = [];
+    if (event.params.id.toString() == JURISDICTION_ROLE_MEMBER_ID) {
+      jurisdictionRoleAccounts = jurisdictionEntity.memberAccounts;
+    }
+    if (event.params.id.toString() == JURISDICTION_ROLE_JUDGE_ID) {
+      jurisdictionRoleAccounts = jurisdictionEntity.judgeAccounts;
+    }
+    if (event.params.id.toString() == JURISDICTION_ROLE_ADMIN_ID) {
+      jurisdictionRoleAccounts = jurisdictionEntity.adminAccounts;
+    }
+    if (isTokenMinted) {
+      jurisdictionRoleAccounts.push(event.params.to);
+    }
+    if (isTokenBurned) {
+      jurisdictionRoleAccounts.splice(accounts.indexOf(event.params.from, 1));
+    }
+    if (event.params.id.toString() == JURISDICTION_ROLE_MEMBER_ID) {
+      jurisdictionEntity.memberAccounts = jurisdictionRoleAccounts;
+    }
+    if (event.params.id.toString() == JURISDICTION_ROLE_JUDGE_ID) {
+      jurisdictionEntity.judgeAccounts = jurisdictionRoleAccounts;
+    }
+    if (event.params.id.toString() == JURISDICTION_ROLE_ADMIN_ID) {
+      jurisdictionEntity.adminAccounts = jurisdictionRoleAccounts;
+    }
+    jurisdictionEntity.save();
     // Update jurisdiction in avatar nft entity
     if (isTokenMinted) {
       addJurisdictionToAvatarNftEntity(event.params.to, jurisdictionEntity);

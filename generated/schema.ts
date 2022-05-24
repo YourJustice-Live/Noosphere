@@ -326,6 +326,9 @@ export class JurisdictionEntity extends Entity {
 
     this.set("rulesCount", Value.fromI32(0));
     this.set("casesCount", Value.fromI32(0));
+    this.set("memberAccounts", Value.fromBytesArray(new Array(0)));
+    this.set("judgeAccounts", Value.fromBytesArray(new Array(0)));
+    this.set("adminAccounts", Value.fromBytesArray(new Array(0)));
   }
 
   save(): void {
@@ -406,6 +409,33 @@ export class JurisdictionEntity extends Entity {
 
   set casesCount(value: i32) {
     this.set("casesCount", Value.fromI32(value));
+  }
+
+  get memberAccounts(): Array<Bytes> {
+    let value = this.get("memberAccounts");
+    return value!.toBytesArray();
+  }
+
+  set memberAccounts(value: Array<Bytes>) {
+    this.set("memberAccounts", Value.fromBytesArray(value));
+  }
+
+  get judgeAccounts(): Array<Bytes> {
+    let value = this.get("judgeAccounts");
+    return value!.toBytesArray();
+  }
+
+  set judgeAccounts(value: Array<Bytes>) {
+    this.set("judgeAccounts", Value.fromBytesArray(value));
+  }
+
+  get adminAccounts(): Array<Bytes> {
+    let value = this.get("adminAccounts");
+    return value!.toBytesArray();
+  }
+
+  set adminAccounts(value: Array<Bytes>) {
+    this.set("adminAccounts", Value.fromBytesArray(value));
   }
 }
 

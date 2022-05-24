@@ -1,5 +1,9 @@
 export const JURISDICTION_CONTRACT_TYPE_NAME = "jurisdiction"
 
+export const JURISDICTION_ROLE_ADMIN_ID = "1";
+export const JURISDICTION_ROLE_MEMBER_ID = "2";
+export const JURISDICTION_ROLE_JUDGE_ID = "3";
+
 export const CASE_ROLE_ADMIN_ID = "1";
 export const CASE_ROLE_SUBJECT_ID = "2";
 export const CASE_ROLE_PLAINTIFF_ID = "3";

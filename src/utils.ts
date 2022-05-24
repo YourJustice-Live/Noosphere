@@ -86,6 +86,9 @@ export function getJurisdictionEntity(id: string): JurisdictionEntity {
     jurisdictionEntity.name = jurisdictionContractName;
     jurisdictionEntity.rulesCount = 0;
     jurisdictionEntity.casesCount = 0;
+    jurisdictionEntity.memberAccounts = [];
+    jurisdictionEntity.judgeAccounts = [];
+    jurisdictionEntity.adminAccounts = [];
     jurisdictionEntity.save();
   }
   return jurisdictionEntity;
