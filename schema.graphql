@@ -3,7 +3,6 @@ type AccountEntity @entity {
   avatarNft: AvatarNftEntity!
 }
 
-# TODO: Use account entity for owner
 type AvatarNftEntity @entity {
   id: ID! # token id (string)
   tokenId: BigInt!

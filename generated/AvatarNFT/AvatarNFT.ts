@@ -972,6 +972,36 @@ export class SetApprovalForAllCall__Outputs {
   }
 }
 
+export class SetHubCall extends ethereum.Call {
+  get inputs(): SetHubCall__Inputs {
+    return new SetHubCall__Inputs(this);
+  }
+
+  get outputs(): SetHubCall__Outputs {
+    return new SetHubCall__Outputs(this);
+  }
+}
+
+export class SetHubCall__Inputs {
+  _call: SetHubCall;
+
+  constructor(call: SetHubCall) {
+    this._call = call;
+  }
+
+  get hubAddr(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+}
+
+export class SetHubCall__Outputs {
+  _call: SetHubCall;
+
+  constructor(call: SetHubCall) {
+    this._call = call;
+  }
+}
+
 export class TokenOwnerAddCall extends ethereum.Call {
   get inputs(): TokenOwnerAddCall__Inputs {
     return new TokenOwnerAddCall__Inputs(this);
@@ -1002,6 +1032,40 @@ export class TokenOwnerAddCall__Outputs {
   _call: TokenOwnerAddCall;
 
   constructor(call: TokenOwnerAddCall) {
+    this._call = call;
+  }
+}
+
+export class TokenOwnerRemoveCall extends ethereum.Call {
+  get inputs(): TokenOwnerRemoveCall__Inputs {
+    return new TokenOwnerRemoveCall__Inputs(this);
+  }
+
+  get outputs(): TokenOwnerRemoveCall__Outputs {
+    return new TokenOwnerRemoveCall__Outputs(this);
+  }
+}
+
+export class TokenOwnerRemoveCall__Inputs {
+  _call: TokenOwnerRemoveCall;
+
+  constructor(call: TokenOwnerRemoveCall) {
+    this._call = call;
+  }
+
+  get owner(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+
+  get tokenId(): BigInt {
+    return this._call.inputValues[1].value.toBigInt();
+  }
+}
+
+export class TokenOwnerRemoveCall__Outputs {
+  _call: TokenOwnerRemoveCall;
+
+  constructor(call: TokenOwnerRemoveCall) {
     this._call = call;
   }
 }

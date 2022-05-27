@@ -10,6 +10,28 @@ import {
   BigInt
 } from "@graphprotocol/graph-ts";
 
+export class Assoc extends ethereum.Event {
+  get params(): Assoc__Params {
+    return new Assoc__Params(this);
+  }
+}
+
+export class Assoc__Params {
+  _event: Assoc;
+
+  constructor(event: Assoc) {
+    this._event = event;
+  }
+
+  get key(): string {
+    return this._event.parameters[0].value.toString();
+  }
+
+  get contractAddr(): Address {
+    return this._event.parameters[1].value.toAddress();
+  }
+}
+
 export class ContractCreated extends ethereum.Event {
   get params(): ContractCreated__Params {
     return new ContractCreated__Params(this);
@@ -159,14 +181,16 @@ export class Hub extends ethereum.SmartContract {
 
   caseMake(
     name_: string,
+    uri_: string,
     addRules: Array<Hub__caseMakeInputAddRulesStruct>,
     assignRoles: Array<Hub__caseMakeInputAssignRolesStruct>
   ): Address {
     let result = super.call(
       "caseMake",
-      "caseMake(string,(address,uint256)[],(address,string)[]):(address)",
+      "caseMake(string,string,(address,uint256)[],(address,string)[]):(address)",
       [
         ethereum.Value.fromString(name_),
+        ethereum.Value.fromString(uri_),
         ethereum.Value.fromTupleArray(addRules),
         ethereum.Value.fromTupleArray(assignRoles)
       ]
@@ -177,14 +201,16 @@ export class Hub extends ethereum.SmartContract {
 
   try_caseMake(
     name_: string,
+    uri_: string,
     addRules: Array<Hub__caseMakeInputAddRulesStruct>,
     assignRoles: Array<Hub__caseMakeInputAssignRolesStruct>
   ): ethereum.CallResult<Address> {
     let result = super.tryCall(
       "caseMake",
-      "caseMake(string,(address,uint256)[],(address,string)[]):(address)",
+      "caseMake(string,string,(address,uint256)[],(address,string)[]):(address)",
       [
         ethereum.Value.fromString(name_),
+        ethereum.Value.fromString(uri_),
         ethereum.Value.fromTupleArray(addRules),
         ethereum.Value.fromTupleArray(assignRoles)
       ]
@@ -286,6 +312,29 @@ export class Hub extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toString());
   }
 
+  supportsInterface(interfaceId: Bytes): boolean {
+    let result = super.call(
+      "supportsInterface",
+      "supportsInterface(bytes4):(bool)",
+      [ethereum.Value.fromFixedBytes(interfaceId)]
+    );
+
+    return result[0].toBoolean();
+  }
+
+  try_supportsInterface(interfaceId: Bytes): ethereum.CallResult<boolean> {
+    let result = super.tryCall(
+      "supportsInterface",
+      "supportsInterface(bytes4):(bool)",
+      [ethereum.Value.fromFixedBytes(interfaceId)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBoolean());
+  }
+
   symbol(): string {
     let result = super.call("symbol", "symbol():(string)", []);
 
@@ -361,14 +410,18 @@ export class CaseMakeCall__Inputs {
     return this._call.inputValues[0].value.toString();
   }
 
+  get uri_(): string {
+    return this._call.inputValues[1].value.toString();
+  }
+
   get addRules(): Array<CaseMakeCallAddRulesStruct> {
-    return this._call.inputValues[1].value.toTupleArray<
+    return this._call.inputValues[2].value.toTupleArray<
       CaseMakeCallAddRulesStruct
     >();
   }
 
   get assignRoles(): Array<CaseMakeCallAssignRolesStruct> {
-    return this._call.inputValues[2].value.toTupleArray<
+    return this._call.inputValues[3].value.toTupleArray<
       CaseMakeCallAssignRolesStruct
     >();
   }
@@ -567,7 +620,7 @@ export class SetAssocCall__Inputs {
     return this._call.inputValues[0].value.toString();
   }
 
-  get contract_(): Address {
+  get contractAddr(): Address {
     return this._call.inputValues[1].value.toAddress();
   }
 }
