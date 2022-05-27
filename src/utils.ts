@@ -1,5 +1,5 @@
 import { Address, BigInt, ByteArray, Bytes } from "@graphprotocol/graph-ts";
-import { Jurisdiction as JurisdictionContract } from "../generated/Jurisdiction/Jurisdiction";
+import { Jurisdiction as JurisdictionContract } from "../generated/templates/Jurisdiction/Jurisdiction";
 import {
   AccountEntity,
   AvatarNftEntity,

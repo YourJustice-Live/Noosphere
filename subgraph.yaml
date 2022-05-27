@@ -97,6 +97,8 @@ templates:
         - name: Case
           file: ./abis/Case.json
       eventHandlers:
+        - event: ContractURI(string)
+          handler: handleContractUri
         - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
           handler: handleTransferSingle
         - event: Rule(indexed uint256,bytes32,string,string,bool)

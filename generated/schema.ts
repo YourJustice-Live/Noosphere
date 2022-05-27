@@ -375,6 +375,40 @@ export class JurisdictionEntity extends Entity {
     }
   }
 
+  get uri(): string | null {
+    let value = this.get("uri");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set uri(value: string | null) {
+    if (!value) {
+      this.unset("uri");
+    } else {
+      this.set("uri", Value.fromString(<string>value));
+    }
+  }
+
+  get uriData(): Bytes | null {
+    let value = this.get("uriData");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set uriData(value: Bytes | null) {
+    if (!value) {
+      this.unset("uriData");
+    } else {
+      this.set("uriData", Value.fromBytes(<Bytes>value));
+    }
+  }
+
   get roles(): Array<string> {
     let value = this.get("roles");
     return value!.toStringArray();

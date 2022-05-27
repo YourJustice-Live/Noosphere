@@ -1,13 +1,16 @@
 import { Address, BigInt, Bytes, ipfs, json } from "@graphprotocol/graph-ts";
-import { Case as CaseContract } from "../../generated/Jurisdiction/Case";
+import {
+  Case as CaseContract,
+  ContractURI,
+} from "../../generated/templates/Jurisdiction/Case";
 import {
   CaseCreated,
   Confirmation,
   OpinionChange,
   Rule,
   RuleEffect,
-  TransferSingle
-} from "../../generated/Jurisdiction/Jurisdiction";
+  TransferSingle,
+} from "../../generated/templates/Jurisdiction/Jurisdiction";
 import {
   ActionEntity,
   AvatarNftEntity,
@@ -15,16 +18,35 @@ import {
   CaseEntity,
   JurisdictionRoleEntity,
   JurisdictionRuleEffectEntity,
-  JurisdictionRuleEntity
+  JurisdictionRuleEntity,
 } from "../../generated/schema";
 import { Case as CaseTemplate } from "../../generated/templates";
-import { JURISDICTION_ROLE_ADMIN_ID, JURISDICTION_ROLE_JUDGE_ID, JURISDICTION_ROLE_MEMBER_ID } from "../constants";
+import {
+  JURISDICTION_ROLE_ADMIN_ID,
+  JURISDICTION_ROLE_JUDGE_ID,
+  JURISDICTION_ROLE_MEMBER_ID,
+} from "../constants";
 import {
   addJurisdictionToAvatarNftEntity,
   getJurisdictionEntity,
   removeJurisdctionFromAvatarEntity,
-  updateJurisdictionRuleEntityPositivity
+  updateJurisdictionRuleEntityPositivity,
 } from "../utils";
+
+/**
+ * Handle a contract uri event to update jurisdiction uri data.
+ */
+export function handleContractUri(event: ContractURI): void {
+  // Get jurisdiction
+  let jurisdictionEntity = getJurisdictionEntity(event.address.toHexString());
+  // Load uri data
+  let uriIpfsHash = event.params.param0.split("/").at(-1);
+  let uriData = ipfs.cat(uriIpfsHash);
+  // Update jurisdiction
+  jurisdictionEntity.uri = event.params.param0;
+  jurisdictionEntity.uriData = uriData;
+  jurisdictionEntity.save();
+}
 
 /**
  * Handle a tranfer single event to create or update jurisdiction roles.
