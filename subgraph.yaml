@@ -51,42 +51,6 @@ dataSources:
         - event: URI(string,indexed uint256)
           handler: handleURI
       file: ./src/mappings/avatarNftMappings.ts
-  # Jurisdiction contract
-  - kind: ethereum
-    name: Jurisdiction
-    network: rinkeby
-    source:
-      address: "0x37E2db964E4394d20e66CD302C01D08208019DEa"
-      abi: Jurisdiction
-      startBlock: 10619029
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.5
-      language: wasm/assemblyscript
-      entities:
-        - TransferSingle
-        - RuleAdded
-        - RuleEffects
-        - Confirmation
-      abis:
-        - name: Jurisdiction
-          file: ./abis/Jurisdiction.json
-        - name: Case
-          file: ./abis/Case.json
-      eventHandlers:
-        - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
-          handler: handleTransferSingle
-        - event: Rule(indexed uint256,bytes32,string,string,bool)
-          handler: handleRule
-        - event: RuleEffect(indexed uint256,bool,uint8,string)
-          handler: handleRuleEffect
-        - event: Confirmation(indexed uint256,string,bool,uint256)
-          handler: handleConfirmation
-        - event: CaseCreated(indexed uint256,address)
-          handler: handleCaseCreated
-        - event: OpinionChange(uint256,indexed address,indexed uint256,string,bool,uint256)
-          handler: handleOpinionChange
-      file: ./src/mappings/jurisdictionMappings.ts
   # Action repository contract
   - kind: ethereum
     name: ActionRepo
