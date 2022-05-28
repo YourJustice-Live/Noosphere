@@ -38,6 +38,7 @@ type JurisdictionEntity @entity {
   memberAccounts: [Bytes!]!
   judgeAccounts: [Bytes!]!
   adminAccounts: [Bytes!]!
+  memberAccountsCount: Int!
 }
 
 type JurisdictionRoleEntity @entity {

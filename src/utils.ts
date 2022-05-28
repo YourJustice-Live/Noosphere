@@ -7,8 +7,13 @@ import {
   CaseEventEntity,
   JurisdictionEntity,
   JurisdictionRuleEffectEntity,
-  JurisdictionRuleEntity,
+  JurisdictionRuleEntity
 } from "../generated/schema";
+import {
+  JURISDICTION_ROLE_ADMIN_ID,
+  JURISDICTION_ROLE_JUDGE_ID,
+  JURISDICTION_ROLE_MEMBER_ID
+} from "./constants";
 
 /**
  * Find or create account entity and add avatar nft entity to it.
@@ -89,9 +94,32 @@ export function getJurisdictionEntity(id: string): JurisdictionEntity {
     jurisdictionEntity.memberAccounts = [];
     jurisdictionEntity.judgeAccounts = [];
     jurisdictionEntity.adminAccounts = [];
+    jurisdictionEntity.memberAccountsCount = 0;
     jurisdictionEntity.save();
   }
   return jurisdictionEntity;
+}
+
+/**
+ * Update jurisdiction role accounts.
+ */
+export function updateJurisdictionRoleAccounts(
+  jurisdiction: JurisdictionEntity,
+  role: string,
+  accounts: Bytes[],
+  accountsCount: i32,
+): void {
+  if (role == JURISDICTION_ROLE_MEMBER_ID) {
+    jurisdiction.memberAccounts = accounts;
+    jurisdiction.memberAccountsCount = accountsCount;
+  }
+  if (role == JURISDICTION_ROLE_JUDGE_ID) {
+    jurisdiction.judgeAccounts = accounts;
+  }
+  if (role == JURISDICTION_ROLE_ADMIN_ID) {
+    jurisdiction.adminAccounts = accounts;
+  }
+  jurisdiction.save();
 }
 
 /**
