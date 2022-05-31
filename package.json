@@ -4,7 +4,8 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ kiv1n/yourjustice-dev",
+    "deploy-dev": "graph deploy --node https://api.thegraph.com/deploy/ kiv1n/yourjustice-dev",
+    "deploy-sandbox": "graph deploy --node https://api.thegraph.com/deploy/ kiv1n/yourjustice-sandbox",
     "create-local": "graph create --node http://localhost:8020/ kiv1n/yourjustice-dev",
     "remove-local": "graph remove --node http://localhost:8020/ kiv1n/yourjustice-dev",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 kiv1n/yourjustice-dev"
