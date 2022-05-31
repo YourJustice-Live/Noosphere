@@ -2,9 +2,9 @@
 
 ## Commands
 
-- Init project: `graph init --product hosted-service`
+- Install Graph CLI: `yarn global add @graphprotocol/graph-cli`
 - Install dependencies: `yarn install`
-- Set deployment key: `yarn auth`
+- Set deployment key: `graph auth`
 - Update generated code: `yarn codegen`
 - Deploy to development subgraph: `yarn deploy`
 - Deploy to production subgraph: `graph deploy --node https://api.thegraph.com/deploy/ kiv1n/yourjustice`
