@@ -21,7 +21,7 @@ export function handleTransfer(event: Transfer): void {
     avatarNftEntity = new AvatarNftEntity(event.params.tokenId.toString());
   }
   // Update avatar nft entity's params
-  avatarNftEntity.tokenId = event.params.tokenId;
+  avatarNftEntity.idInt = event.params.tokenId;
   avatarNftEntity.owner = event.params.to.toHexString();
   avatarNftEntity.totalNegativeRating = BigInt.zero();
   avatarNftEntity.totalPositiveRating = BigInt.zero();

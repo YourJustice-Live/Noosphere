@@ -4,8 +4,8 @@ type AccountEntity @entity {
 }
 
 type AvatarNftEntity @entity {
-  id: ID! # token id (string)
-  tokenId: BigInt!
+  id: ID! # token id
+  idInt: BigInt! # token id which is useful for sorting
   owner: String! # account address
   uri: String # metadata uri
   uriData: Bytes
