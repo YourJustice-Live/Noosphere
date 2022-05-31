@@ -6,7 +6,8 @@
 - Install dependencies: `yarn install`
 - Set deployment key: `graph auth`
 - Update generated code: `yarn codegen`
-- Deploy to development subgraph: `yarn deploy`
+- Deploy to development subgraph: `yarn deploy-dev`
+- Deploy to sandbox subgraph: `yarn deploy-sandbox`
 - Deploy to production subgraph: `graph deploy --node https://api.thegraph.com/deploy/ kiv1n/yourjustice`
 
 ## Subgraph
