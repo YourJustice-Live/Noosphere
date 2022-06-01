@@ -3,18 +3,12 @@ import { Transfer, URI } from "../../generated/AvatarNFT/AvatarNFT";
 import {
   AvatarNftEntity
 } from "../../generated/schema";
-import { AVATAR_NFT_CONTRACT } from "../constants";
 import { addAvatarNftToAccountEntity } from "../utils";
 
 /**
  * Handle a tranfer event to create or update an Avatar NFT entity for the specified account.
  */
 export function handleTransfer(event: Transfer): void {
-  // Skip if owner is avatar nft contract
-  // TODO: Delete when bug "89ada" will be fixed
-  if (event.params.to.toHexString() == AVATAR_NFT_CONTRACT) {
-    return;
-  }
   // Find or create avatar nft entity
   let avatarNftEntity = AvatarNftEntity.load(event.params.tokenId.toString());
   if (!avatarNftEntity) {
