@@ -63,6 +63,8 @@ export class AvatarNftEntity extends Entity {
     this.set("owner", Value.fromString(""));
     this.set("totalNegativeRating", Value.fromBigInt(BigInt.zero()));
     this.set("totalPositiveRating", Value.fromBigInt(BigInt.zero()));
+    this.set("totalNegativeCases", Value.fromBigInt(BigInt.zero()));
+    this.set("totalPositiveCases", Value.fromBigInt(BigInt.zero()));
     this.set("jurisdictions", Value.fromStringArray(new Array(0)));
   }
 
@@ -219,6 +221,24 @@ export class AvatarNftEntity extends Entity {
 
   set totalPositiveRating(value: BigInt) {
     this.set("totalPositiveRating", Value.fromBigInt(value));
+  }
+
+  get totalNegativeCases(): BigInt {
+    let value = this.get("totalNegativeCases");
+    return value!.toBigInt();
+  }
+
+  set totalNegativeCases(value: BigInt) {
+    this.set("totalNegativeCases", Value.fromBigInt(value));
+  }
+
+  get totalPositiveCases(): BigInt {
+    let value = this.get("totalPositiveCases");
+    return value!.toBigInt();
+  }
+
+  set totalPositiveCases(value: BigInt) {
+    this.set("totalPositiveCases", Value.fromBigInt(value));
   }
 
   get jurisdictions(): Array<string> {
