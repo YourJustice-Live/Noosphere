@@ -59,7 +59,7 @@ export class AvatarNftEntity extends Entity {
     super();
     this.set("id", Value.fromString(id));
 
-    this.set("idInt", Value.fromBigInt(BigInt.zero()));
+    this.set("idBigInt", Value.fromBigInt(BigInt.zero()));
     this.set("owner", Value.fromString(""));
     this.set("totalNegativeRating", Value.fromBigInt(BigInt.zero()));
     this.set("totalPositiveRating", Value.fromBigInt(BigInt.zero()));
@@ -91,13 +91,13 @@ export class AvatarNftEntity extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get idInt(): BigInt {
-    let value = this.get("idInt");
+  get idBigInt(): BigInt {
+    let value = this.get("idBigInt");
     return value!.toBigInt();
   }
 
-  set idInt(value: BigInt) {
-    this.set("idInt", Value.fromBigInt(value));
+  set idBigInt(value: BigInt) {
+    this.set("idBigInt", Value.fromBigInt(value));
   }
 
   get owner(): string {
@@ -326,10 +326,10 @@ export class JurisdictionEntity extends Entity {
 
     this.set("rulesCount", Value.fromI32(0));
     this.set("casesCount", Value.fromI32(0));
-    this.set("memberAccounts", Value.fromBytesArray(new Array(0)));
-    this.set("judgeAccounts", Value.fromBytesArray(new Array(0)));
-    this.set("adminAccounts", Value.fromBytesArray(new Array(0)));
-    this.set("memberAccountsCount", Value.fromI32(0));
+    this.set("members", Value.fromStringArray(new Array(0)));
+    this.set("judges", Value.fromStringArray(new Array(0)));
+    this.set("admins", Value.fromStringArray(new Array(0)));
+    this.set("membersCount", Value.fromI32(0));
   }
 
   save(): void {
@@ -446,40 +446,40 @@ export class JurisdictionEntity extends Entity {
     this.set("casesCount", Value.fromI32(value));
   }
 
-  get memberAccounts(): Array<Bytes> {
-    let value = this.get("memberAccounts");
-    return value!.toBytesArray();
+  get members(): Array<string> {
+    let value = this.get("members");
+    return value!.toStringArray();
   }
 
-  set memberAccounts(value: Array<Bytes>) {
-    this.set("memberAccounts", Value.fromBytesArray(value));
+  set members(value: Array<string>) {
+    this.set("members", Value.fromStringArray(value));
   }
 
-  get judgeAccounts(): Array<Bytes> {
-    let value = this.get("judgeAccounts");
-    return value!.toBytesArray();
+  get judges(): Array<string> {
+    let value = this.get("judges");
+    return value!.toStringArray();
   }
 
-  set judgeAccounts(value: Array<Bytes>) {
-    this.set("judgeAccounts", Value.fromBytesArray(value));
+  set judges(value: Array<string>) {
+    this.set("judges", Value.fromStringArray(value));
   }
 
-  get adminAccounts(): Array<Bytes> {
-    let value = this.get("adminAccounts");
-    return value!.toBytesArray();
+  get admins(): Array<string> {
+    let value = this.get("admins");
+    return value!.toStringArray();
   }
 
-  set adminAccounts(value: Array<Bytes>) {
-    this.set("adminAccounts", Value.fromBytesArray(value));
+  set admins(value: Array<string>) {
+    this.set("admins", Value.fromStringArray(value));
   }
 
-  get memberAccountsCount(): i32 {
-    let value = this.get("memberAccountsCount");
+  get membersCount(): i32 {
+    let value = this.get("membersCount");
     return value!.toI32();
   }
 
-  set memberAccountsCount(value: i32) {
-    this.set("memberAccountsCount", Value.fromI32(value));
+  set membersCount(value: i32) {
+    this.set("membersCount", Value.fromI32(value));
   }
 }
 
@@ -490,8 +490,8 @@ export class JurisdictionRoleEntity extends Entity {
 
     this.set("jurisdiction", Value.fromString(""));
     this.set("roleId", Value.fromBigInt(BigInt.zero()));
-    this.set("accounts", Value.fromBytesArray(new Array(0)));
-    this.set("accountsCount", Value.fromI32(0));
+    this.set("participants", Value.fromStringArray(new Array(0)));
+    this.set("participantsCount", Value.fromI32(0));
   }
 
   save(): void {
@@ -542,22 +542,22 @@ export class JurisdictionRoleEntity extends Entity {
     this.set("roleId", Value.fromBigInt(value));
   }
 
-  get accounts(): Array<Bytes> {
-    let value = this.get("accounts");
-    return value!.toBytesArray();
+  get participants(): Array<string> {
+    let value = this.get("participants");
+    return value!.toStringArray();
   }
 
-  set accounts(value: Array<Bytes>) {
-    this.set("accounts", Value.fromBytesArray(value));
+  set participants(value: Array<string>) {
+    this.set("participants", Value.fromStringArray(value));
   }
 
-  get accountsCount(): i32 {
-    let value = this.get("accountsCount");
+  get participantsCount(): i32 {
+    let value = this.get("participantsCount");
     return value!.toI32();
   }
 
-  set accountsCount(value: i32) {
-    this.set("accountsCount", Value.fromI32(value));
+  set participantsCount(value: i32) {
+    this.set("participantsCount", Value.fromI32(value));
   }
 }
 

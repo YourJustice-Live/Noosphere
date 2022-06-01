@@ -322,6 +322,74 @@ export class TransferBatch__Params {
   }
 }
 
+export class TransferBatchByToken extends ethereum.Event {
+  get params(): TransferBatchByToken__Params {
+    return new TransferBatchByToken__Params(this);
+  }
+}
+
+export class TransferBatchByToken__Params {
+  _event: TransferBatchByToken;
+
+  constructor(event: TransferBatchByToken) {
+    this._event = event;
+  }
+
+  get operator(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get fromOwnerToken(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+
+  get toOwnerToken(): BigInt {
+    return this._event.parameters[2].value.toBigInt();
+  }
+
+  get ids(): Array<BigInt> {
+    return this._event.parameters[3].value.toBigIntArray();
+  }
+
+  get values(): Array<BigInt> {
+    return this._event.parameters[4].value.toBigIntArray();
+  }
+}
+
+export class TransferByToken extends ethereum.Event {
+  get params(): TransferByToken__Params {
+    return new TransferByToken__Params(this);
+  }
+}
+
+export class TransferByToken__Params {
+  _event: TransferByToken;
+
+  constructor(event: TransferByToken) {
+    this._event = event;
+  }
+
+  get operator(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get fromOwnerToken(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+
+  get toOwnerToken(): BigInt {
+    return this._event.parameters[2].value.toBigInt();
+  }
+
+  get id(): BigInt {
+    return this._event.parameters[3].value.toBigInt();
+  }
+
+  get value(): BigInt {
+    return this._event.parameters[4].value.toBigInt();
+  }
+}
+
 export class TransferSingle extends ethereum.Event {
   get params(): TransferSingle__Params {
     return new TransferSingle__Params(this);
@@ -643,6 +711,21 @@ export class Case extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
+  getHub(): Address {
+    let result = super.call("getHub", "getHub():(address)", []);
+
+    return result[0].toAddress();
+  }
+
+  try_getHub(): ethereum.CallResult<Address> {
+    let result = super.tryCall("getHub", "getHub():(address)", []);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
   getTargetContract(): Address {

@@ -5,7 +5,7 @@ type AccountEntity @entity {
 
 type AvatarNftEntity @entity {
   id: ID! # token id
-  idInt: BigInt! # token id which is useful for sorting
+  idBigInt: BigInt! # token id which is useful for sorting
   owner: String! # account address
   uri: String # metadata uri
   uriData: Bytes
@@ -36,18 +36,18 @@ type JurisdictionEntity @entity {
   rules: [JurisdictionRuleEntity!]! @derivedFrom(field: "jurisdiction")
   rulesCount: Int!
   casesCount: Int!
-  memberAccounts: [Bytes!]!
-  judgeAccounts: [Bytes!]!
-  adminAccounts: [Bytes!]!
-  memberAccountsCount: Int!
+  members: [String!]!
+  judges: [String!]!
+  admins: [String!]!
+  membersCount: Int!
 }
 
 type JurisdictionRoleEntity @entity {
   id: ID! # combination of jurisdiction address and role id
   jurisdiction: JurisdictionEntity!
   roleId: BigInt!
-  accounts: [Bytes!]!
-  accountsCount: Int!
+  participants: [String!]!
+  participantsCount: Int!
 }
 
 type JurisdictionRuleEntity @entity {
