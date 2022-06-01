@@ -416,6 +416,10 @@ export class Case__ruleGetResultValue0Struct extends ethereum.Tuple {
   get uri(): string {
     return this[3].toString();
   }
+
+  get disabled(): boolean {
+    return this[4].toBoolean();
+  }
 }
 
 export class Case__ruleGetConfirmationResultValue0Struct extends ethereum.Tuple {
@@ -816,7 +820,7 @@ export class Case extends ethereum.SmartContract {
   ruleGet(ruleRefId: BigInt): Case__ruleGetResultValue0Struct {
     let result = super.call(
       "ruleGet",
-      "ruleGet(uint256):((bytes32,string,bool,string))",
+      "ruleGet(uint256):((bytes32,string,bool,string,bool))",
       [ethereum.Value.fromUnsignedBigInt(ruleRefId)]
     );
 
@@ -828,7 +832,7 @@ export class Case extends ethereum.SmartContract {
   ): ethereum.CallResult<Case__ruleGetResultValue0Struct> {
     let result = super.tryCall(
       "ruleGet",
-      "ruleGet(uint256):((bytes32,string,bool,string))",
+      "ruleGet(uint256):((bytes32,string,bool,string,bool))",
       [ethereum.Value.fromUnsignedBigInt(ruleRefId)]
     );
     if (result.reverted) {
@@ -1132,8 +1136,8 @@ export class InitializeCallAddRulesStruct extends ethereum.Tuple {
 }
 
 export class InitializeCallAssignRolesStruct extends ethereum.Tuple {
-  get account(): Address {
-    return this[0].toAddress();
+  get tokenId(): BigInt {
+    return this[0].toBigInt();
   }
 
   get role(): string {

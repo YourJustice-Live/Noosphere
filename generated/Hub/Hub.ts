@@ -127,8 +127,8 @@ export class Hub__caseMakeInputAddRulesStruct extends ethereum.Tuple {
 }
 
 export class Hub__caseMakeInputAssignRolesStruct extends ethereum.Tuple {
-  get account(): Address {
-    return this[0].toAddress();
+  get tokenId(): BigInt {
+    return this[0].toBigInt();
   }
 
   get role(): string {
@@ -187,7 +187,7 @@ export class Hub extends ethereum.SmartContract {
   ): Address {
     let result = super.call(
       "caseMake",
-      "caseMake(string,string,(address,uint256)[],(address,string)[]):(address)",
+      "caseMake(string,string,(address,uint256)[],(uint256,string)[]):(address)",
       [
         ethereum.Value.fromString(name_),
         ethereum.Value.fromString(uri_),
@@ -207,7 +207,7 @@ export class Hub extends ethereum.SmartContract {
   ): ethereum.CallResult<Address> {
     let result = super.tryCall(
       "caseMake",
-      "caseMake(string,string,(address,uint256)[],(address,string)[]):(address)",
+      "caseMake(string,string,(address,uint256)[],(uint256,string)[]):(address)",
       [
         ethereum.Value.fromString(name_),
         ethereum.Value.fromString(uri_),
@@ -450,8 +450,8 @@ export class CaseMakeCallAddRulesStruct extends ethereum.Tuple {
 }
 
 export class CaseMakeCallAssignRolesStruct extends ethereum.Tuple {
-  get account(): Address {
-    return this[0].toAddress();
+  get tokenId(): BigInt {
+    return this[0].toBigInt();
   }
 
   get role(): string {
