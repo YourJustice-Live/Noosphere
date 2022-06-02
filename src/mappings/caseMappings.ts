@@ -230,8 +230,8 @@ export function handleVerdict(event: Verdict): void {
   caseEntity.verdictUriData = uriData;
   caseEntity.save();
   // Add case to subjects' avatar nft entities
-  for (let i = 0; i < caseEntity.subjectAccounts.length; i++) {
-    addCaseToAvatarNftEntity(caseEntity.subjectAccounts[i], caseEntity);
+  for (let i = 0; i < caseEntity.subjects.length; i++) {
+    addCaseToAvatarNftEntity(caseEntity.subjects[i], caseEntity);
   }
   // Save case event entity
   saveCaseEventEntity(

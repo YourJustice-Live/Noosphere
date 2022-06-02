@@ -34,16 +34,11 @@ export function addAvatarNftToAccountEntity(
  * Increase amount of positive or negative cases for avatar nft using specified case.
  */
 export function addCaseToAvatarNftEntity(
-  account: Bytes,
+  id: string,
   caseEntity: CaseEntity
 ): void {
-  // Load account
-  let accountEntity = AccountEntity.load(account.toHexString());
-  if (!accountEntity) {
-    return;
-  }
   // Load avatar nft
-  let avatarNftEntity = AvatarNftEntity.load(accountEntity.avatarNft);
+  let avatarNftEntity = AvatarNftEntity.load(id);
   if (!avatarNftEntity) {
     return;
   }
