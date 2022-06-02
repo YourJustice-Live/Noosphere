@@ -36,9 +36,9 @@ type JurisdictionEntity @entity {
   rules: [JurisdictionRuleEntity!]! @derivedFrom(field: "jurisdiction")
   rulesCount: Int!
   casesCount: Int!
-  members: [String!]!
-  judges: [String!]!
-  admins: [String!]!
+  members: [String!]! # avatar nft ids
+  judges: [String!]! # avatar nft ids
+  admins: [String!]! # avatar nft ids
   membersCount: Int!
 }
 
@@ -46,7 +46,7 @@ type JurisdictionRoleEntity @entity {
   id: ID! # combination of jurisdiction address and role id
   jurisdiction: JurisdictionEntity!
   roleId: BigInt!
-  participants: [String!]!
+  participants: [String!]! # avatar nft ids
   participantsCount: Int!
 }
 
@@ -104,14 +104,14 @@ type CaseEntity @entity {
   cancellationUriData: Bytes
   rules: [JurisdictionRuleEntity!]!
   posts: [CasePostEntity!]! @derivedFrom(field: "caseEntity")
-  participantAccounts: [Bytes!]!
-  adminAccounts: [Bytes!]!
-  subjectAccounts: [Bytes!]!
-  plaintiffAccounts: [Bytes!]!
-  judgeAccounts: [Bytes!]!
-  witnessAccounts: [Bytes!]!
-  affectedAccounts: [Bytes!]!
-  accountsWithConfirmationPosts: [Bytes!]!
+  participants: [String!]! # avatar nft ids
+  admins: [String!]! # avatar nft ids
+  subjects: [String!]! # avatar nft ids
+  plaintiffs: [String!]! # avatar nft ids
+  judges: [String!]! # avatar nft ids
+  witnesses: [String!]! # avatar nft ids
+  affecteds: [String!]! # avatar nft ids
+  participantsWithConfirmationPosts: [String!]!
 }
 
 type CasePostEntity @entity {

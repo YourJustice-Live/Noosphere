@@ -1,5 +1,6 @@
 import { ipfs, json } from "@graphprotocol/graph-ts";
 import {
+  AccountEntity,
   CaseEntity,
   CasePostEntity,
   JurisdictionRuleEntity,
@@ -10,7 +11,7 @@ import {
   RuleAdded,
   RuleConfirmed,
   Stage,
-  TransferSingle,
+  TransferByToken,
   Verdict,
 } from "../../generated/templates/Case/Case";
 import {
@@ -25,68 +26,68 @@ import {
 import { saveCaseEventEntity } from "../utils";
 
 /**
- * Handle a transfer single event to add a role to case participant.
+ * Handle a transfer by token event to add a case participant.
  */
-export function handleTransferSingle(event: TransferSingle): void {
+export function handleTransferByToken(event: TransferByToken): void {
   // Skip if case entity not exists
   let caseEntity = CaseEntity.load(event.address.toHexString());
   if (!caseEntity) {
     return;
   }
-  // Add account to case participant accounts
-  if (!caseEntity.participantAccounts.includes(event.params.to)) {
-    let accounts = caseEntity.participantAccounts;
-    accounts.push(event.params.to);
-    caseEntity.participantAccounts = accounts;
+  // Add token to case participant accounts
+  if (!caseEntity.participants.includes(event.params.toOwnerToken.toString())) {
+    let accounts = caseEntity.participants;
+    accounts.push(event.params.toOwnerToken.toString());
+    caseEntity.participants = accounts;
   }
-  // Add account to case role accounts
+  // Add token to case role participants
   if (
     event.params.id.toString() == CASE_ROLE_ADMIN_ID &&
-    !caseEntity.adminAccounts.includes(event.params.to)
+    !caseEntity.admins.includes(event.params.toOwnerToken.toString())
   ) {
-    let accounts = caseEntity.adminAccounts;
-    accounts.push(event.params.to);
-    caseEntity.adminAccounts = accounts;
+    let admins = caseEntity.admins;
+    admins.push(event.params.toOwnerToken.toString());
+    caseEntity.admins = admins;
   }
   if (
     event.params.id.toString() == CASE_ROLE_SUBJECT_ID &&
-    !caseEntity.subjectAccounts.includes(event.params.to)
+    !caseEntity.subjects.includes(event.params.toOwnerToken.toString())
   ) {
-    let accounts = caseEntity.subjectAccounts;
-    accounts.push(event.params.to);
-    caseEntity.subjectAccounts = accounts;
+    let subjects = caseEntity.subjects;
+    subjects.push(event.params.toOwnerToken.toString());
+    caseEntity.subjects = subjects;
   }
   if (
     event.params.id.toString() == CASE_ROLE_PLAINTIFF_ID &&
-    !caseEntity.plaintiffAccounts.includes(event.params.to)
+    !caseEntity.plaintiffs.includes(event.params.toOwnerToken.toString())
   ) {
-    let accounts = caseEntity.plaintiffAccounts;
-    accounts.push(event.params.to);
-    caseEntity.plaintiffAccounts = accounts;
+    let plaintiffs = caseEntity.plaintiffs;
+    plaintiffs.push(event.params.toOwnerToken.toString());
+    caseEntity.plaintiffs = plaintiffs;
   }
   if (
     event.params.id.toString() == CASE_ROLE_JUDGE_ID &&
-    !caseEntity.judgeAccounts.includes(event.params.to)
+    !caseEntity.judges.includes(event.params.toOwnerToken.toString())
   ) {
-    let accounts = caseEntity.judgeAccounts;
-    accounts.push(event.params.to);
-    caseEntity.judgeAccounts = accounts;
+    let judges = caseEntity.judges;
+    judges.push(event.params.toOwnerToken.toString());
+    caseEntity.judges = judges;
   }
   if (
     event.params.id.toString() == CASE_ROLE_WITNESS_ID &&
-    !caseEntity.witnessAccounts.includes(event.params.to)
+    !caseEntity.witnesses.includes(event.params.toOwnerToken.toString())
   ) {
-    let accounts = caseEntity.witnessAccounts;
-    accounts.push(event.params.to);
-    caseEntity.witnessAccounts = accounts;
+    let witnesses = caseEntity.witnesses;
+    witnesses.push(event.params.toOwnerToken.toString());
+    caseEntity.witnesses = witnesses;
   }
   if (
     event.params.id.toString() == CASE_ROLE_AFFECTED_ID &&
-    !caseEntity.affectedAccounts.includes(event.params.to)
+    !caseEntity.affecteds.includes(event.params.toOwnerToken.toString())
   ) {
-    let accounts = caseEntity.affectedAccounts;
-    accounts.push(event.params.to);
-    caseEntity.affectedAccounts = accounts;
+    let affecteds = caseEntity.affecteds;
+    affecteds.push(event.params.toOwnerToken.toString());
+    caseEntity.affecteds = affecteds;
   }
   caseEntity.save();
   // Save case event entity
@@ -95,8 +96,8 @@ export function handleTransferSingle(event: TransferSingle): void {
     event.address,
     event.transaction.hash,
     event.block.timestamp,
-    "accountGotRole",
-    `{"account":"${event.params.to.toHexString()}","role":"${event.params.id.toString()}"}`
+    "tokenGotRole",
+    `{"token":"${event.params.toOwnerToken.toString()}","role":"${event.params.id.toString()}"}`
   );
 }
 
@@ -156,12 +157,17 @@ export function handlePost(event: Post): void {
   casePostEntity.uriData = uriData;
   casePostEntity.uriType = uriJsonTypeString;
   casePostEntity.save();
-  // Save author account in case if the post is confirmation
+  // Save author token in case if the post is confirmation
   if (uriJsonTypeString == CASE_POST_TYPE_CONFIRMATION) {
-    let accounts = caseEntity.accountsWithConfirmationPosts;
-    accounts.push(event.params.account);
-    caseEntity.accountsWithConfirmationPosts = accounts;
-    caseEntity.save();
+    let accountEntity = AccountEntity.load(
+      event.params.account.toHexString()
+    );
+    if (accountEntity) {
+      let participants = caseEntity.participantsWithConfirmationPosts;
+      participants.push(accountEntity.avatarNft);
+      caseEntity.participantsWithConfirmationPosts = participants;
+      caseEntity.save();
+    }
   }
   // Save case event entity
   saveCaseEventEntity(

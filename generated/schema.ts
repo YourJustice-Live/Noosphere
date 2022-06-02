@@ -1054,16 +1054,16 @@ export class CaseEntity extends Entity {
 
     this.set("jurisdiction", Value.fromString(""));
     this.set("rules", Value.fromStringArray(new Array(0)));
-    this.set("participantAccounts", Value.fromBytesArray(new Array(0)));
-    this.set("adminAccounts", Value.fromBytesArray(new Array(0)));
-    this.set("subjectAccounts", Value.fromBytesArray(new Array(0)));
-    this.set("plaintiffAccounts", Value.fromBytesArray(new Array(0)));
-    this.set("judgeAccounts", Value.fromBytesArray(new Array(0)));
-    this.set("witnessAccounts", Value.fromBytesArray(new Array(0)));
-    this.set("affectedAccounts", Value.fromBytesArray(new Array(0)));
+    this.set("participants", Value.fromStringArray(new Array(0)));
+    this.set("admins", Value.fromStringArray(new Array(0)));
+    this.set("subjects", Value.fromStringArray(new Array(0)));
+    this.set("plaintiffs", Value.fromStringArray(new Array(0)));
+    this.set("judges", Value.fromStringArray(new Array(0)));
+    this.set("witnesses", Value.fromStringArray(new Array(0)));
+    this.set("affecteds", Value.fromStringArray(new Array(0)));
     this.set(
-      "accountsWithConfirmationPosts",
-      Value.fromBytesArray(new Array(0))
+      "participantsWithConfirmationPosts",
+      Value.fromStringArray(new Array(0))
     );
   }
 
@@ -1284,76 +1284,76 @@ export class CaseEntity extends Entity {
     this.set("posts", Value.fromStringArray(value));
   }
 
-  get participantAccounts(): Array<Bytes> {
-    let value = this.get("participantAccounts");
-    return value!.toBytesArray();
+  get participants(): Array<string> {
+    let value = this.get("participants");
+    return value!.toStringArray();
   }
 
-  set participantAccounts(value: Array<Bytes>) {
-    this.set("participantAccounts", Value.fromBytesArray(value));
+  set participants(value: Array<string>) {
+    this.set("participants", Value.fromStringArray(value));
   }
 
-  get adminAccounts(): Array<Bytes> {
-    let value = this.get("adminAccounts");
-    return value!.toBytesArray();
+  get admins(): Array<string> {
+    let value = this.get("admins");
+    return value!.toStringArray();
   }
 
-  set adminAccounts(value: Array<Bytes>) {
-    this.set("adminAccounts", Value.fromBytesArray(value));
+  set admins(value: Array<string>) {
+    this.set("admins", Value.fromStringArray(value));
   }
 
-  get subjectAccounts(): Array<Bytes> {
-    let value = this.get("subjectAccounts");
-    return value!.toBytesArray();
+  get subjects(): Array<string> {
+    let value = this.get("subjects");
+    return value!.toStringArray();
   }
 
-  set subjectAccounts(value: Array<Bytes>) {
-    this.set("subjectAccounts", Value.fromBytesArray(value));
+  set subjects(value: Array<string>) {
+    this.set("subjects", Value.fromStringArray(value));
   }
 
-  get plaintiffAccounts(): Array<Bytes> {
-    let value = this.get("plaintiffAccounts");
-    return value!.toBytesArray();
+  get plaintiffs(): Array<string> {
+    let value = this.get("plaintiffs");
+    return value!.toStringArray();
   }
 
-  set plaintiffAccounts(value: Array<Bytes>) {
-    this.set("plaintiffAccounts", Value.fromBytesArray(value));
+  set plaintiffs(value: Array<string>) {
+    this.set("plaintiffs", Value.fromStringArray(value));
   }
 
-  get judgeAccounts(): Array<Bytes> {
-    let value = this.get("judgeAccounts");
-    return value!.toBytesArray();
+  get judges(): Array<string> {
+    let value = this.get("judges");
+    return value!.toStringArray();
   }
 
-  set judgeAccounts(value: Array<Bytes>) {
-    this.set("judgeAccounts", Value.fromBytesArray(value));
+  set judges(value: Array<string>) {
+    this.set("judges", Value.fromStringArray(value));
   }
 
-  get witnessAccounts(): Array<Bytes> {
-    let value = this.get("witnessAccounts");
-    return value!.toBytesArray();
+  get witnesses(): Array<string> {
+    let value = this.get("witnesses");
+    return value!.toStringArray();
   }
 
-  set witnessAccounts(value: Array<Bytes>) {
-    this.set("witnessAccounts", Value.fromBytesArray(value));
+  set witnesses(value: Array<string>) {
+    this.set("witnesses", Value.fromStringArray(value));
   }
 
-  get affectedAccounts(): Array<Bytes> {
-    let value = this.get("affectedAccounts");
-    return value!.toBytesArray();
+  get affecteds(): Array<string> {
+    let value = this.get("affecteds");
+    return value!.toStringArray();
   }
 
-  set affectedAccounts(value: Array<Bytes>) {
-    this.set("affectedAccounts", Value.fromBytesArray(value));
+  set affecteds(value: Array<string>) {
+    this.set("affecteds", Value.fromStringArray(value));
   }
 
-  get accountsWithConfirmationPosts(): Array<Bytes> {
-    let value = this.get("accountsWithConfirmationPosts");
-    return value!.toBytesArray();
+  get participantsWithConfirmationPosts(): Array<string> {
+    let value = this.get("participantsWithConfirmationPosts");
+    return value!.toStringArray();
   }
 
-  set accountsWithConfirmationPosts(value: Array<Bytes>) {
-    this.set("accountsWithConfirmationPosts", Value.fromBytesArray(value));
+  set participantsWithConfirmationPosts(value: Array<string>) {
+    this.set("participantsWithConfirmationPosts", Value.fromStringArray(value));
   }
 }
 
