@@ -19,6 +19,8 @@ export function handleTransfer(event: Transfer): void {
   avatarNftEntity.owner = event.params.to.toHexString();
   avatarNftEntity.totalNegativeRating = BigInt.zero();
   avatarNftEntity.totalPositiveRating = BigInt.zero();
+  avatarNftEntity.totalNegativeCases = BigInt.zero();
+  avatarNftEntity.totalPositiveCases = BigInt.zero();
   avatarNftEntity.save();
   // Update account entity
   addAvatarNftToAccountEntity(event.params.to, avatarNftEntity);

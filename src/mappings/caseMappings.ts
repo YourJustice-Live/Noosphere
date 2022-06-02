@@ -1,4 +1,4 @@
-import { ipfs, json } from "@graphprotocol/graph-ts";
+import { ipfs, json, log } from "@graphprotocol/graph-ts";
 import {
   AccountEntity,
   CaseEntity,
@@ -23,7 +23,7 @@ import {
   CASE_ROLE_SUBJECT_ID,
   CASE_ROLE_WITNESS_ID,
 } from "../constants";
-import { saveCaseEventEntity } from "../utils";
+import { addCaseToAvatarNftEntity, saveCaseEventEntity } from "../utils";
 
 /**
  * Handle a transfer by token event to add a case participant.
@@ -229,6 +229,10 @@ export function handleVerdict(event: Verdict): void {
   caseEntity.verdictUri = event.params.uri;
   caseEntity.verdictUriData = uriData;
   caseEntity.save();
+  // Add case to subjects' avatar nft entities
+  for (let i = 0; i < caseEntity.subjectAccounts.length; i++) {
+    addCaseToAvatarNftEntity(caseEntity.subjectAccounts[i], caseEntity);
+  }
   // Save case event entity
   saveCaseEventEntity(
     caseEntity,

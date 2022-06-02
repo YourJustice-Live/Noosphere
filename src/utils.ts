@@ -7,12 +7,12 @@ import {
   CaseEventEntity,
   JurisdictionEntity,
   JurisdictionRuleEffectEntity,
-  JurisdictionRuleEntity
+  JurisdictionRuleEntity,
 } from "../generated/schema";
 import {
   JURISDICTION_ROLE_ADMIN_ID,
   JURISDICTION_ROLE_JUDGE_ID,
-  JURISDICTION_ROLE_MEMBER_ID
+  JURISDICTION_ROLE_MEMBER_ID,
 } from "./constants";
 
 /**
@@ -31,7 +31,50 @@ export function addAvatarNftToAccountEntity(
 }
 
 /**
- * Find avatar nft entity by id and add jurisdiction entity to it.
+ * Increase amount of positive or negative cases for avatar nft using specified case.
+ */
+export function addCaseToAvatarNftEntity(
+  account: Bytes,
+  caseEntity: CaseEntity
+): void {
+  // Load account
+  let accountEntity = AccountEntity.load(account.toHexString());
+  if (!accountEntity) {
+    return;
+  }
+  // Load avatar nft
+  let avatarNftEntity = AvatarNftEntity.load(accountEntity.avatarNft);
+  if (!avatarNftEntity) {
+    return;
+  }
+  // Check case confirmed rules
+  let caseConfirmedRules = caseEntity.verdictConfirmedRules;
+  if (!caseConfirmedRules || caseConfirmedRules.length == 0) {
+    return;
+  }
+  // Define case is positive or not
+  let isCasePositive = true;
+  for (let i = 0; i < caseConfirmedRules.length; i++) {
+    let caseConfirmedRule = JurisdictionRuleEntity.load(caseConfirmedRules[i]);
+    if (caseConfirmedRule && !caseConfirmedRule.isPositive) {
+      isCasePositive = false;
+    }
+  }
+  // Update avatar nft
+  if (isCasePositive) {
+    avatarNftEntity.totalPositiveCases = avatarNftEntity.totalPositiveCases.plus(
+      BigInt.fromU32(1)
+    );
+  } else {
+    avatarNftEntity.totalNegativeCases = avatarNftEntity.totalNegativeCases.plus(
+      BigInt.fromU32(1)
+    );
+  }
+  avatarNftEntity.save();
+}
+
+/**
+ * Find avatar nft entity and add jurisdiction entity to it.
  */
 export function addJurisdictionToAvatarNftEntity(
   id: string,
