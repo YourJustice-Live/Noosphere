@@ -164,9 +164,6 @@ export function handlePost(event: Post): void {
   casePostEntity.save();
   // Save author token in case if the post is confirmation
   if (uriJsonTypeString == CASE_POST_TYPE_CONFIRMATION) {
-    let accountEntity = AccountEntity.load(
-      event.params.account.toHexString()
-    );
     if (accountEntity) {
       let participants = caseEntity.participantsWithConfirmationPosts;
       participants.push(accountEntity.avatarNft);
