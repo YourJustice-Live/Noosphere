@@ -95,11 +95,11 @@ type CaseEntity @entity {
   createdDate: BigInt
   jurisdiction: JurisdictionEntity!
   stage: Int
-  verdictAuthor: Bytes
+  verdictAuthor: String # avatar nft id
   verdictConfirmedRules: [JurisdictionRuleEntity!]
   verdictUri: String
   verdictUriData: Bytes
-  cancellationAuthor: Bytes
+  cancellationAuthor: String # avatar nft id
   cancellationUri: String
   cancellationUriData: Bytes
   rules: [JurisdictionRuleEntity!]!
@@ -116,7 +116,7 @@ type CaseEntity @entity {
 
 type CasePostEntity @entity {
   id: ID! # combination of case address and post transaction address
-  author: Bytes!
+  author: String! # avatar nft id
   createdDate: BigInt
   caseEntity: CaseEntity!
   entityRole: String

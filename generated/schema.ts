@@ -1144,20 +1144,20 @@ export class CaseEntity extends Entity {
     this.set("stage", Value.fromI32(value));
   }
 
-  get verdictAuthor(): Bytes | null {
+  get verdictAuthor(): string | null {
     let value = this.get("verdictAuthor");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
-      return value.toBytes();
+      return value.toString();
     }
   }
 
-  set verdictAuthor(value: Bytes | null) {
+  set verdictAuthor(value: string | null) {
     if (!value) {
       this.unset("verdictAuthor");
     } else {
-      this.set("verdictAuthor", Value.fromBytes(<Bytes>value));
+      this.set("verdictAuthor", Value.fromString(<string>value));
     }
   }
 
@@ -1215,20 +1215,20 @@ export class CaseEntity extends Entity {
     }
   }
 
-  get cancellationAuthor(): Bytes | null {
+  get cancellationAuthor(): string | null {
     let value = this.get("cancellationAuthor");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
-      return value.toBytes();
+      return value.toString();
     }
   }
 
-  set cancellationAuthor(value: Bytes | null) {
+  set cancellationAuthor(value: string | null) {
     if (!value) {
       this.unset("cancellationAuthor");
     } else {
-      this.set("cancellationAuthor", Value.fromBytes(<Bytes>value));
+      this.set("cancellationAuthor", Value.fromString(<string>value));
     }
   }
 
@@ -1362,7 +1362,7 @@ export class CasePostEntity extends Entity {
     super();
     this.set("id", Value.fromString(id));
 
-    this.set("author", Value.fromBytes(Bytes.empty()));
+    this.set("author", Value.fromString(""));
     this.set("caseEntity", Value.fromString(""));
   }
 
@@ -1391,13 +1391,13 @@ export class CasePostEntity extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get author(): Bytes {
+  get author(): string {
     let value = this.get("author");
-    return value!.toBytes();
+    return value!.toString();
   }
 
-  set author(value: Bytes) {
-    this.set("author", Value.fromBytes(value));
+  set author(value: string) {
+    this.set("author", Value.fromString(value));
   }
 
   get createdDate(): BigInt | null {

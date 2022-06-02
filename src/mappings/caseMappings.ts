@@ -96,8 +96,8 @@ export function handleTransferByToken(event: TransferByToken): void {
     event.address,
     event.transaction.hash,
     event.block.timestamp,
-    "tokenGotRole",
-    `{"token":"${event.params.toOwnerToken.toString()}","role":"${event.params.id.toString()}"}`
+    "assignedRole",
+    `{"assignee":"${event.params.toOwnerToken.toString()}","role":"${event.params.id.toString()}"}`
   );
 }
 
@@ -134,6 +134,11 @@ export function handlePost(event: Post): void {
   if (!caseEntity) {
     return;
   }
+  // Skip if account entity not exists
+  let accountEntity = AccountEntity.load(event.params.account.toHexString());
+  if (!accountEntity) {
+    return;
+  }
   // Load uri data
   let uriIpfsHash = event.params.uri.split("/").at(-1);
   let uriData = ipfs.cat(uriIpfsHash);
@@ -149,7 +154,7 @@ export function handlePost(event: Post): void {
   let casePostEntityId = `${event.address.toHexString()}_${event.transaction.hash.toHexString()}`;
   // Create post entity
   let casePostEntity = new CasePostEntity(casePostEntityId);
-  casePostEntity.author = event.params.account;
+  casePostEntity.author = accountEntity.avatarNft;
   casePostEntity.createdDate = event.block.timestamp;
   casePostEntity.caseEntity = caseEntity.id;
   casePostEntity.entityRole = event.params.entRole.toString();
@@ -175,8 +180,8 @@ export function handlePost(event: Post): void {
     event.address,
     event.transaction.hash,
     event.block.timestamp,
-    "accountAddedPost",
-    `{"account":"${event.params.account.toHexString()}","type":"${
+    "addedPost",
+    `{"author":"${accountEntity.avatarNft}","type":"${
       uriJsonTypeString ? uriJsonTypeString : "Unknown"
     }"}`
   );
@@ -200,7 +205,7 @@ export function handleStage(event: Stage): void {
     event.address,
     event.transaction.hash,
     event.block.timestamp,
-    "stageChanged",
+    "changedStage",
     `{"stage":"${event.params.stage}"}`
   );
 }
@@ -214,11 +219,16 @@ export function handleVerdict(event: Verdict): void {
   if (!caseEntity) {
     return;
   }
+  // Skip if account entity not exists
+  let accountEntity = AccountEntity.load(event.params.account.toHexString());
+  if (!accountEntity) {
+    return;
+  }
   // Load uri data
   let uriIpfsHash = event.params.uri.split("/").at(-1);
   let uriData = ipfs.cat(uriIpfsHash);
   // Set case verdict params
-  caseEntity.verdictAuthor = event.params.account;
+  caseEntity.verdictAuthor = accountEntity.avatarNft;
   caseEntity.verdictUri = event.params.uri;
   caseEntity.verdictUriData = uriData;
   caseEntity.save();
@@ -228,8 +238,8 @@ export function handleVerdict(event: Verdict): void {
     event.address,
     event.transaction.hash,
     event.block.timestamp,
-    "accountMadeVerdict",
-    `{"account":"${event.params.account.toHexString()}"}`
+    "madeVerdict",
+    `{"judge":"${accountEntity.avatarNft}"}`
   );
 }
 
@@ -242,11 +252,16 @@ export function handleCancelled(event: Cancelled): void {
   if (!caseEntity) {
     return;
   }
+  // Skip if account entity not exists
+  let accountEntity = AccountEntity.load(event.params.account.toHexString());
+  if (!accountEntity) {
+    return;
+  }
   // Load uri data
   let uriIpfsHash = event.params.uri.split("/").at(-1);
   let uriData = ipfs.cat(uriIpfsHash);
   // Set case cancellation params
-  caseEntity.cancellationAuthor = event.params.account;
+  caseEntity.cancellationAuthor = accountEntity.avatarNft;
   caseEntity.cancellationUri = event.params.uri;
   caseEntity.cancellationUriData = uriData;
   caseEntity.save();
@@ -256,8 +271,8 @@ export function handleCancelled(event: Cancelled): void {
     event.address,
     event.transaction.hash,
     event.block.timestamp,
-    "accountCancelledCase",
-    `{"account":"${event.params.account.toHexString()}"}`
+    "cancelledCase",
+    `{"judge":"${event.params.account.toHexString()}"}`
   );
 }
 
