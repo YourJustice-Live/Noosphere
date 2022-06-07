@@ -16,6 +16,8 @@ type AvatarNftEntity @entity {
   reputations: [AvatarNftReputationEntity!]! @derivedFrom(field: "avatarNft")
   totalNegativeRating: BigInt!
   totalPositiveRating: BigInt!
+  totalNegativeCases: BigInt! # where avatar is subject and case verdict is made
+  totalPositiveCases: BigInt! # where avatar is subject and case verdict is made
   jurisdictions: [JurisdictionEntity!]! # where avatar is a member
 }
 
@@ -38,6 +40,7 @@ type JurisdictionEntity @entity {
   memberAccounts: [Bytes!]!
   judgeAccounts: [Bytes!]!
   adminAccounts: [Bytes!]!
+  memberAccountsCount: Int!
 }
 
 type JurisdictionRoleEntity @entity {
