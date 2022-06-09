@@ -32,6 +32,7 @@ type AvatarNftReputationEntity @entity {
 
 type JurisdictionEntity @entity {
   id: ID! # contract address
+  address: String # contract address
   name: String
   roles: [JurisdictionRoleEntity!]! @derivedFrom(field: "jurisdiction")
   rules: [JurisdictionRuleEntity!]! @derivedFrom(field: "jurisdiction")
