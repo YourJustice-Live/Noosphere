@@ -9,9 +9,9 @@ dataSources:
     name: Hub
     network: rinkeby
     source:
-      address: "0xcdb0662dC5a446bc662607f44339ca8bD569DB97"
+      address: "0x997f2f4d8fA9a2d7688ae293Dc7Ab1da3f462701"
       abi: Hub
-      startBlock: 10778383
+      startBlock: 10819487
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
