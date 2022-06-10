@@ -118,6 +118,7 @@ export function getJurisdictionEntity(id: string): JurisdictionEntity {
     let jurisdictionContractName = jurisdictionContract.name();
     // Create jurisdiction enity
     jurisdictionEntity = new JurisdictionEntity(id);
+    jurisdictionEntity.address = id;
     jurisdictionEntity.name = jurisdictionContractName;
     jurisdictionEntity.rulesCount = 0;
     jurisdictionEntity.casesCount = 0;

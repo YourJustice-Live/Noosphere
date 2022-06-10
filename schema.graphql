@@ -31,6 +31,7 @@ type AvatarNftReputationEntity @entity {
 
 type JurisdictionEntity @entity {
   id: ID! # contract address
+  address: String # contract address
   name: String
   uri: String # metadata uri
   uriData: Bytes
