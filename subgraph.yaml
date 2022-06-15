@@ -9,9 +9,9 @@ dataSources:
     name: Hub
     network: rinkeby
     source:
-      address: "0x3b549c05c88281AB0747DE54bA84Cd79B334d67e"
+      address: "0xbf10eFEd01E280a4c21D11caE18404B67BF8bd78"
       abi: Hub
-      startBlock: 10842188
+      startBlock: 10851420
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -32,9 +32,9 @@ dataSources:
     name: AvatarNFT
     network: rinkeby
     source:
-      address: "0x99d9730803Ab1a2ec9695F68aC9a48342079096c"
+      address: "0xE253c1F803C1835325360a28eBDE83346f30cC38"
       abi: AvatarNFT
-      startBlock: 10842189
+      startBlock: 10851421
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -56,9 +56,9 @@ dataSources:
     name: ActionRepo
     network: rinkeby
     source:
-      address: "0x0F5083439bf6da5b8dd343e6aDb80f6643D117eb"
+      address: "0x9DFd9bc6600E6Ba1B14E7b6f2250D340936EB5B4"
       abi: ActionRepo
-      startBlock: 10842193
+      startBlock: 10851539
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
