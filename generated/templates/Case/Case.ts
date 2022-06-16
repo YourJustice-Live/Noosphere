@@ -177,12 +177,16 @@ export class Post__Params {
     return this._event.parameters[0].value.toAddress();
   }
 
+  get tokenId(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+
   get entRole(): string {
-    return this._event.parameters[1].value.toString();
+    return this._event.parameters[2].value.toString();
   }
 
   get uri(): string {
-    return this._event.parameters[2].value.toString();
+    return this._event.parameters[3].value.toString();
   }
 }
 
@@ -1042,27 +1046,27 @@ export class Case extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toString());
   }
 
-  uniqueMembers(id: BigInt): Array<Address> {
+  uniqueMembers(id: BigInt): Array<BigInt> {
     let result = super.call(
       "uniqueMembers",
-      "uniqueMembers(uint256):(address[])",
+      "uniqueMembers(uint256):(uint256[])",
       [ethereum.Value.fromUnsignedBigInt(id)]
     );
 
-    return result[0].toAddressArray();
+    return result[0].toBigIntArray();
   }
 
-  try_uniqueMembers(id: BigInt): ethereum.CallResult<Array<Address>> {
+  try_uniqueMembers(id: BigInt): ethereum.CallResult<Array<BigInt>> {
     let result = super.tryCall(
       "uniqueMembers",
-      "uniqueMembers(uint256):(address[])",
+      "uniqueMembers(uint256):(uint256[])",
       [ethereum.Value.fromUnsignedBigInt(id)]
     );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toAddressArray());
+    return ethereum.CallResult.fromValue(value[0].toBigIntArray());
   }
 
   uniqueMembersCount(id: BigInt): BigInt {
@@ -1088,27 +1092,27 @@ export class Case extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
-  uniqueRoleMembers(role: string): Array<Address> {
+  uniqueRoleMembers(role: string): Array<BigInt> {
     let result = super.call(
       "uniqueRoleMembers",
-      "uniqueRoleMembers(string):(address[])",
+      "uniqueRoleMembers(string):(uint256[])",
       [ethereum.Value.fromString(role)]
     );
 
-    return result[0].toAddressArray();
+    return result[0].toBigIntArray();
   }
 
-  try_uniqueRoleMembers(role: string): ethereum.CallResult<Array<Address>> {
+  try_uniqueRoleMembers(role: string): ethereum.CallResult<Array<BigInt>> {
     let result = super.tryCall(
       "uniqueRoleMembers",
-      "uniqueRoleMembers(string):(address[])",
+      "uniqueRoleMembers(string):(uint256[])",
       [ethereum.Value.fromString(role)]
     );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toAddressArray());
+    return ethereum.CallResult.fromValue(value[0].toBigIntArray());
   }
 
   uniqueRoleMembersCount(role: string): BigInt {
@@ -1249,8 +1253,12 @@ export class PostCall__Inputs {
     return this._call.inputValues[0].value.toString();
   }
 
+  get tokenId(): BigInt {
+    return this._call.inputValues[1].value.toBigInt();
+  }
+
   get uri_(): string {
-    return this._call.inputValues[1].value.toString();
+    return this._call.inputValues[2].value.toString();
   }
 }
 
@@ -1420,98 +1428,6 @@ export class RuleAddCall__Outputs {
   _call: RuleAddCall;
 
   constructor(call: RuleAddCall) {
-    this._call = call;
-  }
-}
-
-export class SafeBatchTransferFromCall extends ethereum.Call {
-  get inputs(): SafeBatchTransferFromCall__Inputs {
-    return new SafeBatchTransferFromCall__Inputs(this);
-  }
-
-  get outputs(): SafeBatchTransferFromCall__Outputs {
-    return new SafeBatchTransferFromCall__Outputs(this);
-  }
-}
-
-export class SafeBatchTransferFromCall__Inputs {
-  _call: SafeBatchTransferFromCall;
-
-  constructor(call: SafeBatchTransferFromCall) {
-    this._call = call;
-  }
-
-  get from(): Address {
-    return this._call.inputValues[0].value.toAddress();
-  }
-
-  get to(): Address {
-    return this._call.inputValues[1].value.toAddress();
-  }
-
-  get ids(): Array<BigInt> {
-    return this._call.inputValues[2].value.toBigIntArray();
-  }
-
-  get amounts(): Array<BigInt> {
-    return this._call.inputValues[3].value.toBigIntArray();
-  }
-
-  get data(): Bytes {
-    return this._call.inputValues[4].value.toBytes();
-  }
-}
-
-export class SafeBatchTransferFromCall__Outputs {
-  _call: SafeBatchTransferFromCall;
-
-  constructor(call: SafeBatchTransferFromCall) {
-    this._call = call;
-  }
-}
-
-export class SafeTransferFromCall extends ethereum.Call {
-  get inputs(): SafeTransferFromCall__Inputs {
-    return new SafeTransferFromCall__Inputs(this);
-  }
-
-  get outputs(): SafeTransferFromCall__Outputs {
-    return new SafeTransferFromCall__Outputs(this);
-  }
-}
-
-export class SafeTransferFromCall__Inputs {
-  _call: SafeTransferFromCall;
-
-  constructor(call: SafeTransferFromCall) {
-    this._call = call;
-  }
-
-  get from(): Address {
-    return this._call.inputValues[0].value.toAddress();
-  }
-
-  get to(): Address {
-    return this._call.inputValues[1].value.toAddress();
-  }
-
-  get id(): BigInt {
-    return this._call.inputValues[2].value.toBigInt();
-  }
-
-  get amount(): BigInt {
-    return this._call.inputValues[3].value.toBigInt();
-  }
-
-  get data(): Bytes {
-    return this._call.inputValues[4].value.toBytes();
-  }
-}
-
-export class SafeTransferFromCall__Outputs {
-  _call: SafeTransferFromCall;
-
-  constructor(call: SafeTransferFromCall) {
     this._call = call;
   }
 }

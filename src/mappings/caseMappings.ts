@@ -127,6 +127,8 @@ export function handleRuleAdded(event: RuleAdded): void {
 
 /**
  * Handle a post event to add a post to case.
+ * 
+ * TODO: Save post using token id instead of account address.
  */
 export function handlePost(event: Post): void {
   // Skip if case entity not exists
