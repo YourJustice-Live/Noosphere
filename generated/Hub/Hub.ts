@@ -596,7 +596,7 @@ export class InitializeCall__Inputs {
     this._call = call;
   }
 
-  get assocRepo(): Address {
+  get openRepo(): Address {
     return this._call.inputValues[0].value.toAddress();
   }
 
