@@ -59,7 +59,7 @@ export class AvatarNftEntity extends Entity {
     super();
     this.set("id", Value.fromString(id));
 
-    this.set("tokenId", Value.fromBigInt(BigInt.zero()));
+    this.set("idBigInt", Value.fromBigInt(BigInt.zero()));
     this.set("owner", Value.fromString(""));
     this.set("totalNegativeRating", Value.fromBigInt(BigInt.zero()));
     this.set("totalPositiveRating", Value.fromBigInt(BigInt.zero()));
@@ -93,13 +93,13 @@ export class AvatarNftEntity extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get tokenId(): BigInt {
-    let value = this.get("tokenId");
+  get idBigInt(): BigInt {
+    let value = this.get("idBigInt");
     return value!.toBigInt();
   }
 
-  set tokenId(value: BigInt) {
-    this.set("tokenId", Value.fromBigInt(value));
+  set idBigInt(value: BigInt) {
+    this.set("idBigInt", Value.fromBigInt(value));
   }
 
   get owner(): string {
@@ -346,10 +346,10 @@ export class JurisdictionEntity extends Entity {
 
     this.set("rulesCount", Value.fromI32(0));
     this.set("casesCount", Value.fromI32(0));
-    this.set("memberAccounts", Value.fromBytesArray(new Array(0)));
-    this.set("judgeAccounts", Value.fromBytesArray(new Array(0)));
-    this.set("adminAccounts", Value.fromBytesArray(new Array(0)));
-    this.set("memberAccountsCount", Value.fromI32(0));
+    this.set("members", Value.fromStringArray(new Array(0)));
+    this.set("judges", Value.fromStringArray(new Array(0)));
+    this.set("admins", Value.fromStringArray(new Array(0)));
+    this.set("membersCount", Value.fromI32(0));
   }
 
   save(): void {
@@ -379,6 +379,23 @@ export class JurisdictionEntity extends Entity {
     this.set("id", Value.fromString(value));
   }
 
+  get address(): string | null {
+    let value = this.get("address");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set address(value: string | null) {
+    if (!value) {
+      this.unset("address");
+    } else {
+      this.set("address", Value.fromString(<string>value));
+    }
+  }
+
   get name(): string | null {
     let value = this.get("name");
     if (!value || value.kind == ValueKind.NULL) {
@@ -393,6 +410,40 @@ export class JurisdictionEntity extends Entity {
       this.unset("name");
     } else {
       this.set("name", Value.fromString(<string>value));
+    }
+  }
+
+  get uri(): string | null {
+    let value = this.get("uri");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set uri(value: string | null) {
+    if (!value) {
+      this.unset("uri");
+    } else {
+      this.set("uri", Value.fromString(<string>value));
+    }
+  }
+
+  get uriData(): Bytes | null {
+    let value = this.get("uriData");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set uriData(value: Bytes | null) {
+    if (!value) {
+      this.unset("uriData");
+    } else {
+      this.set("uriData", Value.fromBytes(<Bytes>value));
     }
   }
 
@@ -432,40 +483,40 @@ export class JurisdictionEntity extends Entity {
     this.set("casesCount", Value.fromI32(value));
   }
 
-  get memberAccounts(): Array<Bytes> {
-    let value = this.get("memberAccounts");
-    return value!.toBytesArray();
+  get members(): Array<string> {
+    let value = this.get("members");
+    return value!.toStringArray();
   }
 
-  set memberAccounts(value: Array<Bytes>) {
-    this.set("memberAccounts", Value.fromBytesArray(value));
+  set members(value: Array<string>) {
+    this.set("members", Value.fromStringArray(value));
   }
 
-  get judgeAccounts(): Array<Bytes> {
-    let value = this.get("judgeAccounts");
-    return value!.toBytesArray();
+  get judges(): Array<string> {
+    let value = this.get("judges");
+    return value!.toStringArray();
   }
 
-  set judgeAccounts(value: Array<Bytes>) {
-    this.set("judgeAccounts", Value.fromBytesArray(value));
+  set judges(value: Array<string>) {
+    this.set("judges", Value.fromStringArray(value));
   }
 
-  get adminAccounts(): Array<Bytes> {
-    let value = this.get("adminAccounts");
-    return value!.toBytesArray();
+  get admins(): Array<string> {
+    let value = this.get("admins");
+    return value!.toStringArray();
   }
 
-  set adminAccounts(value: Array<Bytes>) {
-    this.set("adminAccounts", Value.fromBytesArray(value));
+  set admins(value: Array<string>) {
+    this.set("admins", Value.fromStringArray(value));
   }
 
-  get memberAccountsCount(): i32 {
-    let value = this.get("memberAccountsCount");
+  get membersCount(): i32 {
+    let value = this.get("membersCount");
     return value!.toI32();
   }
 
-  set memberAccountsCount(value: i32) {
-    this.set("memberAccountsCount", Value.fromI32(value));
+  set membersCount(value: i32) {
+    this.set("membersCount", Value.fromI32(value));
   }
 }
 
@@ -476,8 +527,8 @@ export class JurisdictionRoleEntity extends Entity {
 
     this.set("jurisdiction", Value.fromString(""));
     this.set("roleId", Value.fromBigInt(BigInt.zero()));
-    this.set("accounts", Value.fromBytesArray(new Array(0)));
-    this.set("accountsCount", Value.fromI32(0));
+    this.set("participants", Value.fromStringArray(new Array(0)));
+    this.set("participantsCount", Value.fromI32(0));
   }
 
   save(): void {
@@ -528,22 +579,22 @@ export class JurisdictionRoleEntity extends Entity {
     this.set("roleId", Value.fromBigInt(value));
   }
 
-  get accounts(): Array<Bytes> {
-    let value = this.get("accounts");
-    return value!.toBytesArray();
+  get participants(): Array<string> {
+    let value = this.get("participants");
+    return value!.toStringArray();
   }
 
-  set accounts(value: Array<Bytes>) {
-    this.set("accounts", Value.fromBytesArray(value));
+  set participants(value: Array<string>) {
+    this.set("participants", Value.fromStringArray(value));
   }
 
-  get accountsCount(): i32 {
-    let value = this.get("accountsCount");
+  get participantsCount(): i32 {
+    let value = this.get("participantsCount");
     return value!.toI32();
   }
 
-  set accountsCount(value: i32) {
-    this.set("accountsCount", Value.fromI32(value));
+  set participantsCount(value: i32) {
+    this.set("participantsCount", Value.fromI32(value));
   }
 }
 
@@ -1040,16 +1091,16 @@ export class CaseEntity extends Entity {
 
     this.set("jurisdiction", Value.fromString(""));
     this.set("rules", Value.fromStringArray(new Array(0)));
-    this.set("participantAccounts", Value.fromBytesArray(new Array(0)));
-    this.set("adminAccounts", Value.fromBytesArray(new Array(0)));
-    this.set("subjectAccounts", Value.fromBytesArray(new Array(0)));
-    this.set("plaintiffAccounts", Value.fromBytesArray(new Array(0)));
-    this.set("judgeAccounts", Value.fromBytesArray(new Array(0)));
-    this.set("witnessAccounts", Value.fromBytesArray(new Array(0)));
-    this.set("affectedAccounts", Value.fromBytesArray(new Array(0)));
+    this.set("participants", Value.fromStringArray(new Array(0)));
+    this.set("admins", Value.fromStringArray(new Array(0)));
+    this.set("subjects", Value.fromStringArray(new Array(0)));
+    this.set("plaintiffs", Value.fromStringArray(new Array(0)));
+    this.set("judges", Value.fromStringArray(new Array(0)));
+    this.set("witnesses", Value.fromStringArray(new Array(0)));
+    this.set("affecteds", Value.fromStringArray(new Array(0)));
     this.set(
-      "accountsWithConfirmationPosts",
-      Value.fromBytesArray(new Array(0))
+      "participantsWithConfirmationPosts",
+      Value.fromStringArray(new Array(0))
     );
   }
 
@@ -1130,20 +1181,20 @@ export class CaseEntity extends Entity {
     this.set("stage", Value.fromI32(value));
   }
 
-  get verdictAuthor(): Bytes | null {
+  get verdictAuthor(): string | null {
     let value = this.get("verdictAuthor");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
-      return value.toBytes();
+      return value.toString();
     }
   }
 
-  set verdictAuthor(value: Bytes | null) {
+  set verdictAuthor(value: string | null) {
     if (!value) {
       this.unset("verdictAuthor");
     } else {
-      this.set("verdictAuthor", Value.fromBytes(<Bytes>value));
+      this.set("verdictAuthor", Value.fromString(<string>value));
     }
   }
 
@@ -1201,20 +1252,20 @@ export class CaseEntity extends Entity {
     }
   }
 
-  get cancellationAuthor(): Bytes | null {
+  get cancellationAuthor(): string | null {
     let value = this.get("cancellationAuthor");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
-      return value.toBytes();
+      return value.toString();
     }
   }
 
-  set cancellationAuthor(value: Bytes | null) {
+  set cancellationAuthor(value: string | null) {
     if (!value) {
       this.unset("cancellationAuthor");
     } else {
-      this.set("cancellationAuthor", Value.fromBytes(<Bytes>value));
+      this.set("cancellationAuthor", Value.fromString(<string>value));
     }
   }
 
@@ -1270,76 +1321,76 @@ export class CaseEntity extends Entity {
     this.set("posts", Value.fromStringArray(value));
   }
 
-  get participantAccounts(): Array<Bytes> {
-    let value = this.get("participantAccounts");
-    return value!.toBytesArray();
+  get participants(): Array<string> {
+    let value = this.get("participants");
+    return value!.toStringArray();
   }
 
-  set participantAccounts(value: Array<Bytes>) {
-    this.set("participantAccounts", Value.fromBytesArray(value));
+  set participants(value: Array<string>) {
+    this.set("participants", Value.fromStringArray(value));
   }
 
-  get adminAccounts(): Array<Bytes> {
-    let value = this.get("adminAccounts");
-    return value!.toBytesArray();
+  get admins(): Array<string> {
+    let value = this.get("admins");
+    return value!.toStringArray();
   }
 
-  set adminAccounts(value: Array<Bytes>) {
-    this.set("adminAccounts", Value.fromBytesArray(value));
+  set admins(value: Array<string>) {
+    this.set("admins", Value.fromStringArray(value));
   }
 
-  get subjectAccounts(): Array<Bytes> {
-    let value = this.get("subjectAccounts");
-    return value!.toBytesArray();
+  get subjects(): Array<string> {
+    let value = this.get("subjects");
+    return value!.toStringArray();
   }
 
-  set subjectAccounts(value: Array<Bytes>) {
-    this.set("subjectAccounts", Value.fromBytesArray(value));
+  set subjects(value: Array<string>) {
+    this.set("subjects", Value.fromStringArray(value));
   }
 
-  get plaintiffAccounts(): Array<Bytes> {
-    let value = this.get("plaintiffAccounts");
-    return value!.toBytesArray();
+  get plaintiffs(): Array<string> {
+    let value = this.get("plaintiffs");
+    return value!.toStringArray();
   }
 
-  set plaintiffAccounts(value: Array<Bytes>) {
-    this.set("plaintiffAccounts", Value.fromBytesArray(value));
+  set plaintiffs(value: Array<string>) {
+    this.set("plaintiffs", Value.fromStringArray(value));
   }
 
-  get judgeAccounts(): Array<Bytes> {
-    let value = this.get("judgeAccounts");
-    return value!.toBytesArray();
+  get judges(): Array<string> {
+    let value = this.get("judges");
+    return value!.toStringArray();
   }
 
-  set judgeAccounts(value: Array<Bytes>) {
-    this.set("judgeAccounts", Value.fromBytesArray(value));
+  set judges(value: Array<string>) {
+    this.set("judges", Value.fromStringArray(value));
   }
 
-  get witnessAccounts(): Array<Bytes> {
-    let value = this.get("witnessAccounts");
-    return value!.toBytesArray();
+  get witnesses(): Array<string> {
+    let value = this.get("witnesses");
+    return value!.toStringArray();
   }
 
-  set witnessAccounts(value: Array<Bytes>) {
-    this.set("witnessAccounts", Value.fromBytesArray(value));
+  set witnesses(value: Array<string>) {
+    this.set("witnesses", Value.fromStringArray(value));
   }
 
-  get affectedAccounts(): Array<Bytes> {
-    let value = this.get("affectedAccounts");
-    return value!.toBytesArray();
+  get affecteds(): Array<string> {
+    let value = this.get("affecteds");
+    return value!.toStringArray();
   }
 
-  set affectedAccounts(value: Array<Bytes>) {
-    this.set("affectedAccounts", Value.fromBytesArray(value));
+  set affecteds(value: Array<string>) {
+    this.set("affecteds", Value.fromStringArray(value));
   }
 
-  get accountsWithConfirmationPosts(): Array<Bytes> {
-    let value = this.get("accountsWithConfirmationPosts");
-    return value!.toBytesArray();
+  get participantsWithConfirmationPosts(): Array<string> {
+    let value = this.get("participantsWithConfirmationPosts");
+    return value!.toStringArray();
   }
 
-  set accountsWithConfirmationPosts(value: Array<Bytes>) {
-    this.set("accountsWithConfirmationPosts", Value.fromBytesArray(value));
+  set participantsWithConfirmationPosts(value: Array<string>) {
+    this.set("participantsWithConfirmationPosts", Value.fromStringArray(value));
   }
 }
 
@@ -1348,7 +1399,7 @@ export class CasePostEntity extends Entity {
     super();
     this.set("id", Value.fromString(id));
 
-    this.set("author", Value.fromBytes(Bytes.empty()));
+    this.set("author", Value.fromString(""));
     this.set("caseEntity", Value.fromString(""));
   }
 
@@ -1377,13 +1428,13 @@ export class CasePostEntity extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get author(): Bytes {
+  get author(): string {
     let value = this.get("author");
-    return value!.toBytes();
+    return value!.toString();
   }
 
-  set author(value: Bytes) {
-    this.set("author", Value.fromBytes(value));
+  set author(value: string) {
+    this.set("author", Value.fromString(value));
   }
 
   get createdDate(): BigInt | null {

@@ -1,13 +1,4 @@
-import { Address, BigInt, ipfs, json } from "@graphprotocol/graph-ts";
-import { Case as CaseContract } from "../../generated/Jurisdiction/Case";
-import {
-  CaseCreated,
-  Confirmation,
-  OpinionChange,
-  Rule,
-  RuleEffect,
-  TransferSingle
-} from "../../generated/Jurisdiction/Jurisdiction";
+import { BigInt, ipfs, json } from "@graphprotocol/graph-ts";
 import {
   ActionEntity,
   AvatarNftEntity,
@@ -19,21 +10,48 @@ import {
 } from "../../generated/schema";
 import { Case as CaseTemplate } from "../../generated/templates";
 import {
+  Case as CaseContract,
+  ContractURI
+} from "../../generated/templates/Jurisdiction/Case";
+import {
+  CaseCreated,
+  Confirmation,
+  OpinionChange,
+  Rule,
+  RuleEffect,
+  TransferByToken
+} from "../../generated/templates/Jurisdiction/Jurisdiction";
+import {
   addJurisdictionToAvatarNftEntity,
   getJurisdictionEntity, removeJurisdctionFromAvatarEntity,
-  updateJurisdictionRoleAccounts,
+  updateJurisdictionEntityRoles,
   updateJurisdictionRuleEntityPositivity
 } from "../utils";
 
 /**
- * Handle a tranfer single event to create or update jurisdiction roles.
+ * Handle a contract uri event to update jurisdiction uri data.
  */
-export function handleTransferSingle(event: TransferSingle): void {
+export function handleContractUri(event: ContractURI): void {
+  // Get jurisdiction
+  let jurisdictionEntity = getJurisdictionEntity(event.address.toHexString());
+  // Load uri data
+  let uriIpfsHash = event.params.param0.split("/").at(-1);
+  let uriData = ipfs.cat(uriIpfsHash);
+  // Update jurisdiction
+  jurisdictionEntity.uri = event.params.param0;
+  jurisdictionEntity.uriData = uriData;
+  jurisdictionEntity.save();
+}
+
+/**
+ * Handle a tranfer by token event to create or update jurisdiction roles.
+ */
+export function handleTransferByToken(event: TransferByToken): void {
   // Get jurisdiction
   let jurisdictionEntity = getJurisdictionEntity(event.address.toHexString());
   // Define transfer type
-  let isTokenMinted = event.params.from.equals(Address.zero());
-  let isTokenBurned = event.params.to.equals(Address.zero());
+  let isTokenMinted = event.params.fromOwnerToken.equals(BigInt.zero());
+  let isTokenBurned = event.params.toOwnerToken.equals(BigInt.zero());
   if (isTokenMinted || isTokenBurned) {
     // Find or create jurisdiction role entity
     let jurisdictionRoleEntityId = `${event.address.toHexString()}_${event.params.id.toString()}`;
@@ -46,40 +64,40 @@ export function handleTransferSingle(event: TransferSingle): void {
       );
       jurisdictionRoleEntity.jurisdiction = jurisdictionEntity.id;
       jurisdictionRoleEntity.roleId = event.params.id;
-      jurisdictionRoleEntity.accounts = [];
-      jurisdictionRoleEntity.accountsCount = 0;
+      jurisdictionRoleEntity.participants = [];
+      jurisdictionRoleEntity.participantsCount = 0;
     }
-    // Update accounts in jurisdiction role entity
-    let accounts = jurisdictionRoleEntity.accounts;
-    let accountsCount = jurisdictionRoleEntity.accountsCount;
+    // Update participants in jurisdiction role entity
+    let participants = jurisdictionRoleEntity.participants;
+    let participantsCount = jurisdictionRoleEntity.participantsCount;
     if (isTokenMinted) {
-      accounts.push(event.params.to);
-      accountsCount = accountsCount + 1;
+      participants.push(event.params.toOwnerToken.toString());
+      participantsCount = participantsCount + 1;
     }
     if (isTokenBurned) {
-      const accountIndex = accounts.indexOf(event.params.from);
+      const accountIndex = participants.indexOf(event.params.fromOwnerToken.toString());
       if (accountIndex > -1) {
-        accounts.splice(accountIndex, 1);
+        participants.splice(accountIndex, 1);
       }
-      accountsCount = accountsCount - 1;
+      participantsCount = participantsCount - 1;
     }
     // Update jurisdiction role entity
-    jurisdictionRoleEntity.accounts = accounts;
-    jurisdictionRoleEntity.accountsCount = accountsCount;
+    jurisdictionRoleEntity.participants = participants;
+    jurisdictionRoleEntity.participantsCount = participantsCount;
     jurisdictionRoleEntity.save();
     // Update jurisdiction role accounts
-    updateJurisdictionRoleAccounts(
+    updateJurisdictionEntityRoles(
       jurisdictionEntity,
       event.params.id.toString(),
-      accounts,
-      accountsCount
-    );
+      participants,
+      participantsCount,
+    )
     // Update and avatar nft entity
     if (isTokenMinted) {
-      addJurisdictionToAvatarNftEntity(event.params.to, jurisdictionEntity);
+      addJurisdictionToAvatarNftEntity(event.params.toOwnerToken.toString(), jurisdictionEntity);
     }
     if (isTokenBurned) {
-      removeJurisdctionFromAvatarEntity(event.params.from, jurisdictionEntity);
+      removeJurisdctionFromAvatarEntity(event.params.fromOwnerToken.toString(), jurisdictionEntity);
     }
   }
 }
@@ -196,14 +214,14 @@ export function handleCaseCreated(event: CaseCreated): void {
   caseEntity.createdDate = event.block.timestamp;
   caseEntity.jurisdiction = jurisdictionEntity.id;
   caseEntity.rules = [];
-  caseEntity.participantAccounts = [];
-  caseEntity.adminAccounts = [];
-  caseEntity.subjectAccounts = [];
-  caseEntity.plaintiffAccounts = [];
-  caseEntity.judgeAccounts = [];
-  caseEntity.witnessAccounts = [];
-  caseEntity.affectedAccounts = [];
-  caseEntity.accountsWithConfirmationPosts = [];
+  caseEntity.participants = [];
+  caseEntity.admins = [];
+  caseEntity.subjects = [];
+  caseEntity.plaintiffs = [];
+  caseEntity.judges = [];
+  caseEntity.witnesses = [];
+  caseEntity.affecteds = [];
+  caseEntity.participantsWithConfirmationPosts = [];
   caseEntity.save();
   // Create case contract for subgraph using template
   CaseTemplate.create(event.params.contractAddress);

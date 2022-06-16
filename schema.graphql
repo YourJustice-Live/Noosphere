@@ -3,10 +3,9 @@ type AccountEntity @entity {
   avatarNft: AvatarNftEntity!
 }
 
-# TODO: Use account entity for owner
 type AvatarNftEntity @entity {
-  id: ID! # token id (string)
-  tokenId: BigInt!
+  id: ID! # token id
+  idBigInt: BigInt! # token id which is useful for sorting
   owner: String! # account address
   uri: String # metadata uri
   uriData: Bytes
@@ -32,23 +31,26 @@ type AvatarNftReputationEntity @entity {
 
 type JurisdictionEntity @entity {
   id: ID! # contract address
+  address: String # contract address
   name: String
+  uri: String # metadata uri
+  uriData: Bytes
   roles: [JurisdictionRoleEntity!]! @derivedFrom(field: "jurisdiction")
   rules: [JurisdictionRuleEntity!]! @derivedFrom(field: "jurisdiction")
   rulesCount: Int!
   casesCount: Int!
-  memberAccounts: [Bytes!]!
-  judgeAccounts: [Bytes!]!
-  adminAccounts: [Bytes!]!
-  memberAccountsCount: Int!
+  members: [String!]! # avatar nft ids
+  judges: [String!]! # avatar nft ids
+  admins: [String!]! # avatar nft ids
+  membersCount: Int!
 }
 
 type JurisdictionRoleEntity @entity {
   id: ID! # combination of jurisdiction address and role id
   jurisdiction: JurisdictionEntity!
   roleId: BigInt!
-  accounts: [Bytes!]!
-  accountsCount: Int!
+  participants: [String!]! # avatar nft ids
+  participantsCount: Int!
 }
 
 type JurisdictionRuleEntity @entity {
@@ -96,28 +98,28 @@ type CaseEntity @entity {
   createdDate: BigInt
   jurisdiction: JurisdictionEntity!
   stage: Int
-  verdictAuthor: Bytes
+  verdictAuthor: String # avatar nft id
   verdictConfirmedRules: [JurisdictionRuleEntity!]
   verdictUri: String
   verdictUriData: Bytes
-  cancellationAuthor: Bytes
+  cancellationAuthor: String # avatar nft id
   cancellationUri: String
   cancellationUriData: Bytes
   rules: [JurisdictionRuleEntity!]!
   posts: [CasePostEntity!]! @derivedFrom(field: "caseEntity")
-  participantAccounts: [Bytes!]!
-  adminAccounts: [Bytes!]!
-  subjectAccounts: [Bytes!]!
-  plaintiffAccounts: [Bytes!]!
-  judgeAccounts: [Bytes!]!
-  witnessAccounts: [Bytes!]!
-  affectedAccounts: [Bytes!]!
-  accountsWithConfirmationPosts: [Bytes!]!
+  participants: [String!]! # avatar nft ids
+  admins: [String!]! # avatar nft ids
+  subjects: [String!]! # avatar nft ids
+  plaintiffs: [String!]! # avatar nft ids
+  judges: [String!]! # avatar nft ids
+  witnesses: [String!]! # avatar nft ids
+  affecteds: [String!]! # avatar nft ids
+  participantsWithConfirmationPosts: [String!]!
 }
 
 type CasePostEntity @entity {
   id: ID! # combination of case address and post transaction address
-  author: Bytes!
+  author: String! # avatar nft id
   createdDate: BigInt
   caseEntity: CaseEntity!
   entityRole: String
