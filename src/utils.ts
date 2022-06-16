@@ -1,5 +1,5 @@
 import { Address, BigInt, ByteArray, Bytes } from "@graphprotocol/graph-ts";
-import { Jurisdiction as JurisdictionContract } from "../generated/Jurisdiction/Jurisdiction";
+import { Jurisdiction as JurisdictionContract } from "../generated/templates/Jurisdiction/Jurisdiction";
 import {
   AccountEntity,
   AvatarNftEntity,
@@ -34,16 +34,11 @@ export function addAvatarNftToAccountEntity(
  * Increase amount of positive or negative cases for avatar nft using specified case.
  */
 export function addCaseToAvatarNftEntity(
-  account: Bytes,
+  id: string,
   caseEntity: CaseEntity
 ): void {
-  // Load account
-  let accountEntity = AccountEntity.load(account.toHexString());
-  if (!accountEntity) {
-    return;
-  }
   // Load avatar nft
-  let avatarNftEntity = AvatarNftEntity.load(accountEntity.avatarNft);
+  let avatarNftEntity = AvatarNftEntity.load(id);
   if (!avatarNftEntity) {
     return;
   }
@@ -77,14 +72,10 @@ export function addCaseToAvatarNftEntity(
  * Find avatar nft entity and add jurisdiction entity to it.
  */
 export function addJurisdictionToAvatarNftEntity(
-  account: Address,
+  id: string,
   jurisdiction: JurisdictionEntity
 ): void {
-  let accountEntity = AccountEntity.load(account.toHexString());
-  if (!accountEntity) {
-    return;
-  }
-  let avatarNftEntity = AvatarNftEntity.load(accountEntity.avatarNft);
+  let avatarNftEntity = AvatarNftEntity.load(id);
   if (!avatarNftEntity) {
     return;
   }
@@ -95,17 +86,13 @@ export function addJurisdictionToAvatarNftEntity(
 }
 
 /**
- * Find avatar nft entity and remove jurisdiction entity from it.
+ * Find avatar nft entity by id and remove jurisdiction entity from it.
  */
 export function removeJurisdctionFromAvatarEntity(
-  account: Address,
+  id: string,
   jurisdiction: JurisdictionEntity
 ): void {
-  let accountEntity = AccountEntity.load(account.toHexString());
-  if (!accountEntity) {
-    return;
-  }
-  let avatarNftEntity = AvatarNftEntity.load(accountEntity.avatarNft);
+  let avatarNftEntity = AvatarNftEntity.load(id);
   if (!avatarNftEntity) {
     return;
   }
@@ -135,33 +122,33 @@ export function getJurisdictionEntity(id: string): JurisdictionEntity {
     jurisdictionEntity.name = jurisdictionContractName;
     jurisdictionEntity.rulesCount = 0;
     jurisdictionEntity.casesCount = 0;
-    jurisdictionEntity.memberAccounts = [];
-    jurisdictionEntity.judgeAccounts = [];
-    jurisdictionEntity.adminAccounts = [];
-    jurisdictionEntity.memberAccountsCount = 0;
+    jurisdictionEntity.members = [];
+    jurisdictionEntity.judges = [];
+    jurisdictionEntity.admins = [];
+    jurisdictionEntity.membersCount = 0;
     jurisdictionEntity.save();
   }
   return jurisdictionEntity;
 }
 
 /**
- * Update jurisdiction role accounts.
+ * Update jurisdiction role participants.
  */
-export function updateJurisdictionRoleAccounts(
+export function updateJurisdictionEntityRoles(
   jurisdiction: JurisdictionEntity,
   role: string,
-  accounts: Bytes[],
-  accountsCount: i32
+  participants: string[],
+  participantsCount: i32,
 ): void {
   if (role == JURISDICTION_ROLE_MEMBER_ID) {
-    jurisdiction.memberAccounts = accounts;
-    jurisdiction.memberAccountsCount = accountsCount;
+    jurisdiction.members = participants;
+    jurisdiction.membersCount = participantsCount;
   }
   if (role == JURISDICTION_ROLE_JUDGE_ID) {
-    jurisdiction.judgeAccounts = accounts;
+    jurisdiction.judges = participants;
   }
   if (role == JURISDICTION_ROLE_ADMIN_ID) {
-    jurisdiction.adminAccounts = accounts;
+    jurisdiction.admins = participants;
   }
   jurisdiction.save();
 }

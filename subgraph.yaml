@@ -9,9 +9,9 @@ dataSources:
     name: Hub
     network: rinkeby
     source:
-      address: "0xD062b90B1Dd4d2A41e8829Cf3779aFd4C234e6E1"
+      address: "0xbf10eFEd01E280a4c21D11caE18404B67BF8bd78"
       abi: Hub
-      startBlock: 10658964
+      startBlock: 10851420
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -32,9 +32,9 @@ dataSources:
     name: AvatarNFT
     network: rinkeby
     source:
-      address: "0xE7254468763a8d4f791f30F5e8dcA635DF850772"
+      address: "0xE253c1F803C1835325360a28eBDE83346f30cC38"
       abi: AvatarNFT
-      startBlock: 10607301
+      startBlock: 10851421
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -51,50 +51,14 @@ dataSources:
         - event: URI(string,indexed uint256)
           handler: handleURI
       file: ./src/mappings/avatarNftMappings.ts
-  # Jurisdiction contract
-  - kind: ethereum
-    name: Jurisdiction
-    network: rinkeby
-    source:
-      address: "0x37E2db964E4394d20e66CD302C01D08208019DEa"
-      abi: Jurisdiction
-      startBlock: 10619029
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.5
-      language: wasm/assemblyscript
-      entities:
-        - TransferSingle
-        - RuleAdded
-        - RuleEffects
-        - Confirmation
-      abis:
-        - name: Jurisdiction
-          file: ./abis/Jurisdiction.json
-        - name: Case
-          file: ./abis/Case.json
-      eventHandlers:
-        - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
-          handler: handleTransferSingle
-        - event: Rule(indexed uint256,bytes32,string,string,bool)
-          handler: handleRule
-        - event: RuleEffect(indexed uint256,bool,uint8,string)
-          handler: handleRuleEffect
-        - event: Confirmation(indexed uint256,string,bool,uint256)
-          handler: handleConfirmation
-        - event: CaseCreated(indexed uint256,address)
-          handler: handleCaseCreated
-        - event: OpinionChange(uint256,indexed address,indexed uint256,string,bool,uint256)
-          handler: handleOpinionChange
-      file: ./src/mappings/jurisdictionMappings.ts
   # Action repository contract
   - kind: ethereum
     name: ActionRepo
     network: rinkeby
     source:
-      address: "0xe699f8dd6968F7a60786E846899CEf56154D3573"
+      address: "0x9DFd9bc6600E6Ba1B14E7b6f2250D340936EB5B4"
       abi: ActionRepo
-      startBlock: 10607324
+      startBlock: 10851539
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -133,8 +97,10 @@ templates:
         - name: Case
           file: ./abis/Case.json
       eventHandlers:
-        - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
-          handler: handleTransferSingle
+        - event: ContractURI(string)
+          handler: handleContractUri
+        - event: TransferByToken(indexed address,indexed uint256,indexed uint256,uint256,uint256)
+          handler: handleTransferByToken
         - event: Rule(indexed uint256,bytes32,string,string,bool)
           handler: handleRule
         - event: RuleEffect(indexed uint256,bool,uint8,string)
@@ -168,8 +134,8 @@ templates:
         - name: Case
           file: ./abis/Case.json
       eventHandlers:
-        - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
-          handler: handleTransferSingle
+        - event: TransferByToken(indexed address,indexed uint256,indexed uint256,uint256,uint256)
+          handler: handleTransferByToken
         - event: RuleAdded(address,uint256)
           handler: handleRuleAdded
         - event: Post(indexed address,string,string)

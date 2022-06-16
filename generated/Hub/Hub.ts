@@ -10,6 +10,68 @@ import {
   BigInt
 } from "@graphprotocol/graph-ts";
 
+export class AdminChanged extends ethereum.Event {
+  get params(): AdminChanged__Params {
+    return new AdminChanged__Params(this);
+  }
+}
+
+export class AdminChanged__Params {
+  _event: AdminChanged;
+
+  constructor(event: AdminChanged) {
+    this._event = event;
+  }
+
+  get previousAdmin(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get newAdmin(): Address {
+    return this._event.parameters[1].value.toAddress();
+  }
+}
+
+export class Assoc extends ethereum.Event {
+  get params(): Assoc__Params {
+    return new Assoc__Params(this);
+  }
+}
+
+export class Assoc__Params {
+  _event: Assoc;
+
+  constructor(event: Assoc) {
+    this._event = event;
+  }
+
+  get key(): string {
+    return this._event.parameters[0].value.toString();
+  }
+
+  get contractAddr(): Address {
+    return this._event.parameters[1].value.toAddress();
+  }
+}
+
+export class BeaconUpgraded extends ethereum.Event {
+  get params(): BeaconUpgraded__Params {
+    return new BeaconUpgraded__Params(this);
+  }
+}
+
+export class BeaconUpgraded__Params {
+  _event: BeaconUpgraded;
+
+  constructor(event: BeaconUpgraded) {
+    this._event = event;
+  }
+
+  get beacon(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+}
+
 export class ContractCreated extends ethereum.Event {
   get params(): ContractCreated__Params {
     return new ContractCreated__Params(this);
@@ -32,6 +94,24 @@ export class ContractCreated__Params {
   }
 }
 
+export class ContractURI extends ethereum.Event {
+  get params(): ContractURI__Params {
+    return new ContractURI__Params(this);
+  }
+}
+
+export class ContractURI__Params {
+  _event: ContractURI;
+
+  constructor(event: ContractURI) {
+    this._event = event;
+  }
+
+  get param0(): string {
+    return this._event.parameters[0].value.toString();
+  }
+}
+
 export class HubChanged extends ethereum.Event {
   get params(): HubChanged__Params {
     return new HubChanged__Params(this);
@@ -47,6 +127,24 @@ export class HubChanged__Params {
 
   get contractAddress(): Address {
     return this._event.parameters[0].value.toAddress();
+  }
+}
+
+export class Initialized extends ethereum.Event {
+  get params(): Initialized__Params {
+    return new Initialized__Params(this);
+  }
+}
+
+export class Initialized__Params {
+  _event: Initialized;
+
+  constructor(event: Initialized) {
+    this._event = event;
+  }
+
+  get version(): i32 {
+    return this._event.parameters[0].value.toI32();
   }
 }
 
@@ -94,6 +192,24 @@ export class UpdatedImplementation__Params {
   }
 }
 
+export class Upgraded extends ethereum.Event {
+  get params(): Upgraded__Params {
+    return new Upgraded__Params(this);
+  }
+}
+
+export class Upgraded__Params {
+  _event: Upgraded;
+
+  constructor(event: Upgraded) {
+    this._event = event;
+  }
+
+  get implementation(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+}
+
 export class Hub__caseMakeInputAddRulesStruct extends ethereum.Tuple {
   get jurisdiction(): Address {
     return this[0].toAddress();
@@ -105,8 +221,8 @@ export class Hub__caseMakeInputAddRulesStruct extends ethereum.Tuple {
 }
 
 export class Hub__caseMakeInputAssignRolesStruct extends ethereum.Tuple {
-  get account(): Address {
-    return this[0].toAddress();
+  get tokenId(): BigInt {
+    return this[0].toBigInt();
   }
 
   get role(): string {
@@ -159,14 +275,16 @@ export class Hub extends ethereum.SmartContract {
 
   caseMake(
     name_: string,
+    uri_: string,
     addRules: Array<Hub__caseMakeInputAddRulesStruct>,
     assignRoles: Array<Hub__caseMakeInputAssignRolesStruct>
   ): Address {
     let result = super.call(
       "caseMake",
-      "caseMake(string,(address,uint256)[],(address,string)[]):(address)",
+      "caseMake(string,string,(address,uint256)[],(uint256,string)[]):(address)",
       [
         ethereum.Value.fromString(name_),
+        ethereum.Value.fromString(uri_),
         ethereum.Value.fromTupleArray(addRules),
         ethereum.Value.fromTupleArray(assignRoles)
       ]
@@ -177,14 +295,16 @@ export class Hub extends ethereum.SmartContract {
 
   try_caseMake(
     name_: string,
+    uri_: string,
     addRules: Array<Hub__caseMakeInputAddRulesStruct>,
     assignRoles: Array<Hub__caseMakeInputAssignRolesStruct>
   ): ethereum.CallResult<Address> {
     let result = super.tryCall(
       "caseMake",
-      "caseMake(string,(address,uint256)[],(address,string)[]):(address)",
+      "caseMake(string,string,(address,uint256)[],(uint256,string)[]):(address)",
       [
         ethereum.Value.fromString(name_),
+        ethereum.Value.fromString(uri_),
         ethereum.Value.fromTupleArray(addRules),
         ethereum.Value.fromTupleArray(assignRoles)
       ]
@@ -194,6 +314,21 @@ export class Hub extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toAddress());
+  }
+
+  contractURI(): string {
+    let result = super.call("contractURI", "contractURI():(string)", []);
+
+    return result[0].toString();
+  }
+
+  try_contractURI(): ethereum.CallResult<string> {
+    let result = super.tryCall("contractURI", "contractURI():(string)", []);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toString());
   }
 
   getAssoc(key: string): Address {
@@ -271,6 +406,25 @@ export class Hub extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
+  proxiableUUID(): Bytes {
+    let result = super.call("proxiableUUID", "proxiableUUID():(bytes32)", []);
+
+    return result[0].toBytes();
+  }
+
+  try_proxiableUUID(): ethereum.CallResult<Bytes> {
+    let result = super.tryCall(
+      "proxiableUUID",
+      "proxiableUUID():(bytes32)",
+      []
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBytes());
+  }
+
   role(): string {
     let result = super.call("role", "role():(string)", []);
 
@@ -286,6 +440,29 @@ export class Hub extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toString());
   }
 
+  supportsInterface(interfaceId: Bytes): boolean {
+    let result = super.call(
+      "supportsInterface",
+      "supportsInterface(bytes4):(bool)",
+      [ethereum.Value.fromFixedBytes(interfaceId)]
+    );
+
+    return result[0].toBoolean();
+  }
+
+  try_supportsInterface(interfaceId: Bytes): ethereum.CallResult<boolean> {
+    let result = super.tryCall(
+      "supportsInterface",
+      "supportsInterface(bytes4):(bool)",
+      [ethereum.Value.fromFixedBytes(interfaceId)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBoolean());
+  }
+
   symbol(): string {
     let result = super.call("symbol", "symbol():(string)", []);
 
@@ -299,44 +476,6 @@ export class Hub extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toString());
-  }
-}
-
-export class ConstructorCall extends ethereum.Call {
-  get inputs(): ConstructorCall__Inputs {
-    return new ConstructorCall__Inputs(this);
-  }
-
-  get outputs(): ConstructorCall__Outputs {
-    return new ConstructorCall__Outputs(this);
-  }
-}
-
-export class ConstructorCall__Inputs {
-  _call: ConstructorCall;
-
-  constructor(call: ConstructorCall) {
-    this._call = call;
-  }
-
-  get config(): Address {
-    return this._call.inputValues[0].value.toAddress();
-  }
-
-  get jurisdictionContract(): Address {
-    return this._call.inputValues[1].value.toAddress();
-  }
-
-  get caseContract(): Address {
-    return this._call.inputValues[2].value.toAddress();
-  }
-}
-
-export class ConstructorCall__Outputs {
-  _call: ConstructorCall;
-
-  constructor(call: ConstructorCall) {
-    this._call = call;
   }
 }
 
@@ -361,14 +500,18 @@ export class CaseMakeCall__Inputs {
     return this._call.inputValues[0].value.toString();
   }
 
+  get uri_(): string {
+    return this._call.inputValues[1].value.toString();
+  }
+
   get addRules(): Array<CaseMakeCallAddRulesStruct> {
-    return this._call.inputValues[1].value.toTupleArray<
+    return this._call.inputValues[2].value.toTupleArray<
       CaseMakeCallAddRulesStruct
     >();
   }
 
   get assignRoles(): Array<CaseMakeCallAssignRolesStruct> {
-    return this._call.inputValues[2].value.toTupleArray<
+    return this._call.inputValues[3].value.toTupleArray<
       CaseMakeCallAssignRolesStruct
     >();
   }
@@ -397,8 +540,8 @@ export class CaseMakeCallAddRulesStruct extends ethereum.Tuple {
 }
 
 export class CaseMakeCallAssignRolesStruct extends ethereum.Tuple {
-  get account(): Address {
-    return this[0].toAddress();
+  get tokenId(): BigInt {
+    return this[0].toBigInt();
   }
 
   get role(): string {
@@ -432,6 +575,48 @@ export class HubChangeCall__Outputs {
   _call: HubChangeCall;
 
   constructor(call: HubChangeCall) {
+    this._call = call;
+  }
+}
+
+export class InitializeCall extends ethereum.Call {
+  get inputs(): InitializeCall__Inputs {
+    return new InitializeCall__Inputs(this);
+  }
+
+  get outputs(): InitializeCall__Outputs {
+    return new InitializeCall__Outputs(this);
+  }
+}
+
+export class InitializeCall__Inputs {
+  _call: InitializeCall;
+
+  constructor(call: InitializeCall) {
+    this._call = call;
+  }
+
+  get assocRepo(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+
+  get config(): Address {
+    return this._call.inputValues[1].value.toAddress();
+  }
+
+  get jurisdictionContract(): Address {
+    return this._call.inputValues[2].value.toAddress();
+  }
+
+  get caseContract(): Address {
+    return this._call.inputValues[3].value.toAddress();
+  }
+}
+
+export class InitializeCall__Outputs {
+  _call: InitializeCall;
+
+  constructor(call: InitializeCall) {
     this._call = call;
   }
 }
@@ -567,7 +752,7 @@ export class SetAssocCall__Inputs {
     return this._call.inputValues[0].value.toString();
   }
 
-  get contract_(): Address {
+  get contractAddr(): Address {
     return this._call.inputValues[1].value.toAddress();
   }
 }
@@ -696,6 +881,70 @@ export class UpgradeJurisdictionImplementationCall__Outputs {
   _call: UpgradeJurisdictionImplementationCall;
 
   constructor(call: UpgradeJurisdictionImplementationCall) {
+    this._call = call;
+  }
+}
+
+export class UpgradeToCall extends ethereum.Call {
+  get inputs(): UpgradeToCall__Inputs {
+    return new UpgradeToCall__Inputs(this);
+  }
+
+  get outputs(): UpgradeToCall__Outputs {
+    return new UpgradeToCall__Outputs(this);
+  }
+}
+
+export class UpgradeToCall__Inputs {
+  _call: UpgradeToCall;
+
+  constructor(call: UpgradeToCall) {
+    this._call = call;
+  }
+
+  get newImplementation(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+}
+
+export class UpgradeToCall__Outputs {
+  _call: UpgradeToCall;
+
+  constructor(call: UpgradeToCall) {
+    this._call = call;
+  }
+}
+
+export class UpgradeToAndCallCall extends ethereum.Call {
+  get inputs(): UpgradeToAndCallCall__Inputs {
+    return new UpgradeToAndCallCall__Inputs(this);
+  }
+
+  get outputs(): UpgradeToAndCallCall__Outputs {
+    return new UpgradeToAndCallCall__Outputs(this);
+  }
+}
+
+export class UpgradeToAndCallCall__Inputs {
+  _call: UpgradeToAndCallCall;
+
+  constructor(call: UpgradeToAndCallCall) {
+    this._call = call;
+  }
+
+  get newImplementation(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+
+  get data(): Bytes {
+    return this._call.inputValues[1].value.toBytes();
+  }
+}
+
+export class UpgradeToAndCallCall__Outputs {
+  _call: UpgradeToAndCallCall;
+
+  constructor(call: UpgradeToAndCallCall) {
     this._call = call;
   }
 }
