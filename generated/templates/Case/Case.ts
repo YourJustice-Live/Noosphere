@@ -177,16 +177,12 @@ export class Post__Params {
     return this._event.parameters[0].value.toAddress();
   }
 
-  get tokenId(): BigInt {
-    return this._event.parameters[1].value.toBigInt();
-  }
-
   get entRole(): string {
-    return this._event.parameters[2].value.toString();
+    return this._event.parameters[1].value.toString();
   }
 
   get uri(): string {
-    return this._event.parameters[3].value.toString();
+    return this._event.parameters[2].value.toString();
   }
 }
 
@@ -1253,12 +1249,8 @@ export class PostCall__Inputs {
     return this._call.inputValues[0].value.toString();
   }
 
-  get tokenId(): BigInt {
-    return this._call.inputValues[1].value.toBigInt();
-  }
-
   get uri_(): string {
-    return this._call.inputValues[2].value.toString();
+    return this._call.inputValues[1].value.toString();
   }
 }
 
