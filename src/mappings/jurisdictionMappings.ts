@@ -1,4 +1,4 @@
-import { BigInt, ipfs, json } from "@graphprotocol/graph-ts";
+import { BigInt, ipfs, json, store } from "@graphprotocol/graph-ts";
 import {
   ActionEntity,
   AvatarNftEntity,
@@ -23,9 +23,8 @@ import {
 } from "../../generated/templates/Jurisdiction/Jurisdiction";
 import {
   addJurisdictionToAvatarNftEntity,
-  getJurisdictionEntity, removeJurisdctionFromAvatarEntity,
-  updateJurisdictionEntityRoles,
-  updateJurisdictionRuleEntityPositivity
+  getJurisdictionEntity, isJurisdictionRuleEntityPositive, removeJurisdctionFromAvatarEntity,
+  updateJurisdictionEntityRoles
 } from "../utils";
 
 /**
@@ -124,6 +123,7 @@ export function handleRule(event: Rule): void {
     jurisdictionRuleEntity = new JurisdictionRuleEntity(
       jurisdictionRuleEntityId
     );
+    jurisdictionRuleEntity.effects = [];
   }
   // Load uri data
   let uriIpfsHash = event.params.uri.split("/").at(-1);
@@ -161,6 +161,14 @@ export function handleRuleEffect(event: RuleEffect): void {
   if (!ruleEntity) {
     return;
   }
+  // Clear rule effects if emitted event with effect from another block
+  if (ruleEntity.effectsBlock != event.block.number) {
+    for (let i = 0; i < ruleEntity.effects.length; i++) {
+      store.remove('JurisdictionRuleEffectEntity', ruleEntity.effects[i]);
+    }
+    ruleEntity.effects = [];
+    ruleEntity.effectsBlock = event.block.number;
+  }
   // Find or create rule effect entity
   let ruleEffectEntityId = `${ruleEntityId}_${event.params.name}`;
   let ruleEffectEntity = JurisdictionRuleEffectEntity.load(ruleEffectEntityId);
@@ -169,11 +177,20 @@ export function handleRuleEffect(event: RuleEffect): void {
     ruleEffectEntity.rule = ruleEntity.id;
     ruleEffectEntity.name = event.params.name;
   }
+  // Update rule effect
   ruleEffectEntity.direction = event.params.direction;
   ruleEffectEntity.value = event.params.value;
   ruleEffectEntity.save();
-  // Update rule positive
-  updateJurisdictionRuleEntityPositivity(ruleEntity, ruleEffectEntity);
+  // Add new effect to rule
+  if (!ruleEntity.effects.includes(ruleEffectEntityId)) {
+    let ruleEffects = ruleEntity.effects;
+    ruleEffects.push(ruleEffectEntityId);
+    ruleEntity.effects = ruleEffects;
+  }
+  // Check if a rule is positive
+  ruleEntity.isPositive = isJurisdictionRuleEntityPositive(ruleEntity, ruleEffectEntity);
+  // Save rule
+  ruleEntity.save();
 }
 
 /**

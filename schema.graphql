@@ -65,7 +65,8 @@ type JurisdictionRuleEntity @entity {
   uriData: Bytes
   uriName: String
   negation: Boolean
-  effects: [JurisdictionRuleEffectEntity!] @derivedFrom(field: "rule")
+  effects: [JurisdictionRuleEffectEntity!]!
+  effectsBlock: BigInt # number of block where effects were defined
   confirmationRuling: String
   confirmationEvidence: Boolean
   confirmationWitness: BigInt

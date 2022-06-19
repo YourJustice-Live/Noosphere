@@ -606,6 +606,7 @@ export class JurisdictionRuleEntity extends Entity {
     this.set("jurisdiction", Value.fromString(""));
     this.set("about", Value.fromString(""));
     this.set("ruleId", Value.fromBigInt(BigInt.zero()));
+    this.set("effects", Value.fromStringArray(new Array(0)));
   }
 
   save(): void {
@@ -776,20 +777,29 @@ export class JurisdictionRuleEntity extends Entity {
     this.set("negation", Value.fromBoolean(value));
   }
 
-  get effects(): Array<string> | null {
+  get effects(): Array<string> {
     let value = this.get("effects");
+    return value!.toStringArray();
+  }
+
+  set effects(value: Array<string>) {
+    this.set("effects", Value.fromStringArray(value));
+  }
+
+  get effectsBlock(): BigInt | null {
+    let value = this.get("effectsBlock");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
-      return value.toStringArray();
+      return value.toBigInt();
     }
   }
 
-  set effects(value: Array<string> | null) {
+  set effectsBlock(value: BigInt | null) {
     if (!value) {
-      this.unset("effects");
+      this.unset("effectsBlock");
     } else {
-      this.set("effects", Value.fromStringArray(<Array<string>>value));
+      this.set("effectsBlock", Value.fromBigInt(<BigInt>value));
     }
   }
 
