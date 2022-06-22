@@ -1,4 +1,4 @@
-import { ipfs, json, log } from "@graphprotocol/graph-ts";
+import { ipfs, json } from "@graphprotocol/graph-ts";
 import {
   AccountEntity,
   CaseEntity,
@@ -15,6 +15,17 @@ import {
   Verdict,
 } from "../../generated/templates/Case/Case";
 import {
+  CASE_EVENT_PROP_ASSIGNEE,
+  CASE_EVENT_PROP_AUTHOR,
+  CASE_EVENT_PROP_JUDGE,
+  CASE_EVENT_PROP_ROLE,
+  CASE_EVENT_PROP_STAGE,
+  CASE_EVENT_PROP_TYPE,
+  CASE_EVENT_TYPE_ADDED_POST,
+  CASE_EVENT_TYPE_ASSIGNED_ROLE,
+  CASE_EVENT_TYPE_CANCELLED_CASE,
+  CASE_EVENT_TYPE_CHANGED_STAGE,
+  CASE_EVENT_TYPE_MADE_VERDICT,
   CASE_POST_TYPE_CONFIRMATION,
   CASE_ROLE_ADMIN_ID,
   CASE_ROLE_AFFECTED_ID,
@@ -96,8 +107,8 @@ export function handleTransferByToken(event: TransferByToken): void {
     event.address,
     event.transaction.hash,
     event.block.timestamp,
-    "assignedRole",
-    `{"assignee":"${event.params.toOwnerToken.toString()}","role":"${event.params.id.toString()}"}`
+    CASE_EVENT_TYPE_ASSIGNED_ROLE,
+    `{"${CASE_EVENT_PROP_ASSIGNEE}":"${event.params.toOwnerToken.toString()}","${CASE_EVENT_PROP_ROLE}":"${event.params.id.toString()}"}`
   );
 }
 
@@ -177,9 +188,9 @@ export function handlePost(event: Post): void {
     event.address,
     event.transaction.hash,
     event.block.timestamp,
-    "addedPost",
-    `{"author":"${accountEntity.avatarNft}","type":"${
-      uriJsonTypeString ? uriJsonTypeString : "Unknown"
+    CASE_EVENT_TYPE_ADDED_POST,
+    `{"${CASE_EVENT_PROP_AUTHOR}":"${accountEntity.avatarNft}","${CASE_EVENT_PROP_TYPE}":"${
+      uriJsonTypeString ? uriJsonTypeString : ""
     }"}`
   );
 }
@@ -202,8 +213,8 @@ export function handleStage(event: Stage): void {
     event.address,
     event.transaction.hash,
     event.block.timestamp,
-    "changedStage",
-    `{"stage":"${event.params.stage}"}`
+    CASE_EVENT_TYPE_CHANGED_STAGE,
+    `{"${CASE_EVENT_PROP_STAGE}":"${event.params.stage}"}`
   );
 }
 
@@ -239,8 +250,8 @@ export function handleVerdict(event: Verdict): void {
     event.address,
     event.transaction.hash,
     event.block.timestamp,
-    "madeVerdict",
-    `{"judge":"${accountEntity.avatarNft}"}`
+    CASE_EVENT_TYPE_MADE_VERDICT,
+    `{"${CASE_EVENT_PROP_JUDGE}":"${accountEntity.avatarNft}"}`
   );
 }
 
@@ -272,8 +283,8 @@ export function handleCancelled(event: Cancelled): void {
     event.address,
     event.transaction.hash,
     event.block.timestamp,
-    "cancelledCase",
-    `{"judge":"${event.params.account.toHexString()}"}`
+    CASE_EVENT_TYPE_CANCELLED_CASE,
+    `{"${CASE_EVENT_PROP_JUDGE}":"${event.params.account.toHexString()}"}`
   );
 }
 
