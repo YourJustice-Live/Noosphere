@@ -213,6 +213,15 @@ export class AvatarNftEntity extends Entity {
     }
   }
 
+  get uriIsEmailNotificationsEnabled(): boolean {
+    let value = this.get("uriIsEmailNotificationsEnabled");
+    return value!.toBoolean();
+  }
+
+  set uriIsEmailNotificationsEnabled(value: boolean) {
+    this.set("uriIsEmailNotificationsEnabled", Value.fromBoolean(value));
+  }
+
   get reputations(): Array<string> {
     let value = this.get("reputations");
     return value!.toStringArray();
