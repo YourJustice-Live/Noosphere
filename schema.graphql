@@ -12,6 +12,7 @@ type AvatarNftEntity @entity {
   uriImage: String
   uriFirstName: String
   uriLastName: String
+  uriEmail: String
   reputations: [AvatarNftReputationEntity!]! @derivedFrom(field: "avatarNft")
   totalNegativeRating: BigInt!
   totalPositiveRating: BigInt!

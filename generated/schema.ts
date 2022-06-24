@@ -196,6 +196,23 @@ export class AvatarNftEntity extends Entity {
     }
   }
 
+  get uriEmail(): string | null {
+    let value = this.get("uriEmail");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set uriEmail(value: string | null) {
+    if (!value) {
+      this.unset("uriEmail");
+    } else {
+      this.set("uriEmail", Value.fromString(<string>value));
+    }
+  }
+
   get reputations(): Array<string> {
     let value = this.get("reputations");
     return value!.toStringArray();

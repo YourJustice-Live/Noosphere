@@ -54,6 +54,7 @@ export function handleURI(event: URI): void {
   // Get uri first name and last name
   let uriFirstNameString: string | null = null;
   let uriLastNameString: string | null = null;
+  let uriEmailString: string | null = null;
   for (let i = 0; i < uriJsonAttributesArray.length; i++) {
     // Get trait type and value
     let uriAttributeTraitType = uriJsonAttributesArray[i]
@@ -78,6 +79,15 @@ export function handleURI(event: URI): void {
         ? uriAttributeValue.toString()
         : null;
     }
+    // Check trait type for getting email
+    if (
+      uriAttributeTraitType &&
+      uriAttributeTraitType.toString() == "Email"
+    ) {
+      uriEmailString = uriAttributeValue
+        ? uriAttributeValue.toString()
+        : null;
+    }
   }
   // Update entity's params
   entity.uri = event.params.value;
@@ -85,5 +95,6 @@ export function handleURI(event: URI): void {
   entity.uriImage = uriJsonImageString;
   entity.uriFirstName = uriFirstNameString;
   entity.uriLastName = uriLastNameString;
+  entity.uriEmail = uriEmailString;
   entity.save();
 }
