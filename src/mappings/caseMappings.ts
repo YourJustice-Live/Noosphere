@@ -106,6 +106,7 @@ export function handleTransferByToken(event: TransferByToken): void {
     caseEntity,
     event.address,
     event.transaction.hash,
+    event.logIndex,
     event.block.timestamp,
     CASE_EVENT_TYPE_ASSIGNED_ROLE,
     `{"${CASE_EVENT_PROP_ASSIGNEE}":"${event.params.toOwnerToken.toString()}","${CASE_EVENT_PROP_ROLE}":"${event.params.id.toString()}"}`
@@ -187,6 +188,7 @@ export function handlePost(event: Post): void {
     caseEntity,
     event.address,
     event.transaction.hash,
+    event.logIndex,
     event.block.timestamp,
     CASE_EVENT_TYPE_ADDED_POST,
     `{"${CASE_EVENT_PROP_AUTHOR}":"${accountEntity.avatarNft}","${CASE_EVENT_PROP_TYPE}":"${
@@ -212,6 +214,7 @@ export function handleStage(event: Stage): void {
     caseEntity,
     event.address,
     event.transaction.hash,
+    event.logIndex,
     event.block.timestamp,
     CASE_EVENT_TYPE_CHANGED_STAGE,
     `{"${CASE_EVENT_PROP_STAGE}":"${event.params.stage}"}`
@@ -249,6 +252,7 @@ export function handleVerdict(event: Verdict): void {
     caseEntity,
     event.address,
     event.transaction.hash,
+    event.logIndex,
     event.block.timestamp,
     CASE_EVENT_TYPE_MADE_VERDICT,
     `{"${CASE_EVENT_PROP_JUDGE}":"${accountEntity.avatarNft}"}`
@@ -282,6 +286,7 @@ export function handleCancelled(event: Cancelled): void {
     caseEntity,
     event.address,
     event.transaction.hash,
+    event.logIndex,
     event.block.timestamp,
     CASE_EVENT_TYPE_CANCELLED_CASE,
     `{"${CASE_EVENT_PROP_JUDGE}":"${event.params.account.toHexString()}"}`

@@ -132,7 +132,7 @@ type CasePostEntity @entity {
 }
 
 type CaseEventEntity @entity {
-  id: ID! # combination of case address and event transaction address
+  id: ID! # combination of case address, event transaction address, event log index
   caseEntity: CaseEntity!
   createdDate: BigInt!
   type: String!

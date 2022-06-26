@@ -194,11 +194,12 @@ export function saveCaseEventEntity(
   caseEntity: CaseEntity,
   caseContractAddress: Address,
   eventTransactionHash: Bytes,
+  eventLogIndex: BigInt,
   eventBlockTimestamp: BigInt,
   eventType: string,
   eventDataJson: string
 ): void {
-  let caseEventEntityId = `${caseContractAddress.toHexString()}_${eventTransactionHash.toHexString()}`;
+  let caseEventEntityId = `${caseContractAddress.toHexString()}_${eventTransactionHash.toHexString()}_${eventLogIndex.toString()}`;
   let caseEventEntity = new CaseEventEntity(caseEventEntityId);
   caseEventEntity.caseEntity = caseEntity.id;
   caseEventEntity.createdDate = eventBlockTimestamp;
