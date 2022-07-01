@@ -154,12 +154,12 @@ export function updateJurisdictionEntityRoles(
 }
 
 /**
- * Update the positivity of jurisdiction rule after a extra rule effect is received.
+ * Check if a jurisdiction rule will be positive if an additional effect of the rule is added.
  */
-export function updateJurisdictionRuleEntityPositivity(
+export function isJurisdictionRuleEntityPositive(
   rule: JurisdictionRuleEntity,
-  extraRuleEffect: JurisdictionRuleEffectEntity
-): void {
+  additionalRuleEffect: JurisdictionRuleEffectEntity
+): boolean {
   let isRulePositive = true;
   // Prepare array with rule effect ids
   let ruleEffects = rule.effects;
@@ -172,7 +172,7 @@ export function updateJurisdictionRuleEntityPositivity(
     if (!ruleEffect) {
       continue;
     }
-    if (ruleEffect.name == extraRuleEffect.name) {
+    if (ruleEffect.name == additionalRuleEffect.name) {
       continue;
     }
     if (!ruleEffect.direction) {
@@ -180,12 +180,11 @@ export function updateJurisdictionRuleEntityPositivity(
     }
   }
   // Check new rule effect
-  if (!extraRuleEffect.direction) {
+  if (!additionalRuleEffect.direction) {
     isRulePositive = false;
   }
-  // Save result
-  rule.isPositive = isRulePositive;
-  rule.save();
+  // Return result
+  return isRulePositive;
 }
 
 /**
@@ -195,11 +194,12 @@ export function saveCaseEventEntity(
   caseEntity: CaseEntity,
   caseContractAddress: Address,
   eventTransactionHash: Bytes,
+  eventLogIndex: BigInt,
   eventBlockTimestamp: BigInt,
   eventType: string,
   eventDataJson: string
 ): void {
-  let caseEventEntityId = `${caseContractAddress.toHexString()}_${eventTransactionHash.toHexString()}`;
+  let caseEventEntityId = `${caseContractAddress.toHexString()}_${eventTransactionHash.toHexString()}_${eventLogIndex.toString()}`;
   let caseEventEntity = new CaseEventEntity(caseEventEntityId);
   caseEventEntity.caseEntity = caseEntity.id;
   caseEventEntity.createdDate = eventBlockTimestamp;

@@ -12,6 +12,8 @@ type AvatarNftEntity @entity {
   uriImage: String
   uriFirstName: String
   uriLastName: String
+  uriEmail: String
+  uriIsEmailNotificationsEnabled: Boolean
   reputations: [AvatarNftReputationEntity!]! @derivedFrom(field: "avatarNft")
   totalNegativeRating: BigInt!
   totalPositiveRating: BigInt!
@@ -65,7 +67,8 @@ type JurisdictionRuleEntity @entity {
   uriData: Bytes
   uriName: String
   negation: Boolean
-  effects: [JurisdictionRuleEffectEntity!] @derivedFrom(field: "rule")
+  effects: [JurisdictionRuleEffectEntity!]!
+  effectsBlock: BigInt # number of block where effects were defined
   confirmationRuling: String
   confirmationEvidence: Boolean
   confirmationWitness: BigInt
@@ -129,7 +132,7 @@ type CasePostEntity @entity {
 }
 
 type CaseEventEntity @entity {
-  id: ID! # combination of case address and event transaction address
+  id: ID! # combination of case address, event transaction address, event log index
   caseEntity: CaseEntity!
   createdDate: BigInt!
   type: String!

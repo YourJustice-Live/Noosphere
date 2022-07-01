@@ -12,3 +12,16 @@ export const CASE_ROLE_WITNESS_ID = "5";
 export const CASE_ROLE_AFFECTED_ID = "6";
 
 export const CASE_POST_TYPE_CONFIRMATION = 'confirmation';
+
+export const CASE_EVENT_TYPE_ASSIGNED_ROLE = "assignedRole";
+export const CASE_EVENT_TYPE_ADDED_POST = "addedPost";
+export const CASE_EVENT_TYPE_CHANGED_STAGE = "changedStage";
+export const CASE_EVENT_TYPE_MADE_VERDICT = "madeVerdict";
+export const CASE_EVENT_TYPE_CANCELLED_CASE = "cancelledCase";
+
+export const CASE_EVENT_PROP_ASSIGNEE = "assignee";
+export const CASE_EVENT_PROP_ROLE = "role";
+export const CASE_EVENT_PROP_AUTHOR = "author";
+export const CASE_EVENT_PROP_TYPE = "type";
+export const CASE_EVENT_PROP_STAGE = "stage";
+export const CASE_EVENT_PROP_JUDGE = "judge";
