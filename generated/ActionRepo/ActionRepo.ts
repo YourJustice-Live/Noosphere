@@ -512,6 +512,38 @@ export class ActionRepo extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBoolean());
   }
 
+  GUIDHasByToken(soulToken: BigInt, guid: Bytes): boolean {
+    let result = super.call(
+      "GUIDHasByToken",
+      "GUIDHasByToken(uint256,bytes32):(bool)",
+      [
+        ethereum.Value.fromUnsignedBigInt(soulToken),
+        ethereum.Value.fromFixedBytes(guid)
+      ]
+    );
+
+    return result[0].toBoolean();
+  }
+
+  try_GUIDHasByToken(
+    soulToken: BigInt,
+    guid: Bytes
+  ): ethereum.CallResult<boolean> {
+    let result = super.tryCall(
+      "GUIDHasByToken",
+      "GUIDHasByToken(uint256,bytes32):(bool)",
+      [
+        ethereum.Value.fromUnsignedBigInt(soulToken),
+        ethereum.Value.fromFixedBytes(guid)
+      ]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBoolean());
+  }
+
   GUIDURI(guid: Bytes): string {
     let result = super.call("GUIDURI", "GUIDURI(bytes32):(string)", [
       ethereum.Value.fromFixedBytes(guid)

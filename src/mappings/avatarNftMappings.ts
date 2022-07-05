@@ -1,4 +1,4 @@
-import { BigInt, ipfs, json, JSONValue } from "@graphprotocol/graph-ts";
+import { BigInt, ipfs, json, JSONValue, JSONValueKind } from "@graphprotocol/graph-ts";
 import { Transfer, URI } from "../../generated/AvatarNFT/AvatarNFT";
 import {
   AvatarNftEntity
@@ -95,7 +95,7 @@ export function handleURI(event: URI): void {
       uriAttributeTraitType.toString() == "Is Email Notifications Enabled"
     ) {
       uriIsEmailNotificationsEnabled = uriAttributeValue
-        ? uriAttributeValue.toBool()
+        ? uriAttributeValue.kind == JSONValueKind.BOOL && uriAttributeValue.toBool()
         : false;
     }
   }
