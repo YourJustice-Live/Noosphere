@@ -7,11 +7,11 @@ dataSources:
   # Hub contract
   - kind: ethereum
     name: Hub
-    network: rinkeby
+    network: mumbai
     source:
-      address: "0xbf10eFEd01E280a4c21D11caE18404B67BF8bd78"
+      address: "0x47307dEBB584C680E51dAFb167622ce9633c2Acf"
       abi: Hub
-      startBlock: 10851420
+      startBlock: 27035105
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -30,11 +30,11 @@ dataSources:
   # Avatar NFT contract
   - kind: ethereum
     name: AvatarNFT
-    network: rinkeby
+    network: mumbai
     source:
-      address: "0xE253c1F803C1835325360a28eBDE83346f30cC38"
+      address: "0xFe61dc25C3B8c3F990bCea5bb901704B2a8b9Bd2"
       abi: AvatarNFT
-      startBlock: 10851421
+      startBlock: 27035109
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -54,11 +54,11 @@ dataSources:
   # Action repository contract
   - kind: ethereum
     name: ActionRepo
-    network: rinkeby
+    network: mumbai
     source:
-      address: "0x9DFd9bc6600E6Ba1B14E7b6f2250D340936EB5B4"
+      address: "0x95BD98a656C907fC037aF87Ea740fD94188Cd65f"
       abi: ActionRepo
-      startBlock: 10851539
+      startBlock: 27035113
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -79,7 +79,7 @@ templates:
   # Jurisdiction contract template
   - kind: ethereum
     name: Jurisdiction
-    network: rinkeby
+    network: mumbai
     source:
       abi: Jurisdiction
     mapping:
@@ -115,7 +115,7 @@ templates:
   # Case contract template
   - kind: ethereum
     name: Case
-    network: rinkeby
+    network: mumbai
     source:
       abi: Case
     mapping:
@@ -138,7 +138,7 @@ templates:
           handler: handleTransferByToken
         - event: RuleAdded(address,uint256)
           handler: handleRuleAdded
-        - event: Post(indexed address,string,string)
+        - event: Post(indexed address,uint256,string,string)
           handler: handlePost
         - event: Stage(uint8)
           handler: handleStage
