@@ -168,6 +168,32 @@ export class Initialized__Params {
   }
 }
 
+export class Nominate extends ethereum.Event {
+  get params(): Nominate__Params {
+    return new Nominate__Params(this);
+  }
+}
+
+export class Nominate__Params {
+  _event: Nominate;
+
+  constructor(event: Nominate) {
+    this._event = event;
+  }
+
+  get account(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get id(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+
+  get uri(): string {
+    return this._event.parameters[2].value.toString();
+  }
+}
+
 export class OpinionChange extends ethereum.Event {
   get params(): OpinionChange__Params {
     return new OpinionChange__Params(this);
@@ -225,6 +251,36 @@ export class OwnershipTransferred__Params {
 
   get newOwner(): Address {
     return this._event.parameters[1].value.toAddress();
+  }
+}
+
+export class Post extends ethereum.Event {
+  get params(): Post__Params {
+    return new Post__Params(this);
+  }
+}
+
+export class Post__Params {
+  _event: Post;
+
+  constructor(event: Post) {
+    this._event = event;
+  }
+
+  get account(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get tokenId(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+
+  get entRole(): string {
+    return this._event.parameters[2].value.toString();
+  }
+
+  get uri(): string {
+    return this._event.parameters[3].value.toString();
   }
 }
 
@@ -985,6 +1041,25 @@ export class Jurisdiction extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
+  confGet(key: string): string {
+    let result = super.call("confGet", "confGet(string):(string)", [
+      ethereum.Value.fromString(key)
+    ]);
+
+    return result[0].toString();
+  }
+
+  try_confGet(key: string): ethereum.CallResult<string> {
+    let result = super.tryCall("confGet", "confGet(string):(string)", [
+      ethereum.Value.fromString(key)
+    ]);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toString());
+  }
+
   confirmationGet(id: BigInt): Jurisdiction__confirmationGetResultValue0Struct {
     let result = super.call(
       "confirmationGet",
@@ -1329,6 +1404,21 @@ export class Jurisdiction extends ethereum.SmartContract {
 
   try_owner(): ethereum.CallResult<Address> {
     let result = super.tryCall("owner", "owner():(address)", []);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddress());
+  }
+
+  repoAddr(): Address {
+    let result = super.call("repoAddr", "repoAddr():(address)", []);
+
+    return result[0].toAddress();
+  }
+
+  try_repoAddr(): ethereum.CallResult<Address> {
+    let result = super.tryCall("repoAddr", "repoAddr():(address)", []);
     if (result.reverted) {
       return new ethereum.CallResult();
     }
@@ -1883,6 +1973,40 @@ export class CaseMakeOpenCallPostsStruct extends ethereum.Tuple {
   }
 }
 
+export class ConfSetCall extends ethereum.Call {
+  get inputs(): ConfSetCall__Inputs {
+    return new ConfSetCall__Inputs(this);
+  }
+
+  get outputs(): ConfSetCall__Outputs {
+    return new ConfSetCall__Outputs(this);
+  }
+}
+
+export class ConfSetCall__Inputs {
+  _call: ConfSetCall;
+
+  constructor(call: ConfSetCall) {
+    this._call = call;
+  }
+
+  get key(): string {
+    return this._call.inputValues[0].value.toString();
+  }
+
+  get value(): string {
+    return this._call.inputValues[1].value.toString();
+  }
+}
+
+export class ConfSetCall__Outputs {
+  _call: ConfSetCall;
+
+  constructor(call: ConfSetCall) {
+    this._call = call;
+  }
+}
+
 export class InitializeCall extends ethereum.Call {
   get inputs(): InitializeCall__Inputs {
     return new InitializeCall__Inputs(this);
@@ -1978,6 +2102,78 @@ export class LeaveCall__Outputs {
 
   get value0(): BigInt {
     return this._call.outputValues[0].value.toBigInt();
+  }
+}
+
+export class NominateCall extends ethereum.Call {
+  get inputs(): NominateCall__Inputs {
+    return new NominateCall__Inputs(this);
+  }
+
+  get outputs(): NominateCall__Outputs {
+    return new NominateCall__Outputs(this);
+  }
+}
+
+export class NominateCall__Inputs {
+  _call: NominateCall;
+
+  constructor(call: NominateCall) {
+    this._call = call;
+  }
+
+  get soulToken(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+
+  get uri_(): string {
+    return this._call.inputValues[1].value.toString();
+  }
+}
+
+export class NominateCall__Outputs {
+  _call: NominateCall;
+
+  constructor(call: NominateCall) {
+    this._call = call;
+  }
+}
+
+export class PostCall extends ethereum.Call {
+  get inputs(): PostCall__Inputs {
+    return new PostCall__Inputs(this);
+  }
+
+  get outputs(): PostCall__Outputs {
+    return new PostCall__Outputs(this);
+  }
+}
+
+export class PostCall__Inputs {
+  _call: PostCall;
+
+  constructor(call: PostCall) {
+    this._call = call;
+  }
+
+  get entRole(): string {
+    return this._call.inputValues[0].value.toString();
+  }
+
+  get tokenId(): BigInt {
+    return this._call.inputValues[1].value.toBigInt();
+  }
+
+  get uri_(): string {
+    return this._call.inputValues[2].value.toString();
+  }
+}
+
+export class PostCall__Outputs {
+  _call: PostCall;
+
+  constructor(call: PostCall) {
+    this._call = call;
   }
 }
 
