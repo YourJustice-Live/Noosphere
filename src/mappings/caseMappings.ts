@@ -83,6 +83,10 @@ export function handleTransferByToken(event: TransferByToken): void {
     let judges = caseEntity.judges;
     judges.push(event.params.toOwnerToken.toString());
     caseEntity.judges = judges;
+    // Set judge assignment date if judge is the first
+    if (judges.length == 1) {
+      caseEntity.judgeAssignmentDate = event.block.timestamp;
+    }
   }
   if (
     event.params.id.toString() == CASE_ROLE_WITNESS_ID &&

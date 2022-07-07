@@ -1217,6 +1217,23 @@ export class CaseEntity extends Entity {
     this.set("stage", Value.fromI32(value));
   }
 
+  get judgeAssignmentDate(): BigInt | null {
+    let value = this.get("judgeAssignmentDate");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set judgeAssignmentDate(value: BigInt | null) {
+    if (!value) {
+      this.unset("judgeAssignmentDate");
+    } else {
+      this.set("judgeAssignmentDate", Value.fromBigInt(<BigInt>value));
+    }
+  }
+
   get verdictAuthor(): string | null {
     let value = this.get("verdictAuthor");
     if (!value || value.kind == ValueKind.NULL) {

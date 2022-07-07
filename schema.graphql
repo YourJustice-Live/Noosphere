@@ -101,6 +101,7 @@ type CaseEntity @entity {
   createdDate: BigInt
   jurisdiction: JurisdictionEntity!
   stage: Int
+  judgeAssignmentDate: BigInt # date when the first judge was assigned
   verdictAuthor: String # avatar nft id
   verdictConfirmedRules: [JurisdictionRuleEntity!]
   verdictUri: String
