@@ -136,7 +136,6 @@ export function handleRule(event: Rule): void {
   jurisdictionRuleEntity.jurisdiction = jurisdictionEntity.id;
   jurisdictionRuleEntity.about = actionEntity.id;
   jurisdictionRuleEntity.aboutSubject = actionEntity.subject;
-  jurisdictionRuleEntity.aboutUriName = actionEntity.uriName;
   jurisdictionRuleEntity.ruleId = event.params.id;
   jurisdictionRuleEntity.affected = event.params.affected;
   jurisdictionRuleEntity.uri = event.params.uri;

@@ -700,23 +700,6 @@ export class JurisdictionRuleEntity extends Entity {
     }
   }
 
-  get aboutUriName(): string | null {
-    let value = this.get("aboutUriName");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set aboutUriName(value: string | null) {
-    if (!value) {
-      this.unset("aboutUriName");
-    } else {
-      this.set("aboutUriName", Value.fromString(<string>value));
-    }
-  }
-
   get ruleId(): BigInt {
     let value = this.get("ruleId");
     return value!.toBigInt();
@@ -1090,23 +1073,6 @@ export class ActionEntity extends Entity {
       this.unset("uriData");
     } else {
       this.set("uriData", Value.fromBytes(<Bytes>value));
-    }
-  }
-
-  get uriName(): string | null {
-    let value = this.get("uriName");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set uriName(value: string | null) {
-    if (!value) {
-      this.unset("uriName");
-    } else {
-      this.set("uriName", Value.fromString(<string>value));
     }
   }
 
