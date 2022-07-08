@@ -143,6 +143,8 @@ export function handleRuleAdded(event: RuleAdded): void {
 
 /**
  * Handle a post event to add a post to case.
+ * 
+ * TODO: Use token id from event to define post author.
  */
 export function handlePost(event: Post): void {
   // Skip if case entity not exists

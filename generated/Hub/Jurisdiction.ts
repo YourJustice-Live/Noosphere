@@ -168,6 +168,32 @@ export class Initialized__Params {
   }
 }
 
+export class Nominate extends ethereum.Event {
+  get params(): Nominate__Params {
+    return new Nominate__Params(this);
+  }
+}
+
+export class Nominate__Params {
+  _event: Nominate;
+
+  constructor(event: Nominate) {
+    this._event = event;
+  }
+
+  get account(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get id(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+
+  get uri(): string {
+    return this._event.parameters[2].value.toString();
+  }
+}
+
 export class OpinionChange extends ethereum.Event {
   get params(): OpinionChange__Params {
     return new OpinionChange__Params(this);
@@ -228,42 +254,6 @@ export class OwnershipTransferred__Params {
   }
 }
 
-export class ParentAdded extends ethereum.Event {
-  get params(): ParentAdded__Params {
-    return new ParentAdded__Params(this);
-  }
-}
-
-export class ParentAdded__Params {
-  _event: ParentAdded;
-
-  constructor(event: ParentAdded) {
-    this._event = event;
-  }
-
-  get contractAddr(): Address {
-    return this._event.parameters[0].value.toAddress();
-  }
-}
-
-export class ParentRemoved extends ethereum.Event {
-  get params(): ParentRemoved__Params {
-    return new ParentRemoved__Params(this);
-  }
-}
-
-export class ParentRemoved__Params {
-  _event: ParentRemoved;
-
-  constructor(event: ParentRemoved) {
-    this._event = event;
-  }
-
-  get contractAddr(): Address {
-    return this._event.parameters[0].value.toAddress();
-  }
-}
-
 export class Post extends ethereum.Event {
   get params(): Post__Params {
     return new Post__Params(this);
@@ -281,12 +271,16 @@ export class Post__Params {
     return this._event.parameters[0].value.toAddress();
   }
 
+  get tokenId(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+
   get entRole(): string {
-    return this._event.parameters[1].value.toString();
+    return this._event.parameters[2].value.toString();
   }
 
   get uri(): string {
-    return this._event.parameters[2].value.toString();
+    return this._event.parameters[3].value.toString();
   }
 }
 
@@ -617,12 +611,16 @@ export class Jurisdiction__caseMakeInputAssignRolesStruct extends ethereum.Tuple
 }
 
 export class Jurisdiction__caseMakeInputPostsStruct extends ethereum.Tuple {
+  get tokenId(): BigInt {
+    return this[0].toBigInt();
+  }
+
   get entRole(): string {
-    return this[0].toString();
+    return this[1].toString();
   }
 
   get uri(): string {
-    return this[1].toString();
+    return this[2].toString();
   }
 }
 
@@ -647,12 +645,16 @@ export class Jurisdiction__caseMakeOpenInputAssignRolesStruct extends ethereum.T
 }
 
 export class Jurisdiction__caseMakeOpenInputPostsStruct extends ethereum.Tuple {
+  get tokenId(): BigInt {
+    return this[0].toBigInt();
+  }
+
   get entRole(): string {
-    return this[0].toString();
+    return this[1].toString();
   }
 
   get uri(): string {
-    return this[1].toString();
+    return this[2].toString();
   }
 }
 
@@ -775,6 +777,38 @@ export class Jurisdiction extends ethereum.SmartContract {
       ethereum.Value.fromAddress(account),
       ethereum.Value.fromFixedBytes(guid)
     ]);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBoolean());
+  }
+
+  GUIDHasByToken(soulToken: BigInt, guid: Bytes): boolean {
+    let result = super.call(
+      "GUIDHasByToken",
+      "GUIDHasByToken(uint256,bytes32):(bool)",
+      [
+        ethereum.Value.fromUnsignedBigInt(soulToken),
+        ethereum.Value.fromFixedBytes(guid)
+      ]
+    );
+
+    return result[0].toBoolean();
+  }
+
+  try_GUIDHasByToken(
+    soulToken: BigInt,
+    guid: Bytes
+  ): ethereum.CallResult<boolean> {
+    let result = super.tryCall(
+      "GUIDHasByToken",
+      "GUIDHasByToken(uint256,bytes32):(bool)",
+      [
+        ethereum.Value.fromUnsignedBigInt(soulToken),
+        ethereum.Value.fromFixedBytes(guid)
+      ]
+    );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
@@ -922,7 +956,7 @@ export class Jurisdiction extends ethereum.SmartContract {
   ): Address {
     let result = super.call(
       "caseMake",
-      "caseMake(string,string,(address,uint256)[],(uint256,string)[],(string,string)[]):(address)",
+      "caseMake(string,string,(address,uint256)[],(uint256,string)[],(uint256,string,string)[]):(address)",
       [
         ethereum.Value.fromString(name_),
         ethereum.Value.fromString(uri_),
@@ -944,7 +978,7 @@ export class Jurisdiction extends ethereum.SmartContract {
   ): ethereum.CallResult<Address> {
     let result = super.tryCall(
       "caseMake",
-      "caseMake(string,string,(address,uint256)[],(uint256,string)[],(string,string)[]):(address)",
+      "caseMake(string,string,(address,uint256)[],(uint256,string)[],(uint256,string,string)[]):(address)",
       [
         ethereum.Value.fromString(name_),
         ethereum.Value.fromString(uri_),
@@ -969,7 +1003,7 @@ export class Jurisdiction extends ethereum.SmartContract {
   ): Address {
     let result = super.call(
       "caseMakeOpen",
-      "caseMakeOpen(string,string,(address,uint256)[],(uint256,string)[],(string,string)[]):(address)",
+      "caseMakeOpen(string,string,(address,uint256)[],(uint256,string)[],(uint256,string,string)[]):(address)",
       [
         ethereum.Value.fromString(name_),
         ethereum.Value.fromString(uri_),
@@ -991,7 +1025,7 @@ export class Jurisdiction extends ethereum.SmartContract {
   ): ethereum.CallResult<Address> {
     let result = super.tryCall(
       "caseMakeOpen",
-      "caseMakeOpen(string,string,(address,uint256)[],(uint256,string)[],(string,string)[]):(address)",
+      "caseMakeOpen(string,string,(address,uint256)[],(uint256,string)[],(uint256,string,string)[]):(address)",
       [
         ethereum.Value.fromString(name_),
         ethereum.Value.fromString(uri_),
@@ -1005,6 +1039,25 @@ export class Jurisdiction extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toAddress());
+  }
+
+  confGet(key: string): string {
+    let result = super.call("confGet", "confGet(string):(string)", [
+      ethereum.Value.fromString(key)
+    ]);
+
+    return result[0].toString();
+  }
+
+  try_confGet(key: string): ethereum.CallResult<string> {
+    let result = super.tryCall("confGet", "confGet(string):(string)", [
+      ethereum.Value.fromString(key)
+    ]);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toString());
   }
 
   confirmationGet(id: BigInt): Jurisdiction__confirmationGetResultValue0Struct {
@@ -1298,44 +1351,6 @@ export class Jurisdiction extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBoolean());
   }
 
-  isParent(contractAddr: Address): boolean {
-    let result = super.call("isParent", "isParent(address):(bool)", [
-      ethereum.Value.fromAddress(contractAddr)
-    ]);
-
-    return result[0].toBoolean();
-  }
-
-  try_isParent(contractAddr: Address): ethereum.CallResult<boolean> {
-    let result = super.tryCall("isParent", "isParent(address):(bool)", [
-      ethereum.Value.fromAddress(contractAddr)
-    ]);
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBoolean());
-  }
-
-  isParentRec(contractAddr: Address): boolean {
-    let result = super.call("isParentRec", "isParentRec(address):(bool)", [
-      ethereum.Value.fromAddress(contractAddr)
-    ]);
-
-    return result[0].toBoolean();
-  }
-
-  try_isParentRec(contractAddr: Address): ethereum.CallResult<boolean> {
-    let result = super.tryCall("isParentRec", "isParentRec(address):(bool)", [
-      ethereum.Value.fromAddress(contractAddr)
-    ]);
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBoolean());
-  }
-
   join(): BigInt {
     let result = super.call("join", "join():(uint256)", []);
 
@@ -1396,6 +1411,21 @@ export class Jurisdiction extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
+  repoAddr(): Address {
+    let result = super.call("repoAddr", "repoAddr():(address)", []);
+
+    return result[0].toAddress();
+  }
+
+  try_repoAddr(): ethereum.CallResult<Address> {
+    let result = super.tryCall("repoAddr", "repoAddr():(address)", []);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddress());
+  }
+
   roleExist(role: string): boolean {
     let result = super.call("roleExist", "roleExist(string):(bool)", [
       ethereum.Value.fromString(role)
@@ -1429,6 +1459,38 @@ export class Jurisdiction extends ethereum.SmartContract {
       ethereum.Value.fromAddress(account),
       ethereum.Value.fromString(role)
     ]);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBoolean());
+  }
+
+  roleHasByToken(soulToken: BigInt, role: string): boolean {
+    let result = super.call(
+      "roleHasByToken",
+      "roleHasByToken(uint256,string):(bool)",
+      [
+        ethereum.Value.fromUnsignedBigInt(soulToken),
+        ethereum.Value.fromString(role)
+      ]
+    );
+
+    return result[0].toBoolean();
+  }
+
+  try_roleHasByToken(
+    soulToken: BigInt,
+    role: string
+  ): ethereum.CallResult<boolean> {
+    let result = super.tryCall(
+      "roleHasByToken",
+      "roleHasByToken(uint256,string):(bool)",
+      [
+        ethereum.Value.fromUnsignedBigInt(soulToken),
+        ethereum.Value.fromString(role)
+      ]
+    );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
@@ -1808,12 +1870,16 @@ export class CaseMakeCallAssignRolesStruct extends ethereum.Tuple {
 }
 
 export class CaseMakeCallPostsStruct extends ethereum.Tuple {
+  get tokenId(): BigInt {
+    return this[0].toBigInt();
+  }
+
   get entRole(): string {
-    return this[0].toString();
+    return this[1].toString();
   }
 
   get uri(): string {
-    return this[1].toString();
+    return this[2].toString();
   }
 }
 
@@ -1894,12 +1960,50 @@ export class CaseMakeOpenCallAssignRolesStruct extends ethereum.Tuple {
 }
 
 export class CaseMakeOpenCallPostsStruct extends ethereum.Tuple {
+  get tokenId(): BigInt {
+    return this[0].toBigInt();
+  }
+
   get entRole(): string {
-    return this[0].toString();
+    return this[1].toString();
   }
 
   get uri(): string {
-    return this[1].toString();
+    return this[2].toString();
+  }
+}
+
+export class ConfSetCall extends ethereum.Call {
+  get inputs(): ConfSetCall__Inputs {
+    return new ConfSetCall__Inputs(this);
+  }
+
+  get outputs(): ConfSetCall__Outputs {
+    return new ConfSetCall__Outputs(this);
+  }
+}
+
+export class ConfSetCall__Inputs {
+  _call: ConfSetCall;
+
+  constructor(call: ConfSetCall) {
+    this._call = call;
+  }
+
+  get key(): string {
+    return this._call.inputValues[0].value.toString();
+  }
+
+  get value(): string {
+    return this._call.inputValues[1].value.toString();
+  }
+}
+
+export class ConfSetCall__Outputs {
+  _call: ConfSetCall;
+
+  constructor(call: ConfSetCall) {
+    this._call = call;
   }
 }
 
@@ -1998,6 +2102,78 @@ export class LeaveCall__Outputs {
 
   get value0(): BigInt {
     return this._call.outputValues[0].value.toBigInt();
+  }
+}
+
+export class NominateCall extends ethereum.Call {
+  get inputs(): NominateCall__Inputs {
+    return new NominateCall__Inputs(this);
+  }
+
+  get outputs(): NominateCall__Outputs {
+    return new NominateCall__Outputs(this);
+  }
+}
+
+export class NominateCall__Inputs {
+  _call: NominateCall;
+
+  constructor(call: NominateCall) {
+    this._call = call;
+  }
+
+  get soulToken(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+
+  get uri_(): string {
+    return this._call.inputValues[1].value.toString();
+  }
+}
+
+export class NominateCall__Outputs {
+  _call: NominateCall;
+
+  constructor(call: NominateCall) {
+    this._call = call;
+  }
+}
+
+export class PostCall extends ethereum.Call {
+  get inputs(): PostCall__Inputs {
+    return new PostCall__Inputs(this);
+  }
+
+  get outputs(): PostCall__Outputs {
+    return new PostCall__Outputs(this);
+  }
+}
+
+export class PostCall__Inputs {
+  _call: PostCall;
+
+  constructor(call: PostCall) {
+    this._call = call;
+  }
+
+  get entRole(): string {
+    return this._call.inputValues[0].value.toString();
+  }
+
+  get tokenId(): BigInt {
+    return this._call.inputValues[1].value.toBigInt();
+  }
+
+  get uri_(): string {
+    return this._call.inputValues[2].value.toString();
+  }
+}
+
+export class PostCall__Outputs {
+  _call: PostCall;
+
+  constructor(call: PostCall) {
+    this._call = call;
   }
 }
 

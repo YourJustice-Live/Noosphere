@@ -198,6 +198,32 @@ export class OwnershipTransferred__Params {
   }
 }
 
+export class Post extends ethereum.Event {
+  get params(): Post__Params {
+    return new Post__Params(this);
+  }
+}
+
+export class Post__Params {
+  _event: Post;
+
+  constructor(event: Post) {
+    this._event = event;
+  }
+
+  get account(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get tokenId(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+
+  get uri(): string {
+    return this._event.parameters[2].value.toString();
+  }
+}
+
 export class ReputationChange extends ethereum.Event {
   get params(): ReputationChange__Params {
     return new ReputationChange__Params(this);
@@ -513,6 +539,29 @@ export class AvatarNFT extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
+  hasTokenControl(tokenId: BigInt): boolean {
+    let result = super.call(
+      "hasTokenControl",
+      "hasTokenControl(uint256):(bool)",
+      [ethereum.Value.fromUnsignedBigInt(tokenId)]
+    );
+
+    return result[0].toBoolean();
+  }
+
+  try_hasTokenControl(tokenId: BigInt): ethereum.CallResult<boolean> {
+    let result = super.tryCall(
+      "hasTokenControl",
+      "hasTokenControl(uint256):(bool)",
+      [ethereum.Value.fromUnsignedBigInt(tokenId)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBoolean());
+  }
+
   isApprovedForAll(owner: Address, operator: Address): boolean {
     let result = super.call(
       "isApprovedForAll",
@@ -667,6 +716,21 @@ export class AvatarNFT extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toBytes());
+  }
+
+  repoAddr(): Address {
+    let result = super.call("repoAddr", "repoAddr():(address)", []);
+
+    return result[0].toAddress();
+  }
+
+  try_repoAddr(): ethereum.CallResult<Address> {
+    let result = super.tryCall("repoAddr", "repoAddr():(address)", []);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
   supportsInterface(interfaceId: Bytes): boolean {
@@ -933,6 +997,40 @@ export class MintCall__Outputs {
   }
 }
 
+export class PostCall extends ethereum.Call {
+  get inputs(): PostCall__Inputs {
+    return new PostCall__Inputs(this);
+  }
+
+  get outputs(): PostCall__Outputs {
+    return new PostCall__Outputs(this);
+  }
+}
+
+export class PostCall__Inputs {
+  _call: PostCall;
+
+  constructor(call: PostCall) {
+    this._call = call;
+  }
+
+  get tokenId(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+
+  get uri_(): string {
+    return this._call.inputValues[1].value.toString();
+  }
+}
+
+export class PostCall__Outputs {
+  _call: PostCall;
+
+  constructor(call: PostCall) {
+    this._call = call;
+  }
+}
+
 export class RenounceOwnershipCall extends ethereum.Call {
   get inputs(): RenounceOwnershipCall__Inputs {
     return new RenounceOwnershipCall__Inputs(this);
@@ -1068,7 +1166,7 @@ export class SafeTransferFrom1Call__Inputs {
     return this._call.inputValues[2].value.toBigInt();
   }
 
-  get _data(): Bytes {
+  get data(): Bytes {
     return this._call.inputValues[3].value.toBytes();
   }
 }

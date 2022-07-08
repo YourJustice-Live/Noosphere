@@ -32,28 +32,6 @@ export class AdminChanged__Params {
   }
 }
 
-export class Assoc extends ethereum.Event {
-  get params(): Assoc__Params {
-    return new Assoc__Params(this);
-  }
-}
-
-export class Assoc__Params {
-  _event: Assoc;
-
-  constructor(event: Assoc) {
-    this._event = event;
-  }
-
-  get key(): string {
-    return this._event.parameters[0].value.toString();
-  }
-
-  get contractAddr(): Address {
-    return this._event.parameters[1].value.toAddress();
-  }
-}
-
 export class BeaconUpgraded extends ethereum.Event {
   get params(): BeaconUpgraded__Params {
     return new BeaconUpgraded__Params(this);
@@ -423,6 +401,21 @@ export class Hub extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toBytes());
+  }
+
+  repoAddr(): Address {
+    let result = super.call("repoAddr", "repoAddr():(address)", []);
+
+    return result[0].toAddress();
+  }
+
+  try_repoAddr(): ethereum.CallResult<Address> {
+    let result = super.tryCall("repoAddr", "repoAddr():(address)", []);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
   role(): string {

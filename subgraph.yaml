@@ -7,11 +7,11 @@ dataSources:
   # Hub contract
   - kind: ethereum
     name: Hub
-    network: rinkeby
+    network: mumbai
     source:
-      address: "0xbf10eFEd01E280a4c21D11caE18404B67BF8bd78"
+      address: "0x0197249adA3c806E7c0029651e10defD2572C8cc"
       abi: Hub
-      startBlock: 10851420
+      startBlock: 27067510
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -30,11 +30,11 @@ dataSources:
   # Avatar NFT contract
   - kind: ethereum
     name: AvatarNFT
-    network: rinkeby
+    network: mumbai
     source:
-      address: "0xE253c1F803C1835325360a28eBDE83346f30cC38"
+      address: "0xcfF117d5b357FC3a9f2E6d9A78eDE094c51bB017"
       abi: AvatarNFT
-      startBlock: 10851421
+      startBlock: 27067514
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -51,14 +51,14 @@ dataSources:
         - event: URI(string,indexed uint256)
           handler: handleURI
       file: ./src/mappings/avatarNftMappings.ts
-  # Action repository contract
+  # Action repository (history) contract
   - kind: ethereum
     name: ActionRepo
-    network: rinkeby
+    network: mumbai
     source:
-      address: "0x9DFd9bc6600E6Ba1B14E7b6f2250D340936EB5B4"
+      address: "0x5dD311d5b77bc198b023B3AEbe81c3E6Fb38ee25"
       abi: ActionRepo
-      startBlock: 10851539
+      startBlock: 27067628
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -79,7 +79,7 @@ templates:
   # Jurisdiction contract template
   - kind: ethereum
     name: Jurisdiction
-    network: rinkeby
+    network: mumbai
     source:
       abi: Jurisdiction
     mapping:
@@ -115,7 +115,7 @@ templates:
   # Case contract template
   - kind: ethereum
     name: Case
-    network: rinkeby
+    network: mumbai
     source:
       abi: Case
     mapping:
@@ -138,7 +138,7 @@ templates:
           handler: handleTransferByToken
         - event: RuleAdded(address,uint256)
           handler: handleRuleAdded
-        - event: Post(indexed address,string,string)
+        - event: Post(indexed address,uint256,string,string)
           handler: handlePost
         - event: Stage(uint8)
           handler: handleStage
