@@ -148,4 +148,6 @@ templates:
           handler: handleCancelled
         - event: RuleConfirmed(uint256)
           handler: handleRuleConfirmed
+        - event: Nominate(address,indexed uint256,string)
+          handler: handleNominate
       file: ./src/mappings/caseMappings.ts

@@ -1,12 +1,15 @@
 import { ipfs, json } from "@graphprotocol/graph-ts";
 import {
   AccountEntity,
+  AvatarNftEntity,
   CaseEntity,
+  CaseNominateEntity,
   CasePostEntity,
   JurisdictionRuleEntity,
 } from "../../generated/schema";
 import {
   Cancelled,
+  Nominate,
   Post,
   RuleAdded,
   RuleConfirmed,
@@ -18,6 +21,8 @@ import {
   CASE_EVENT_PROP_ASSIGNEE,
   CASE_EVENT_PROP_AUTHOR,
   CASE_EVENT_PROP_JUDGE,
+  CASE_EVENT_PROP_NOMINATED,
+  CASE_EVENT_PROP_NOMINATOR,
   CASE_EVENT_PROP_ROLE,
   CASE_EVENT_PROP_STAGE,
   CASE_EVENT_PROP_TYPE,
@@ -26,6 +31,7 @@ import {
   CASE_EVENT_TYPE_CANCELLED_CASE,
   CASE_EVENT_TYPE_CHANGED_STAGE,
   CASE_EVENT_TYPE_MADE_VERDICT,
+  CASE_EVENT_TYPE_NOMINATED,
   CASE_POST_TYPE_CONFIRMATION,
   CASE_ROLE_ADMIN_ID,
   CASE_ROLE_AFFECTED_ID,
@@ -143,7 +149,7 @@ export function handleRuleAdded(event: RuleAdded): void {
 
 /**
  * Handle a post event to add a post to case.
- * 
+ *
  * TODO: Use token id from event to define post author.
  */
 export function handlePost(event: Post): void {
@@ -197,7 +203,9 @@ export function handlePost(event: Post): void {
     event.logIndex,
     event.block.timestamp,
     CASE_EVENT_TYPE_ADDED_POST,
-    `{"${CASE_EVENT_PROP_AUTHOR}":"${accountEntity.avatarNft}","${CASE_EVENT_PROP_TYPE}":"${
+    `{"${CASE_EVENT_PROP_AUTHOR}":"${
+      accountEntity.avatarNft
+    }","${CASE_EVENT_PROP_TYPE}":"${
       uriJsonTypeString ? uriJsonTypeString : ""
     }"}`
   );
@@ -323,4 +331,59 @@ export function handleRuleConfirmed(event: RuleConfirmed): void {
   verdictConfirmedRules.push(ruleEntity.id);
   caseEntity.verdictConfirmedRules = verdictConfirmedRules;
   caseEntity.save();
+}
+
+/**
+ * Handle a nominate event to add a nominate to case.
+ */
+export function handleNominate(event: Nominate): void {
+  // Skip if case entity not exists
+  let caseEntity = CaseEntity.load(event.address.toHexString());
+  if (!caseEntity) {
+    return;
+  }
+  // Skip if nominator account entity not exists
+  let nominatorAccountEntity = AccountEntity.load(
+    event.params.account.toHexString()
+  );
+  if (!nominatorAccountEntity) {
+    return;
+  }
+  // Skip if nominated avatar nft entity not exists
+  let nominatedAccountEntity = AvatarNftEntity.load(event.params.id.toString());
+  if (!nominatedAccountEntity) {
+    return;
+  }
+  // Load uri data
+  let uriIpfsHash = event.params.uri.split("/").at(-1);
+  let uriData = ipfs.cat(uriIpfsHash);
+  // Get role from uri data
+  let uriParseResult = uriData ? json.try_fromBytes(uriData) : null;
+  let uriJsonObject =
+    uriParseResult && uriParseResult.isOk
+      ? uriParseResult.value.toObject()
+      : null;
+  let uriJsonType = uriJsonObject ? uriJsonObject.get("role") : null;
+  let uriJsonTypeString = uriJsonType ? uriJsonType.toString() : "";
+  // Define case nominate entity id (case address + event transaction address)
+  let nominateEntityId = `${event.address.toHexString()}_${event.transaction.hash.toHexString()}`;
+  // Create nominate entity
+  let nominateEntity = new CaseNominateEntity(nominateEntityId);
+  nominateEntity.caseEntity = caseEntity.id;
+  nominateEntity.createdDate = event.block.timestamp;
+  nominateEntity.nominator = nominatorAccountEntity.avatarNft;
+  nominateEntity.nominated = nominatedAccountEntity.id;
+  nominateEntity.uri = event.params.uri;
+  nominateEntity.uriData = uriData;
+  nominateEntity.save();
+  // Save case event entity
+  saveCaseEventEntity(
+    caseEntity,
+    event.address,
+    event.transaction.hash,
+    event.logIndex,
+    event.block.timestamp,
+    CASE_EVENT_TYPE_NOMINATED,
+    `{"${CASE_EVENT_PROP_NOMINATOR}":"${nominatorAccountEntity.avatarNft.toString()}","${CASE_EVENT_PROP_NOMINATED}":"${nominatedAccountEntity.id.toString()}","${CASE_EVENT_PROP_ROLE}":"${uriJsonTypeString}"}`
+  );
 }

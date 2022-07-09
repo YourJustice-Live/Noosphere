@@ -117,6 +117,7 @@ type CaseEntity @entity {
   witnesses: [String!]! # avatar nft ids
   affecteds: [String!]! # avatar nft ids
   participantsWithConfirmationPosts: [String!]!
+  nominates: [CaseNominateEntity!]! @derivedFrom(field: "caseEntity")
 }
 
 type CasePostEntity @entity {
@@ -136,4 +137,14 @@ type CaseEventEntity @entity {
   createdDate: BigInt!
   type: String!
   data: Bytes
+}
+
+type CaseNominateEntity @entity {
+  id: ID! # combination of case address and event transaction address
+  caseEntity: CaseEntity!
+  createdDate: BigInt!
+  nominator: AvatarNftEntity!
+  nominated: AvatarNftEntity!
+  uri: String
+  uriData: Bytes
 }

@@ -1411,6 +1411,15 @@ export class CaseEntity extends Entity {
   set participantsWithConfirmationPosts(value: Array<string>) {
     this.set("participantsWithConfirmationPosts", Value.fromStringArray(value));
   }
+
+  get nominates(): Array<string> {
+    let value = this.get("nominates");
+    return value!.toStringArray();
+  }
+
+  set nominates(value: Array<string>) {
+    this.set("nominates", Value.fromStringArray(value));
+  }
 }
 
 export class CasePostEntity extends Entity {
@@ -1627,6 +1636,115 @@ export class CaseEventEntity extends Entity {
       this.unset("data");
     } else {
       this.set("data", Value.fromBytes(<Bytes>value));
+    }
+  }
+}
+
+export class CaseNominateEntity extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+
+    this.set("caseEntity", Value.fromString(""));
+    this.set("createdDate", Value.fromBigInt(BigInt.zero()));
+    this.set("nominator", Value.fromString(""));
+    this.set("nominated", Value.fromString(""));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save CaseNominateEntity entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type CaseNominateEntity must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("CaseNominateEntity", id.toString(), this);
+    }
+  }
+
+  static load(id: string): CaseNominateEntity | null {
+    return changetype<CaseNominateEntity | null>(
+      store.get("CaseNominateEntity", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get caseEntity(): string {
+    let value = this.get("caseEntity");
+    return value!.toString();
+  }
+
+  set caseEntity(value: string) {
+    this.set("caseEntity", Value.fromString(value));
+  }
+
+  get createdDate(): BigInt {
+    let value = this.get("createdDate");
+    return value!.toBigInt();
+  }
+
+  set createdDate(value: BigInt) {
+    this.set("createdDate", Value.fromBigInt(value));
+  }
+
+  get nominator(): string {
+    let value = this.get("nominator");
+    return value!.toString();
+  }
+
+  set nominator(value: string) {
+    this.set("nominator", Value.fromString(value));
+  }
+
+  get nominated(): string {
+    let value = this.get("nominated");
+    return value!.toString();
+  }
+
+  set nominated(value: string) {
+    this.set("nominated", Value.fromString(value));
+  }
+
+  get uri(): string | null {
+    let value = this.get("uri");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set uri(value: string | null) {
+    if (!value) {
+      this.unset("uri");
+    } else {
+      this.set("uri", Value.fromString(<string>value));
+    }
+  }
+
+  get uriData(): Bytes | null {
+    let value = this.get("uriData");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set uriData(value: Bytes | null) {
+    if (!value) {
+      this.unset("uriData");
+    } else {
+      this.set("uriData", Value.fromBytes(<Bytes>value));
     }
   }
 }
