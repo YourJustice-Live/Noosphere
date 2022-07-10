@@ -107,6 +107,8 @@ templates:
           handler: handleRuleEffect
         - event: Confirmation(indexed uint256,string,bool,uint256)
           handler: handleConfirmation
+        - event: RuleDisabled(uint256,bool)
+          handler: handleRuleDisabled
         - event: CaseCreated(indexed uint256,address)
           handler: handleCaseCreated
         - event: OpinionChange(uint256,indexed address,indexed uint256,string,bool,uint256)

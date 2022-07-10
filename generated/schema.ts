@@ -633,6 +633,7 @@ export class JurisdictionRuleEntity extends Entity {
     this.set("about", Value.fromString(""));
     this.set("ruleId", Value.fromBigInt(BigInt.zero()));
     this.set("effects", Value.fromStringArray(new Array(0)));
+    this.set("isDisabled", Value.fromBoolean(false));
   }
 
   save(): void {
@@ -862,6 +863,15 @@ export class JurisdictionRuleEntity extends Entity {
 
   set isPositive(value: boolean) {
     this.set("isPositive", Value.fromBoolean(value));
+  }
+
+  get isDisabled(): boolean {
+    let value = this.get("isDisabled");
+    return value!.toBoolean();
+  }
+
+  set isDisabled(value: boolean) {
+    this.set("isDisabled", Value.fromBoolean(value));
   }
 }
 

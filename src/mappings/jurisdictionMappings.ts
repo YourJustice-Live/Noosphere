@@ -19,6 +19,7 @@ import {
   OpinionChange,
   Rule,
   RuleEffect,
+  RuleDisabled,
   TransferByToken
 } from "../../generated/templates/Jurisdiction/Jurisdiction";
 import {
@@ -142,6 +143,7 @@ export function handleRule(event: Rule): void {
   jurisdictionRuleEntity.uriData = uriData;
   jurisdictionRuleEntity.uriName = uriNameString;
   jurisdictionRuleEntity.negation = event.params.negation;
+  jurisdictionRuleEntity.isDisabled = false;
   jurisdictionRuleEntity.save();
   // Increase rules count if jurisdiction rule is new
   if (isJurisdictionRuleNew) {
@@ -151,7 +153,7 @@ export function handleRule(event: Rule): void {
 }
 
 /**
- * Handle a role effect event to update a rule entity.
+ * Handle a rule effect event to update a rule entity.
  */
 export function handleRuleEffect(event: RuleEffect): void {
   // Find rule entity and return if not found
@@ -208,6 +210,23 @@ export function handleConfirmation(event: Confirmation): void {
   jurisdictionRuleEntity.confirmationRuling = event.params.ruling;
   jurisdictionRuleEntity.confirmationEvidence = event.params.evidence;
   jurisdictionRuleEntity.confirmationWitness = event.params.witness;
+  jurisdictionRuleEntity.save();
+}
+
+/**
+ * Handle a rule disabled event to disable or enable a rule entity.
+ */
+ export function handleRuleDisabled(event: RuleDisabled): void {
+  // Find entity and return if not found
+  let jurisdictionRuleEntityId = `${event.address.toHexString()}_${event.params.id.toString()}`;
+  let jurisdictionRuleEntity = JurisdictionRuleEntity.load(
+    jurisdictionRuleEntityId
+  );
+  if (!jurisdictionRuleEntity) {
+    return;
+  }
+  // Update entity's params
+  jurisdictionRuleEntity.isDisabled = event.params.disabled;
   jurisdictionRuleEntity.save();
 }
 
