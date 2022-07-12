@@ -9,9 +9,9 @@ dataSources:
     name: Hub
     network: mumbai
     source:
-      address: "0xefb9cD307fB4BD7Bb49769e3a3bd1E08682bfF61"
+      address: "0xC46971d2a76DeC2DB76554c12eF07A0B2A407451"
       abi: Hub
-      startBlock: 27124119
+      startBlock: 27137673
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -32,9 +32,9 @@ dataSources:
     name: AvatarNFT
     network: mumbai
     source:
-      address: "0x74dB43EE8703643E72116e4D52b273C997Dd38Ad"
+      address: "0x29fEA694c32B51Ea283F7952f066Da3e12f33375"
       abi: AvatarNFT
-      startBlock: 27124169
+      startBlock: 27137686
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -58,9 +58,9 @@ dataSources:
     name: ActionRepo
     network: mumbai
     source:
-      address: "0x8fA0a4027075dd50D34090825c489F350706e8Ee"
+      address: "0x695b590Dc9455299f349BCC4252650237D586512"
       abi: ActionRepo
-      startBlock: 27124268
+      startBlock: 27137725
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -81,9 +81,9 @@ dataSources:
     name: RuleRepo
     network: mumbai
     source:
-      address: "0x84AF36Bafb102A63A7d6239B4A4a3D76fB873823"
+      address: "0xCd8F2a69Ca83e9866298F3f5919a89e82522BEdB"
       abi: RuleRepo
-      startBlock: 27127801
+      startBlock: 27137620
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
