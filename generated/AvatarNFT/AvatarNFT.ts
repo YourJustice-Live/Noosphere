@@ -254,6 +254,28 @@ export class ReputationChange__Params {
   }
 }
 
+export class SoulType extends ethereum.Event {
+  get params(): SoulType__Params {
+    return new SoulType__Params(this);
+  }
+}
+
+export class SoulType__Params {
+  _event: SoulType;
+
+  constructor(event: SoulType) {
+    this._event = event;
+  }
+
+  get tokenId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get soulType(): string {
+    return this._event.parameters[1].value.toString();
+  }
+}
+
 export class Transfer extends ethereum.Event {
   get params(): Transfer__Params {
     return new Transfer__Params(this);
@@ -607,6 +629,27 @@ export class AvatarNFT extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
+  mintFor(to: Address, tokenURI: string): BigInt {
+    let result = super.call("mintFor", "mintFor(address,string):(uint256)", [
+      ethereum.Value.fromAddress(to),
+      ethereum.Value.fromString(tokenURI)
+    ]);
+
+    return result[0].toBigInt();
+  }
+
+  try_mintFor(to: Address, tokenURI: string): ethereum.CallResult<BigInt> {
+    let result = super.tryCall("mintFor", "mintFor(address,string):(uint256)", [
+      ethereum.Value.fromAddress(to),
+      ethereum.Value.fromString(tokenURI)
+    ]);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
   name(): string {
     let result = super.call("name", "name():(string)", []);
 
@@ -620,49 +663,6 @@ export class AvatarNFT extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toString());
-  }
-
-  onERC721Received(
-    param0: Address,
-    param1: Address,
-    param2: BigInt,
-    param3: Bytes
-  ): Bytes {
-    let result = super.call(
-      "onERC721Received",
-      "onERC721Received(address,address,uint256,bytes):(bytes4)",
-      [
-        ethereum.Value.fromAddress(param0),
-        ethereum.Value.fromAddress(param1),
-        ethereum.Value.fromUnsignedBigInt(param2),
-        ethereum.Value.fromBytes(param3)
-      ]
-    );
-
-    return result[0].toBytes();
-  }
-
-  try_onERC721Received(
-    param0: Address,
-    param1: Address,
-    param2: BigInt,
-    param3: Bytes
-  ): ethereum.CallResult<Bytes> {
-    let result = super.tryCall(
-      "onERC721Received",
-      "onERC721Received(address,address,uint256,bytes):(bytes4)",
-      [
-        ethereum.Value.fromAddress(param0),
-        ethereum.Value.fromAddress(param1),
-        ethereum.Value.fromUnsignedBigInt(param2),
-        ethereum.Value.fromBytes(param3)
-      ]
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBytes());
   }
 
   owner(): Address {
@@ -805,6 +805,25 @@ export class AvatarNFT extends ethereum.SmartContract {
   try_tokenURI(tokenId: BigInt): ethereum.CallResult<string> {
     let result = super.tryCall("tokenURI", "tokenURI(uint256):(string)", [
       ethereum.Value.fromUnsignedBigInt(tokenId)
+    ]);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toString());
+  }
+
+  types(param0: BigInt): string {
+    let result = super.call("types", "types(uint256):(string)", [
+      ethereum.Value.fromUnsignedBigInt(param0)
+    ]);
+
+    return result[0].toString();
+  }
+
+  try_types(param0: BigInt): ethereum.CallResult<string> {
+    let result = super.tryCall("types", "types(uint256):(string)", [
+      ethereum.Value.fromUnsignedBigInt(param0)
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -989,6 +1008,44 @@ export class MintCall__Outputs {
   _call: MintCall;
 
   constructor(call: MintCall) {
+    this._call = call;
+  }
+
+  get value0(): BigInt {
+    return this._call.outputValues[0].value.toBigInt();
+  }
+}
+
+export class MintForCall extends ethereum.Call {
+  get inputs(): MintForCall__Inputs {
+    return new MintForCall__Inputs(this);
+  }
+
+  get outputs(): MintForCall__Outputs {
+    return new MintForCall__Outputs(this);
+  }
+}
+
+export class MintForCall__Inputs {
+  _call: MintForCall;
+
+  constructor(call: MintForCall) {
+    this._call = call;
+  }
+
+  get to(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+
+  get tokenURI(): string {
+    return this._call.inputValues[1].value.toString();
+  }
+}
+
+export class MintForCall__Outputs {
+  _call: MintForCall;
+
+  constructor(call: MintForCall) {
     this._call = call;
   }
 

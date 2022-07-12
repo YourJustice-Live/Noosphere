@@ -1,12 +1,9 @@
-import { BigInt, ipfs, json, store } from "@graphprotocol/graph-ts";
+import { BigInt, ipfs } from "@graphprotocol/graph-ts";
 import {
-  ActionEntity,
   AvatarNftEntity,
   AvatarNftReputationEntity,
   CaseEntity,
-  JurisdictionRoleEntity,
-  JurisdictionRuleEffectEntity,
-  JurisdictionRuleEntity
+  JurisdictionRoleEntity
 } from "../../generated/schema";
 import { Case as CaseTemplate } from "../../generated/templates";
 import {
@@ -14,17 +11,11 @@ import {
   ContractURI
 } from "../../generated/templates/Jurisdiction/Case";
 import {
-  CaseCreated,
-  Confirmation,
-  OpinionChange,
-  Rule,
-  RuleEffect,
-  RuleDisabled,
-  TransferByToken
+  OpinionChange, ReactionCreated, TransferByToken
 } from "../../generated/templates/Jurisdiction/Jurisdiction";
 import {
   addJurisdictionToAvatarNftEntity,
-  getJurisdictionEntity, isJurisdictionRuleEntityPositive, removeJurisdctionFromAvatarEntity,
+  getJurisdictionEntity, removeJurisdctionFromAvatarEntity,
   updateJurisdictionEntityRoles
 } from "../utils";
 
@@ -103,137 +94,9 @@ export function handleTransferByToken(event: TransferByToken): void {
 }
 
 /**
- * Handle a rule event to create or update a jurisdiction rule entity.
+ * Handle a reaction created event to create case entity and case contract.
  */
-export function handleRule(event: Rule): void {
-  // Skip if action entity not exists
-  let actionEntity = ActionEntity.load(event.params.about.toHexString());
-  if (!actionEntity) {
-    return;
-  }
-  // Get jurisdiction
-  let jurisdictionEntity = getJurisdictionEntity(event.address.toHexString());
-  // Find or create jurisdiction rule
-  let isJurisdictionRuleNew = false;
-  let jurisdictionRuleEntityId = `${event.address.toHexString()}_${event.params.id.toString()}`;
-  let jurisdictionRuleEntity = JurisdictionRuleEntity.load(
-    jurisdictionRuleEntityId
-  );
-  if (!jurisdictionRuleEntity) {
-    isJurisdictionRuleNew = true;
-    jurisdictionRuleEntity = new JurisdictionRuleEntity(
-      jurisdictionRuleEntityId
-    );
-    jurisdictionRuleEntity.effects = [];
-  }
-  // Load uri data
-  let uriIpfsHash = event.params.uri.split("/").at(-1);
-  let uriData = ipfs.cat(uriIpfsHash);
-  let uriJson = uriData ? json.fromBytes(uriData) : null;
-  let uriJsonObject = uriJson ? uriJson.toObject() : null;
-  let uriName = uriJsonObject ? uriJsonObject.get("name") : null;
-  let uriNameString = uriName ? uriName.toString() : null;
-  // Update jurisdiction rule
-  jurisdictionRuleEntity.jurisdiction = jurisdictionEntity.id;
-  jurisdictionRuleEntity.about = actionEntity.id;
-  jurisdictionRuleEntity.aboutSubject = actionEntity.subject;
-  jurisdictionRuleEntity.ruleId = event.params.id;
-  jurisdictionRuleEntity.affected = event.params.affected;
-  jurisdictionRuleEntity.uri = event.params.uri;
-  jurisdictionRuleEntity.uriData = uriData;
-  jurisdictionRuleEntity.uriName = uriNameString;
-  jurisdictionRuleEntity.negation = event.params.negation;
-  jurisdictionRuleEntity.isDisabled = false;
-  jurisdictionRuleEntity.save();
-  // Increase rules count if jurisdiction rule is new
-  if (isJurisdictionRuleNew) {
-    jurisdictionEntity.rulesCount = jurisdictionEntity.rulesCount + 1;
-    jurisdictionEntity.save();
-  }
-}
-
-/**
- * Handle a rule effect event to update a rule entity.
- */
-export function handleRuleEffect(event: RuleEffect): void {
-  // Find rule entity and return if not found
-  let ruleEntityId = `${event.address.toHexString()}_${event.params.id.toString()}`;
-  let ruleEntity = JurisdictionRuleEntity.load(ruleEntityId);
-  if (!ruleEntity) {
-    return;
-  }
-  // Clear rule effects if emitted event with effect from another block
-  if (ruleEntity.effectsBlock != event.block.number) {
-    for (let i = 0; i < ruleEntity.effects.length; i++) {
-      store.remove('JurisdictionRuleEffectEntity', ruleEntity.effects[i]);
-    }
-    ruleEntity.effects = [];
-    ruleEntity.effectsBlock = event.block.number;
-  }
-  // Find or create rule effect entity
-  let ruleEffectEntityId = `${ruleEntityId}_${event.params.name}`;
-  let ruleEffectEntity = JurisdictionRuleEffectEntity.load(ruleEffectEntityId);
-  if (!ruleEffectEntity) {
-    ruleEffectEntity = new JurisdictionRuleEffectEntity(ruleEffectEntityId);
-    ruleEffectEntity.rule = ruleEntity.id;
-    ruleEffectEntity.name = event.params.name;
-  }
-  // Update rule effect
-  ruleEffectEntity.direction = event.params.direction;
-  ruleEffectEntity.value = event.params.value;
-  ruleEffectEntity.save();
-  // Add new effect to rule
-  if (!ruleEntity.effects.includes(ruleEffectEntityId)) {
-    let ruleEffects = ruleEntity.effects;
-    ruleEffects.push(ruleEffectEntityId);
-    ruleEntity.effects = ruleEffects;
-  }
-  // Check if a rule is positive
-  ruleEntity.isPositive = isJurisdictionRuleEntityPositive(ruleEntity, ruleEffectEntity);
-  // Save rule
-  ruleEntity.save();
-}
-
-/**
- * Handle a confirmation event to update a rule entity.
- */
-export function handleConfirmation(event: Confirmation): void {
-  // Find entity and return if not found
-  let jurisdictionRuleEntityId = `${event.address.toHexString()}_${event.params.id.toString()}`;
-  let jurisdictionRuleEntity = JurisdictionRuleEntity.load(
-    jurisdictionRuleEntityId
-  );
-  if (!jurisdictionRuleEntity) {
-    return;
-  }
-  // Update entity's params
-  jurisdictionRuleEntity.confirmationRuling = event.params.ruling;
-  jurisdictionRuleEntity.confirmationEvidence = event.params.evidence;
-  jurisdictionRuleEntity.confirmationWitness = event.params.witness;
-  jurisdictionRuleEntity.save();
-}
-
-/**
- * Handle a rule disabled event to disable or enable a rule entity.
- */
- export function handleRuleDisabled(event: RuleDisabled): void {
-  // Find entity and return if not found
-  let jurisdictionRuleEntityId = `${event.address.toHexString()}_${event.params.id.toString()}`;
-  let jurisdictionRuleEntity = JurisdictionRuleEntity.load(
-    jurisdictionRuleEntityId
-  );
-  if (!jurisdictionRuleEntity) {
-    return;
-  }
-  // Update entity's params
-  jurisdictionRuleEntity.isDisabled = event.params.disabled;
-  jurisdictionRuleEntity.save();
-}
-
-/**
- * Handle a case created event to create case entities and case contract.
- */
-export function handleCaseCreated(event: CaseCreated): void {
+export function handleReactionCreated(event: ReactionCreated): void {
   // Skip if case entity is exists
   if (CaseEntity.load(event.params.contractAddress.toHexString())) {
     return;

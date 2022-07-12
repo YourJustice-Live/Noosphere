@@ -273,7 +273,7 @@ export class RuleAdded__Params {
     this._event = event;
   }
 
-  get jurisdiction(): Address {
+  get game(): Address {
     return this._event.parameters[0].value.toAddress();
   }
 
@@ -1318,7 +1318,7 @@ export class InitializeCall__Outputs {
 }
 
 export class InitializeCallAddRulesStruct extends ethereum.Tuple {
-  get jurisdiction(): Address {
+  get game(): Address {
     return this[0].toAddress();
   }
 
@@ -1554,7 +1554,7 @@ export class RuleAddCall__Inputs {
     this._call = call;
   }
 
-  get jurisdiction_(): Address {
+  get game_(): Address {
     return this._call.inputValues[0].value.toAddress();
   }
 

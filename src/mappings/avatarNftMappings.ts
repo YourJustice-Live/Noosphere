@@ -1,5 +1,5 @@
 import { BigInt, ipfs, json, JSONValue, JSONValueKind } from "@graphprotocol/graph-ts";
-import { Transfer, URI } from "../../generated/AvatarNFT/AvatarNFT";
+import { SoulType, Transfer, URI } from "../../generated/AvatarNFT/AvatarNFT";
 import {
   AvatarNftEntity
 } from "../../generated/schema";
@@ -17,6 +17,7 @@ export function handleTransfer(event: Transfer): void {
   // Update avatar nft entity's params
   avatarNftEntity.idBigInt = event.params.tokenId;
   avatarNftEntity.owner = event.params.to.toHexString();
+  avatarNftEntity.type = "";
   avatarNftEntity.totalNegativeRating = BigInt.zero();
   avatarNftEntity.totalPositiveRating = BigInt.zero();
   avatarNftEntity.totalNegativeCases = BigInt.zero();
@@ -24,6 +25,17 @@ export function handleTransfer(event: Transfer): void {
   avatarNftEntity.save();
   // Update account entity
   addAvatarNftToAccountEntity(event.params.to, avatarNftEntity);
+}
+
+export function handleSoulType(event: SoulType): void {
+  // Find entity and return if not found
+  let entity = AvatarNftEntity.load(event.params.tokenId.toString());
+  if (!entity) {
+    return;
+  }
+  // Update avatar nft entity's params
+  entity.type = event.params.soulType;
+  entity.save();
 }
 
 /**

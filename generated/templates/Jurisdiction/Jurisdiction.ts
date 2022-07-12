@@ -36,28 +36,6 @@ export class ApprovalForAll__Params {
   }
 }
 
-export class CaseCreated extends ethereum.Event {
-  get params(): CaseCreated__Params {
-    return new CaseCreated__Params(this);
-  }
-}
-
-export class CaseCreated__Params {
-  _event: CaseCreated;
-
-  constructor(event: CaseCreated) {
-    this._event = event;
-  }
-
-  get id(): BigInt {
-    return this._event.parameters[0].value.toBigInt();
-  }
-
-  get contractAddress(): Address {
-    return this._event.parameters[1].value.toAddress();
-  }
-}
-
 export class Confirmation extends ethereum.Event {
   get params(): Confirmation__Params {
     return new Confirmation__Params(this);
@@ -71,20 +49,24 @@ export class Confirmation__Params {
     this._event = event;
   }
 
+  get originAddress(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
   get id(): BigInt {
-    return this._event.parameters[0].value.toBigInt();
+    return this._event.parameters[1].value.toBigInt();
   }
 
   get ruling(): string {
-    return this._event.parameters[1].value.toString();
+    return this._event.parameters[2].value.toString();
   }
 
   get evidence(): boolean {
-    return this._event.parameters[2].value.toBoolean();
+    return this._event.parameters[3].value.toBoolean();
   }
 
   get witness(): BigInt {
-    return this._event.parameters[3].value.toBigInt();
+    return this._event.parameters[4].value.toBigInt();
   }
 }
 
@@ -284,6 +266,54 @@ export class Post__Params {
   }
 }
 
+export class Reaction extends ethereum.Event {
+  get params(): Reaction__Params {
+    return new Reaction__Params(this);
+  }
+}
+
+export class Reaction__Params {
+  _event: Reaction;
+
+  constructor(event: Reaction) {
+    this._event = event;
+  }
+
+  get originAddress(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get id(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+
+  get reactionId(): Bytes {
+    return this._event.parameters[2].value.toBytes();
+  }
+}
+
+export class ReactionCreated extends ethereum.Event {
+  get params(): ReactionCreated__Params {
+    return new ReactionCreated__Params(this);
+  }
+}
+
+export class ReactionCreated__Params {
+  _event: ReactionCreated;
+
+  constructor(event: ReactionCreated) {
+    this._event = event;
+  }
+
+  get id(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get contractAddress(): Address {
+    return this._event.parameters[1].value.toAddress();
+  }
+}
+
 export class RoleCreated extends ethereum.Event {
   get params(): RoleCreated__Params {
     return new RoleCreated__Params(this);
@@ -341,24 +371,28 @@ export class Rule__Params {
     this._event = event;
   }
 
+  get originAddress(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
   get id(): BigInt {
-    return this._event.parameters[0].value.toBigInt();
+    return this._event.parameters[1].value.toBigInt();
   }
 
   get about(): Bytes {
-    return this._event.parameters[1].value.toBytes();
+    return this._event.parameters[2].value.toBytes();
   }
 
   get affected(): string {
-    return this._event.parameters[2].value.toString();
-  }
-
-  get uri(): string {
     return this._event.parameters[3].value.toString();
   }
 
+  get uri(): string {
+    return this._event.parameters[4].value.toString();
+  }
+
   get negation(): boolean {
-    return this._event.parameters[4].value.toBoolean();
+    return this._event.parameters[5].value.toBoolean();
   }
 }
 
@@ -375,12 +409,16 @@ export class RuleDisabled__Params {
     this._event = event;
   }
 
+  get originAddress(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
   get id(): BigInt {
-    return this._event.parameters[0].value.toBigInt();
+    return this._event.parameters[1].value.toBigInt();
   }
 
   get disabled(): boolean {
-    return this._event.parameters[1].value.toBoolean();
+    return this._event.parameters[2].value.toBoolean();
   }
 }
 
@@ -397,20 +435,24 @@ export class RuleEffect__Params {
     this._event = event;
   }
 
+  get originAddress(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
   get id(): BigInt {
-    return this._event.parameters[0].value.toBigInt();
+    return this._event.parameters[1].value.toBigInt();
   }
 
   get direction(): boolean {
-    return this._event.parameters[1].value.toBoolean();
+    return this._event.parameters[2].value.toBoolean();
   }
 
   get value(): i32 {
-    return this._event.parameters[2].value.toI32();
+    return this._event.parameters[3].value.toI32();
   }
 
   get name(): string {
-    return this._event.parameters[3].value.toString();
+    return this._event.parameters[4].value.toString();
   }
 }
 
@@ -427,8 +469,12 @@ export class RuleRemoved__Params {
     this._event = event;
   }
 
+  get originAddress(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
   get id(): BigInt {
-    return this._event.parameters[0].value.toBigInt();
+    return this._event.parameters[1].value.toBigInt();
   }
 }
 
@@ -590,74 +636,6 @@ export class URI__Params {
   }
 }
 
-export class Jurisdiction__caseMakeInputAddRulesStruct extends ethereum.Tuple {
-  get jurisdiction(): Address {
-    return this[0].toAddress();
-  }
-
-  get ruleId(): BigInt {
-    return this[1].toBigInt();
-  }
-}
-
-export class Jurisdiction__caseMakeInputAssignRolesStruct extends ethereum.Tuple {
-  get tokenId(): BigInt {
-    return this[0].toBigInt();
-  }
-
-  get role(): string {
-    return this[1].toString();
-  }
-}
-
-export class Jurisdiction__caseMakeInputPostsStruct extends ethereum.Tuple {
-  get tokenId(): BigInt {
-    return this[0].toBigInt();
-  }
-
-  get entRole(): string {
-    return this[1].toString();
-  }
-
-  get uri(): string {
-    return this[2].toString();
-  }
-}
-
-export class Jurisdiction__caseMakeOpenInputAddRulesStruct extends ethereum.Tuple {
-  get jurisdiction(): Address {
-    return this[0].toAddress();
-  }
-
-  get ruleId(): BigInt {
-    return this[1].toBigInt();
-  }
-}
-
-export class Jurisdiction__caseMakeOpenInputAssignRolesStruct extends ethereum.Tuple {
-  get tokenId(): BigInt {
-    return this[0].toBigInt();
-  }
-
-  get role(): string {
-    return this[1].toString();
-  }
-}
-
-export class Jurisdiction__caseMakeOpenInputPostsStruct extends ethereum.Tuple {
-  get tokenId(): BigInt {
-    return this[0].toBigInt();
-  }
-
-  get entRole(): string {
-    return this[1].toString();
-  }
-
-  get uri(): string {
-    return this[2].toString();
-  }
-}
-
 export class Jurisdiction__confirmationGetResultValue0Struct extends ethereum.Tuple {
   get ruling(): string {
     return this[0].toString();
@@ -683,6 +661,74 @@ export class Jurisdiction__effectsGetResultValue0Struct extends ethereum.Tuple {
 
   get direction(): boolean {
     return this[2].toBoolean();
+  }
+}
+
+export class Jurisdiction__reactionMakeInputAddRulesStruct extends ethereum.Tuple {
+  get game(): Address {
+    return this[0].toAddress();
+  }
+
+  get ruleId(): BigInt {
+    return this[1].toBigInt();
+  }
+}
+
+export class Jurisdiction__reactionMakeInputAssignRolesStruct extends ethereum.Tuple {
+  get tokenId(): BigInt {
+    return this[0].toBigInt();
+  }
+
+  get role(): string {
+    return this[1].toString();
+  }
+}
+
+export class Jurisdiction__reactionMakeInputPostsStruct extends ethereum.Tuple {
+  get tokenId(): BigInt {
+    return this[0].toBigInt();
+  }
+
+  get entRole(): string {
+    return this[1].toString();
+  }
+
+  get uri(): string {
+    return this[2].toString();
+  }
+}
+
+export class Jurisdiction__reactionMakeOpenInputAddRulesStruct extends ethereum.Tuple {
+  get game(): Address {
+    return this[0].toAddress();
+  }
+
+  get ruleId(): BigInt {
+    return this[1].toBigInt();
+  }
+}
+
+export class Jurisdiction__reactionMakeOpenInputAssignRolesStruct extends ethereum.Tuple {
+  get tokenId(): BigInt {
+    return this[0].toBigInt();
+  }
+
+  get role(): string {
+    return this[1].toString();
+  }
+}
+
+export class Jurisdiction__reactionMakeOpenInputPostsStruct extends ethereum.Tuple {
+  get tokenId(): BigInt {
+    return this[0].toBigInt();
+  }
+
+  get entRole(): string {
+    return this[1].toString();
+  }
+
+  get uri(): string {
+    return this[2].toString();
   }
 }
 
@@ -926,119 +972,6 @@ export class Jurisdiction extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toBigInt());
-  }
-
-  caseHas(caseContract: Address): boolean {
-    let result = super.call("caseHas", "caseHas(address):(bool)", [
-      ethereum.Value.fromAddress(caseContract)
-    ]);
-
-    return result[0].toBoolean();
-  }
-
-  try_caseHas(caseContract: Address): ethereum.CallResult<boolean> {
-    let result = super.tryCall("caseHas", "caseHas(address):(bool)", [
-      ethereum.Value.fromAddress(caseContract)
-    ]);
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBoolean());
-  }
-
-  caseMake(
-    name_: string,
-    uri_: string,
-    addRules: Array<Jurisdiction__caseMakeInputAddRulesStruct>,
-    assignRoles: Array<Jurisdiction__caseMakeInputAssignRolesStruct>,
-    posts: Array<Jurisdiction__caseMakeInputPostsStruct>
-  ): Address {
-    let result = super.call(
-      "caseMake",
-      "caseMake(string,string,(address,uint256)[],(uint256,string)[],(uint256,string,string)[]):(address)",
-      [
-        ethereum.Value.fromString(name_),
-        ethereum.Value.fromString(uri_),
-        ethereum.Value.fromTupleArray(addRules),
-        ethereum.Value.fromTupleArray(assignRoles),
-        ethereum.Value.fromTupleArray(posts)
-      ]
-    );
-
-    return result[0].toAddress();
-  }
-
-  try_caseMake(
-    name_: string,
-    uri_: string,
-    addRules: Array<Jurisdiction__caseMakeInputAddRulesStruct>,
-    assignRoles: Array<Jurisdiction__caseMakeInputAssignRolesStruct>,
-    posts: Array<Jurisdiction__caseMakeInputPostsStruct>
-  ): ethereum.CallResult<Address> {
-    let result = super.tryCall(
-      "caseMake",
-      "caseMake(string,string,(address,uint256)[],(uint256,string)[],(uint256,string,string)[]):(address)",
-      [
-        ethereum.Value.fromString(name_),
-        ethereum.Value.fromString(uri_),
-        ethereum.Value.fromTupleArray(addRules),
-        ethereum.Value.fromTupleArray(assignRoles),
-        ethereum.Value.fromTupleArray(posts)
-      ]
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toAddress());
-  }
-
-  caseMakeOpen(
-    name_: string,
-    uri_: string,
-    addRules: Array<Jurisdiction__caseMakeOpenInputAddRulesStruct>,
-    assignRoles: Array<Jurisdiction__caseMakeOpenInputAssignRolesStruct>,
-    posts: Array<Jurisdiction__caseMakeOpenInputPostsStruct>
-  ): Address {
-    let result = super.call(
-      "caseMakeOpen",
-      "caseMakeOpen(string,string,(address,uint256)[],(uint256,string)[],(uint256,string,string)[]):(address)",
-      [
-        ethereum.Value.fromString(name_),
-        ethereum.Value.fromString(uri_),
-        ethereum.Value.fromTupleArray(addRules),
-        ethereum.Value.fromTupleArray(assignRoles),
-        ethereum.Value.fromTupleArray(posts)
-      ]
-    );
-
-    return result[0].toAddress();
-  }
-
-  try_caseMakeOpen(
-    name_: string,
-    uri_: string,
-    addRules: Array<Jurisdiction__caseMakeOpenInputAddRulesStruct>,
-    assignRoles: Array<Jurisdiction__caseMakeOpenInputAssignRolesStruct>,
-    posts: Array<Jurisdiction__caseMakeOpenInputPostsStruct>
-  ): ethereum.CallResult<Address> {
-    let result = super.tryCall(
-      "caseMakeOpen",
-      "caseMakeOpen(string,string,(address,uint256)[],(uint256,string)[],(uint256,string,string)[]):(address)",
-      [
-        ethereum.Value.fromString(name_),
-        ethereum.Value.fromString(uri_),
-        ethereum.Value.fromTupleArray(addRules),
-        ethereum.Value.fromTupleArray(assignRoles),
-        ethereum.Value.fromTupleArray(posts)
-      ]
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
   confGet(key: string): string {
@@ -1411,6 +1344,119 @@ export class Jurisdiction extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
+  reactionHas(reactionContract: Address): boolean {
+    let result = super.call("reactionHas", "reactionHas(address):(bool)", [
+      ethereum.Value.fromAddress(reactionContract)
+    ]);
+
+    return result[0].toBoolean();
+  }
+
+  try_reactionHas(reactionContract: Address): ethereum.CallResult<boolean> {
+    let result = super.tryCall("reactionHas", "reactionHas(address):(bool)", [
+      ethereum.Value.fromAddress(reactionContract)
+    ]);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBoolean());
+  }
+
+  reactionMake(
+    name_: string,
+    uri_: string,
+    addRules: Array<Jurisdiction__reactionMakeInputAddRulesStruct>,
+    assignRoles: Array<Jurisdiction__reactionMakeInputAssignRolesStruct>,
+    posts: Array<Jurisdiction__reactionMakeInputPostsStruct>
+  ): Address {
+    let result = super.call(
+      "reactionMake",
+      "reactionMake(string,string,(address,uint256)[],(uint256,string)[],(uint256,string,string)[]):(address)",
+      [
+        ethereum.Value.fromString(name_),
+        ethereum.Value.fromString(uri_),
+        ethereum.Value.fromTupleArray(addRules),
+        ethereum.Value.fromTupleArray(assignRoles),
+        ethereum.Value.fromTupleArray(posts)
+      ]
+    );
+
+    return result[0].toAddress();
+  }
+
+  try_reactionMake(
+    name_: string,
+    uri_: string,
+    addRules: Array<Jurisdiction__reactionMakeInputAddRulesStruct>,
+    assignRoles: Array<Jurisdiction__reactionMakeInputAssignRolesStruct>,
+    posts: Array<Jurisdiction__reactionMakeInputPostsStruct>
+  ): ethereum.CallResult<Address> {
+    let result = super.tryCall(
+      "reactionMake",
+      "reactionMake(string,string,(address,uint256)[],(uint256,string)[],(uint256,string,string)[]):(address)",
+      [
+        ethereum.Value.fromString(name_),
+        ethereum.Value.fromString(uri_),
+        ethereum.Value.fromTupleArray(addRules),
+        ethereum.Value.fromTupleArray(assignRoles),
+        ethereum.Value.fromTupleArray(posts)
+      ]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddress());
+  }
+
+  reactionMakeOpen(
+    name_: string,
+    uri_: string,
+    addRules: Array<Jurisdiction__reactionMakeOpenInputAddRulesStruct>,
+    assignRoles: Array<Jurisdiction__reactionMakeOpenInputAssignRolesStruct>,
+    posts: Array<Jurisdiction__reactionMakeOpenInputPostsStruct>
+  ): Address {
+    let result = super.call(
+      "reactionMakeOpen",
+      "reactionMakeOpen(string,string,(address,uint256)[],(uint256,string)[],(uint256,string,string)[]):(address)",
+      [
+        ethereum.Value.fromString(name_),
+        ethereum.Value.fromString(uri_),
+        ethereum.Value.fromTupleArray(addRules),
+        ethereum.Value.fromTupleArray(assignRoles),
+        ethereum.Value.fromTupleArray(posts)
+      ]
+    );
+
+    return result[0].toAddress();
+  }
+
+  try_reactionMakeOpen(
+    name_: string,
+    uri_: string,
+    addRules: Array<Jurisdiction__reactionMakeOpenInputAddRulesStruct>,
+    assignRoles: Array<Jurisdiction__reactionMakeOpenInputAssignRolesStruct>,
+    posts: Array<Jurisdiction__reactionMakeOpenInputPostsStruct>
+  ): ethereum.CallResult<Address> {
+    let result = super.tryCall(
+      "reactionMakeOpen",
+      "reactionMakeOpen(string,string,(address,uint256)[],(uint256,string)[],(uint256,string,string)[]):(address)",
+      [
+        ethereum.Value.fromString(name_),
+        ethereum.Value.fromString(uri_),
+        ethereum.Value.fromTupleArray(addRules),
+        ethereum.Value.fromTupleArray(assignRoles),
+        ethereum.Value.fromTupleArray(posts)
+      ]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddress());
+  }
+
   repoAddr(): Address {
     let result = super.call("repoAddr", "repoAddr():(address)", []);
 
@@ -1763,213 +1809,29 @@ export class Jurisdiction extends ethereum.SmartContract {
   }
 }
 
-export class CaseDisableCall extends ethereum.Call {
-  get inputs(): CaseDisableCall__Inputs {
-    return new CaseDisableCall__Inputs(this);
+export class DefaultCall extends ethereum.Call {
+  get inputs(): DefaultCall__Inputs {
+    return new DefaultCall__Inputs(this);
   }
 
-  get outputs(): CaseDisableCall__Outputs {
-    return new CaseDisableCall__Outputs(this);
-  }
-}
-
-export class CaseDisableCall__Inputs {
-  _call: CaseDisableCall;
-
-  constructor(call: CaseDisableCall) {
-    this._call = call;
-  }
-
-  get caseContract(): Address {
-    return this._call.inputValues[0].value.toAddress();
+  get outputs(): DefaultCall__Outputs {
+    return new DefaultCall__Outputs(this);
   }
 }
 
-export class CaseDisableCall__Outputs {
-  _call: CaseDisableCall;
+export class DefaultCall__Inputs {
+  _call: DefaultCall;
 
-  constructor(call: CaseDisableCall) {
+  constructor(call: DefaultCall) {
     this._call = call;
   }
 }
 
-export class CaseMakeCall extends ethereum.Call {
-  get inputs(): CaseMakeCall__Inputs {
-    return new CaseMakeCall__Inputs(this);
-  }
+export class DefaultCall__Outputs {
+  _call: DefaultCall;
 
-  get outputs(): CaseMakeCall__Outputs {
-    return new CaseMakeCall__Outputs(this);
-  }
-}
-
-export class CaseMakeCall__Inputs {
-  _call: CaseMakeCall;
-
-  constructor(call: CaseMakeCall) {
+  constructor(call: DefaultCall) {
     this._call = call;
-  }
-
-  get name_(): string {
-    return this._call.inputValues[0].value.toString();
-  }
-
-  get uri_(): string {
-    return this._call.inputValues[1].value.toString();
-  }
-
-  get addRules(): Array<CaseMakeCallAddRulesStruct> {
-    return this._call.inputValues[2].value.toTupleArray<
-      CaseMakeCallAddRulesStruct
-    >();
-  }
-
-  get assignRoles(): Array<CaseMakeCallAssignRolesStruct> {
-    return this._call.inputValues[3].value.toTupleArray<
-      CaseMakeCallAssignRolesStruct
-    >();
-  }
-
-  get posts(): Array<CaseMakeCallPostsStruct> {
-    return this._call.inputValues[4].value.toTupleArray<
-      CaseMakeCallPostsStruct
-    >();
-  }
-}
-
-export class CaseMakeCall__Outputs {
-  _call: CaseMakeCall;
-
-  constructor(call: CaseMakeCall) {
-    this._call = call;
-  }
-
-  get value0(): Address {
-    return this._call.outputValues[0].value.toAddress();
-  }
-}
-
-export class CaseMakeCallAddRulesStruct extends ethereum.Tuple {
-  get jurisdiction(): Address {
-    return this[0].toAddress();
-  }
-
-  get ruleId(): BigInt {
-    return this[1].toBigInt();
-  }
-}
-
-export class CaseMakeCallAssignRolesStruct extends ethereum.Tuple {
-  get tokenId(): BigInt {
-    return this[0].toBigInt();
-  }
-
-  get role(): string {
-    return this[1].toString();
-  }
-}
-
-export class CaseMakeCallPostsStruct extends ethereum.Tuple {
-  get tokenId(): BigInt {
-    return this[0].toBigInt();
-  }
-
-  get entRole(): string {
-    return this[1].toString();
-  }
-
-  get uri(): string {
-    return this[2].toString();
-  }
-}
-
-export class CaseMakeOpenCall extends ethereum.Call {
-  get inputs(): CaseMakeOpenCall__Inputs {
-    return new CaseMakeOpenCall__Inputs(this);
-  }
-
-  get outputs(): CaseMakeOpenCall__Outputs {
-    return new CaseMakeOpenCall__Outputs(this);
-  }
-}
-
-export class CaseMakeOpenCall__Inputs {
-  _call: CaseMakeOpenCall;
-
-  constructor(call: CaseMakeOpenCall) {
-    this._call = call;
-  }
-
-  get name_(): string {
-    return this._call.inputValues[0].value.toString();
-  }
-
-  get uri_(): string {
-    return this._call.inputValues[1].value.toString();
-  }
-
-  get addRules(): Array<CaseMakeOpenCallAddRulesStruct> {
-    return this._call.inputValues[2].value.toTupleArray<
-      CaseMakeOpenCallAddRulesStruct
-    >();
-  }
-
-  get assignRoles(): Array<CaseMakeOpenCallAssignRolesStruct> {
-    return this._call.inputValues[3].value.toTupleArray<
-      CaseMakeOpenCallAssignRolesStruct
-    >();
-  }
-
-  get posts(): Array<CaseMakeOpenCallPostsStruct> {
-    return this._call.inputValues[4].value.toTupleArray<
-      CaseMakeOpenCallPostsStruct
-    >();
-  }
-}
-
-export class CaseMakeOpenCall__Outputs {
-  _call: CaseMakeOpenCall;
-
-  constructor(call: CaseMakeOpenCall) {
-    this._call = call;
-  }
-
-  get value0(): Address {
-    return this._call.outputValues[0].value.toAddress();
-  }
-}
-
-export class CaseMakeOpenCallAddRulesStruct extends ethereum.Tuple {
-  get jurisdiction(): Address {
-    return this[0].toAddress();
-  }
-
-  get ruleId(): BigInt {
-    return this[1].toBigInt();
-  }
-}
-
-export class CaseMakeOpenCallAssignRolesStruct extends ethereum.Tuple {
-  get tokenId(): BigInt {
-    return this[0].toBigInt();
-  }
-
-  get role(): string {
-    return this[1].toString();
-  }
-}
-
-export class CaseMakeOpenCallPostsStruct extends ethereum.Tuple {
-  get tokenId(): BigInt {
-    return this[0].toBigInt();
-  }
-
-  get entRole(): string {
-    return this[1].toString();
-  }
-
-  get uri(): string {
-    return this[2].toString();
   }
 }
 
@@ -2174,6 +2036,216 @@ export class PostCall__Outputs {
 
   constructor(call: PostCall) {
     this._call = call;
+  }
+}
+
+export class ReactionDisableCall extends ethereum.Call {
+  get inputs(): ReactionDisableCall__Inputs {
+    return new ReactionDisableCall__Inputs(this);
+  }
+
+  get outputs(): ReactionDisableCall__Outputs {
+    return new ReactionDisableCall__Outputs(this);
+  }
+}
+
+export class ReactionDisableCall__Inputs {
+  _call: ReactionDisableCall;
+
+  constructor(call: ReactionDisableCall) {
+    this._call = call;
+  }
+
+  get reactionContract(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+}
+
+export class ReactionDisableCall__Outputs {
+  _call: ReactionDisableCall;
+
+  constructor(call: ReactionDisableCall) {
+    this._call = call;
+  }
+}
+
+export class ReactionMakeCall extends ethereum.Call {
+  get inputs(): ReactionMakeCall__Inputs {
+    return new ReactionMakeCall__Inputs(this);
+  }
+
+  get outputs(): ReactionMakeCall__Outputs {
+    return new ReactionMakeCall__Outputs(this);
+  }
+}
+
+export class ReactionMakeCall__Inputs {
+  _call: ReactionMakeCall;
+
+  constructor(call: ReactionMakeCall) {
+    this._call = call;
+  }
+
+  get name_(): string {
+    return this._call.inputValues[0].value.toString();
+  }
+
+  get uri_(): string {
+    return this._call.inputValues[1].value.toString();
+  }
+
+  get addRules(): Array<ReactionMakeCallAddRulesStruct> {
+    return this._call.inputValues[2].value.toTupleArray<
+      ReactionMakeCallAddRulesStruct
+    >();
+  }
+
+  get assignRoles(): Array<ReactionMakeCallAssignRolesStruct> {
+    return this._call.inputValues[3].value.toTupleArray<
+      ReactionMakeCallAssignRolesStruct
+    >();
+  }
+
+  get posts(): Array<ReactionMakeCallPostsStruct> {
+    return this._call.inputValues[4].value.toTupleArray<
+      ReactionMakeCallPostsStruct
+    >();
+  }
+}
+
+export class ReactionMakeCall__Outputs {
+  _call: ReactionMakeCall;
+
+  constructor(call: ReactionMakeCall) {
+    this._call = call;
+  }
+
+  get value0(): Address {
+    return this._call.outputValues[0].value.toAddress();
+  }
+}
+
+export class ReactionMakeCallAddRulesStruct extends ethereum.Tuple {
+  get game(): Address {
+    return this[0].toAddress();
+  }
+
+  get ruleId(): BigInt {
+    return this[1].toBigInt();
+  }
+}
+
+export class ReactionMakeCallAssignRolesStruct extends ethereum.Tuple {
+  get tokenId(): BigInt {
+    return this[0].toBigInt();
+  }
+
+  get role(): string {
+    return this[1].toString();
+  }
+}
+
+export class ReactionMakeCallPostsStruct extends ethereum.Tuple {
+  get tokenId(): BigInt {
+    return this[0].toBigInt();
+  }
+
+  get entRole(): string {
+    return this[1].toString();
+  }
+
+  get uri(): string {
+    return this[2].toString();
+  }
+}
+
+export class ReactionMakeOpenCall extends ethereum.Call {
+  get inputs(): ReactionMakeOpenCall__Inputs {
+    return new ReactionMakeOpenCall__Inputs(this);
+  }
+
+  get outputs(): ReactionMakeOpenCall__Outputs {
+    return new ReactionMakeOpenCall__Outputs(this);
+  }
+}
+
+export class ReactionMakeOpenCall__Inputs {
+  _call: ReactionMakeOpenCall;
+
+  constructor(call: ReactionMakeOpenCall) {
+    this._call = call;
+  }
+
+  get name_(): string {
+    return this._call.inputValues[0].value.toString();
+  }
+
+  get uri_(): string {
+    return this._call.inputValues[1].value.toString();
+  }
+
+  get addRules(): Array<ReactionMakeOpenCallAddRulesStruct> {
+    return this._call.inputValues[2].value.toTupleArray<
+      ReactionMakeOpenCallAddRulesStruct
+    >();
+  }
+
+  get assignRoles(): Array<ReactionMakeOpenCallAssignRolesStruct> {
+    return this._call.inputValues[3].value.toTupleArray<
+      ReactionMakeOpenCallAssignRolesStruct
+    >();
+  }
+
+  get posts(): Array<ReactionMakeOpenCallPostsStruct> {
+    return this._call.inputValues[4].value.toTupleArray<
+      ReactionMakeOpenCallPostsStruct
+    >();
+  }
+}
+
+export class ReactionMakeOpenCall__Outputs {
+  _call: ReactionMakeOpenCall;
+
+  constructor(call: ReactionMakeOpenCall) {
+    this._call = call;
+  }
+
+  get value0(): Address {
+    return this._call.outputValues[0].value.toAddress();
+  }
+}
+
+export class ReactionMakeOpenCallAddRulesStruct extends ethereum.Tuple {
+  get game(): Address {
+    return this[0].toAddress();
+  }
+
+  get ruleId(): BigInt {
+    return this[1].toBigInt();
+  }
+}
+
+export class ReactionMakeOpenCallAssignRolesStruct extends ethereum.Tuple {
+  get tokenId(): BigInt {
+    return this[0].toBigInt();
+  }
+
+  get role(): string {
+    return this[1].toString();
+  }
+}
+
+export class ReactionMakeOpenCallPostsStruct extends ethereum.Tuple {
+  get tokenId(): BigInt {
+    return this[0].toBigInt();
+  }
+
+  get entRole(): string {
+    return this[1].toString();
+  }
+
+  get uri(): string {
+    return this[2].toString();
   }
 }
 
