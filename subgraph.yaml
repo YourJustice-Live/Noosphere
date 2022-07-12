@@ -16,8 +16,8 @@ dataSources:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
-      entities: # TODO: List the entities that the data source writes to the store
-        - ContractCreated
+      entities:
+        - JurisdictionEntity
       abis:
         - name: Hub
           file: ./abis/Hub.json
@@ -65,9 +65,8 @@ dataSources:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
-      entities: # TODO: List the entities that the data source writes to the store
-        - ActionAdded
-        - ActionURI
+      entities:
+        - ActionEntity
       abis:
         - name: ActionRepo
           file: ./abis/ActionRepo.json
@@ -116,11 +115,11 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
-      entities: # TODO: List the entities that the data source writes to the store
-        - TransferSingle
-        - RuleAdded
-        - RuleEffects
-        - Confirmation
+      entities:
+        - CaseEntity
+        - JurisdictionEntity
+        - AvatarNftEntity
+        - AvatarNftReputationEntity
       abis:
         - name: Jurisdiction
           file: ./abis/Jurisdiction.json
@@ -146,14 +145,11 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
-      entities: # TODO: List the entities that the data source writes to the store
-        - TransferSingle
-        - RuleAdded
-        - Post
-        - Stage
-        - Verdict
-        - Cancelled
-        - RuleConfirmed
+      entities:
+        - CaseEntity
+        - CaseEventEntity
+        - CasePostEntity
+        - CaseNominateEntity
       abis:
         - name: Case
           file: ./abis/Case.json
