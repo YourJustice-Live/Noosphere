@@ -138,6 +138,32 @@ export class Initialized__Params {
   }
 }
 
+export class Nominate extends ethereum.Event {
+  get params(): Nominate__Params {
+    return new Nominate__Params(this);
+  }
+}
+
+export class Nominate__Params {
+  _event: Nominate;
+
+  constructor(event: Nominate) {
+    this._event = event;
+  }
+
+  get account(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get id(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+
+  get uri(): string {
+    return this._event.parameters[2].value.toString();
+  }
+}
+
 export class OwnershipTransferred extends ethereum.Event {
   get params(): OwnershipTransferred__Params {
     return new OwnershipTransferred__Params(this);
@@ -177,12 +203,16 @@ export class Post__Params {
     return this._event.parameters[0].value.toAddress();
   }
 
+  get tokenId(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+
   get entRole(): string {
-    return this._event.parameters[1].value.toString();
+    return this._event.parameters[2].value.toString();
   }
 
   get uri(): string {
-    return this._event.parameters[2].value.toString();
+    return this._event.parameters[3].value.toString();
   }
 }
 
@@ -243,7 +273,7 @@ export class RuleAdded__Params {
     this._event = event;
   }
 
-  get jurisdiction(): Address {
+  get game(): Address {
     return this._event.parameters[0].value.toAddress();
   }
 
@@ -544,6 +574,38 @@ export class Case extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBoolean());
   }
 
+  GUIDHasByToken(soulToken: BigInt, guid: Bytes): boolean {
+    let result = super.call(
+      "GUIDHasByToken",
+      "GUIDHasByToken(uint256,bytes32):(bool)",
+      [
+        ethereum.Value.fromUnsignedBigInt(soulToken),
+        ethereum.Value.fromFixedBytes(guid)
+      ]
+    );
+
+    return result[0].toBoolean();
+  }
+
+  try_GUIDHasByToken(
+    soulToken: BigInt,
+    guid: Bytes
+  ): ethereum.CallResult<boolean> {
+    let result = super.tryCall(
+      "GUIDHasByToken",
+      "GUIDHasByToken(uint256,bytes32):(bool)",
+      [
+        ethereum.Value.fromUnsignedBigInt(soulToken),
+        ethereum.Value.fromFixedBytes(guid)
+      ]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBoolean());
+  }
+
   GUIDURI(guid: Bytes): string {
     let result = super.call("GUIDURI", "GUIDURI(bytes32):(string)", [
       ethereum.Value.fromFixedBytes(guid)
@@ -813,6 +875,21 @@ export class Case extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
+  repoAddr(): Address {
+    let result = super.call("repoAddr", "repoAddr():(address)", []);
+
+    return result[0].toAddress();
+  }
+
+  try_repoAddr(): ethereum.CallResult<Address> {
+    let result = super.tryCall("repoAddr", "repoAddr():(address)", []);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddress());
+  }
+
   roleExist(role: string): boolean {
     let result = super.call("roleExist", "roleExist(string):(bool)", [
       ethereum.Value.fromString(role)
@@ -846,6 +923,38 @@ export class Case extends ethereum.SmartContract {
       ethereum.Value.fromAddress(account),
       ethereum.Value.fromString(role)
     ]);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBoolean());
+  }
+
+  roleHasByToken(soulToken: BigInt, role: string): boolean {
+    let result = super.call(
+      "roleHasByToken",
+      "roleHasByToken(uint256,string):(bool)",
+      [
+        ethereum.Value.fromUnsignedBigInt(soulToken),
+        ethereum.Value.fromString(role)
+      ]
+    );
+
+    return result[0].toBoolean();
+  }
+
+  try_roleHasByToken(
+    soulToken: BigInt,
+    role: string
+  ): ethereum.CallResult<boolean> {
+    let result = super.tryCall(
+      "roleHasByToken",
+      "roleHasByToken(uint256,string):(bool)",
+      [
+        ethereum.Value.fromUnsignedBigInt(soulToken),
+        ethereum.Value.fromString(role)
+      ]
+    );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
@@ -1209,7 +1318,7 @@ export class InitializeCall__Outputs {
 }
 
 export class InitializeCallAddRulesStruct extends ethereum.Tuple {
-  get jurisdiction(): Address {
+  get game(): Address {
     return this[0].toAddress();
   }
 
@@ -1225,6 +1334,40 @@ export class InitializeCallAssignRolesStruct extends ethereum.Tuple {
 
   get role(): string {
     return this[1].toString();
+  }
+}
+
+export class NominateCall extends ethereum.Call {
+  get inputs(): NominateCall__Inputs {
+    return new NominateCall__Inputs(this);
+  }
+
+  get outputs(): NominateCall__Outputs {
+    return new NominateCall__Outputs(this);
+  }
+}
+
+export class NominateCall__Inputs {
+  _call: NominateCall;
+
+  constructor(call: NominateCall) {
+    this._call = call;
+  }
+
+  get soulToken(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+
+  get uri_(): string {
+    return this._call.inputValues[1].value.toString();
+  }
+}
+
+export class NominateCall__Outputs {
+  _call: NominateCall;
+
+  constructor(call: NominateCall) {
+    this._call = call;
   }
 }
 
@@ -1249,8 +1392,12 @@ export class PostCall__Inputs {
     return this._call.inputValues[0].value.toString();
   }
 
+  get tokenId(): BigInt {
+    return this._call.inputValues[1].value.toBigInt();
+  }
+
   get uri_(): string {
-    return this._call.inputValues[1].value.toString();
+    return this._call.inputValues[2].value.toString();
   }
 }
 
@@ -1407,7 +1554,7 @@ export class RuleAddCall__Inputs {
     this._call = call;
   }
 
-  get jurisdiction_(): Address {
+  get game_(): Address {
     return this._call.inputValues[0].value.toAddress();
   }
 

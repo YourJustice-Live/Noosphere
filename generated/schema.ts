@@ -61,6 +61,7 @@ export class AvatarNftEntity extends Entity {
 
     this.set("idBigInt", Value.fromBigInt(BigInt.zero()));
     this.set("owner", Value.fromString(""));
+    this.set("type", Value.fromString(""));
     this.set("totalNegativeRating", Value.fromBigInt(BigInt.zero()));
     this.set("totalPositiveRating", Value.fromBigInt(BigInt.zero()));
     this.set("totalNegativeCases", Value.fromBigInt(BigInt.zero()));
@@ -109,6 +110,15 @@ export class AvatarNftEntity extends Entity {
 
   set owner(value: string) {
     this.set("owner", Value.fromString(value));
+  }
+
+  get type(): string {
+    let value = this.get("type");
+    return value!.toString();
+  }
+
+  set type(value: string) {
+    this.set("type", Value.fromString(value));
   }
 
   get uri(): string | null {
@@ -633,6 +643,7 @@ export class JurisdictionRuleEntity extends Entity {
     this.set("about", Value.fromString(""));
     this.set("ruleId", Value.fromBigInt(BigInt.zero()));
     this.set("effects", Value.fromStringArray(new Array(0)));
+    this.set("isDisabled", Value.fromBoolean(false));
   }
 
   save(): void {
@@ -697,23 +708,6 @@ export class JurisdictionRuleEntity extends Entity {
       this.unset("aboutSubject");
     } else {
       this.set("aboutSubject", Value.fromString(<string>value));
-    }
-  }
-
-  get aboutUriName(): string | null {
-    let value = this.get("aboutUriName");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set aboutUriName(value: string | null) {
-    if (!value) {
-      this.unset("aboutUriName");
-    } else {
-      this.set("aboutUriName", Value.fromString(<string>value));
     }
   }
 
@@ -879,6 +873,15 @@ export class JurisdictionRuleEntity extends Entity {
 
   set isPositive(value: boolean) {
     this.set("isPositive", Value.fromBoolean(value));
+  }
+
+  get isDisabled(): boolean {
+    let value = this.get("isDisabled");
+    return value!.toBoolean();
+  }
+
+  set isDisabled(value: boolean) {
+    this.set("isDisabled", Value.fromBoolean(value));
   }
 }
 
@@ -1093,23 +1096,6 @@ export class ActionEntity extends Entity {
     }
   }
 
-  get uriName(): string | null {
-    let value = this.get("uriName");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set uriName(value: string | null) {
-    if (!value) {
-      this.unset("uriName");
-    } else {
-      this.set("uriName", Value.fromString(<string>value));
-    }
-  }
-
   get rules(): Array<string> {
     let value = this.get("rules");
     return value!.toStringArray();
@@ -1215,6 +1201,23 @@ export class CaseEntity extends Entity {
 
   set stage(value: i32) {
     this.set("stage", Value.fromI32(value));
+  }
+
+  get judgeAssignmentDate(): BigInt | null {
+    let value = this.get("judgeAssignmentDate");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set judgeAssignmentDate(value: BigInt | null) {
+    if (!value) {
+      this.unset("judgeAssignmentDate");
+    } else {
+      this.set("judgeAssignmentDate", Value.fromBigInt(<BigInt>value));
+    }
   }
 
   get verdictAuthor(): string | null {
@@ -1427,6 +1430,15 @@ export class CaseEntity extends Entity {
 
   set participantsWithConfirmationPosts(value: Array<string>) {
     this.set("participantsWithConfirmationPosts", Value.fromStringArray(value));
+  }
+
+  get nominates(): Array<string> {
+    let value = this.get("nominates");
+    return value!.toStringArray();
+  }
+
+  set nominates(value: Array<string>) {
+    this.set("nominates", Value.fromStringArray(value));
   }
 }
 
@@ -1644,6 +1656,115 @@ export class CaseEventEntity extends Entity {
       this.unset("data");
     } else {
       this.set("data", Value.fromBytes(<Bytes>value));
+    }
+  }
+}
+
+export class CaseNominateEntity extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+
+    this.set("caseEntity", Value.fromString(""));
+    this.set("createdDate", Value.fromBigInt(BigInt.zero()));
+    this.set("nominator", Value.fromString(""));
+    this.set("nominated", Value.fromString(""));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save CaseNominateEntity entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type CaseNominateEntity must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("CaseNominateEntity", id.toString(), this);
+    }
+  }
+
+  static load(id: string): CaseNominateEntity | null {
+    return changetype<CaseNominateEntity | null>(
+      store.get("CaseNominateEntity", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get caseEntity(): string {
+    let value = this.get("caseEntity");
+    return value!.toString();
+  }
+
+  set caseEntity(value: string) {
+    this.set("caseEntity", Value.fromString(value));
+  }
+
+  get createdDate(): BigInt {
+    let value = this.get("createdDate");
+    return value!.toBigInt();
+  }
+
+  set createdDate(value: BigInt) {
+    this.set("createdDate", Value.fromBigInt(value));
+  }
+
+  get nominator(): string {
+    let value = this.get("nominator");
+    return value!.toString();
+  }
+
+  set nominator(value: string) {
+    this.set("nominator", Value.fromString(value));
+  }
+
+  get nominated(): string {
+    let value = this.get("nominated");
+    return value!.toString();
+  }
+
+  set nominated(value: string) {
+    this.set("nominated", Value.fromString(value));
+  }
+
+  get uri(): string | null {
+    let value = this.get("uri");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set uri(value: string | null) {
+    if (!value) {
+      this.unset("uri");
+    } else {
+      this.set("uri", Value.fromString(<string>value));
+    }
+  }
+
+  get uriData(): Bytes | null {
+    let value = this.get("uriData");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set uriData(value: Bytes | null) {
+    if (!value) {
+      this.unset("uriData");
+    } else {
+      this.set("uriData", Value.fromBytes(<Bytes>value));
     }
   }
 }

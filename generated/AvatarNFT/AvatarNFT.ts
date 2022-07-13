@@ -198,6 +198,32 @@ export class OwnershipTransferred__Params {
   }
 }
 
+export class Post extends ethereum.Event {
+  get params(): Post__Params {
+    return new Post__Params(this);
+  }
+}
+
+export class Post__Params {
+  _event: Post;
+
+  constructor(event: Post) {
+    this._event = event;
+  }
+
+  get account(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+
+  get tokenId(): BigInt {
+    return this._event.parameters[1].value.toBigInt();
+  }
+
+  get uri(): string {
+    return this._event.parameters[2].value.toString();
+  }
+}
+
 export class ReputationChange extends ethereum.Event {
   get params(): ReputationChange__Params {
     return new ReputationChange__Params(this);
@@ -225,6 +251,28 @@ export class ReputationChange__Params {
 
   get score(): BigInt {
     return this._event.parameters[3].value.toBigInt();
+  }
+}
+
+export class SoulType extends ethereum.Event {
+  get params(): SoulType__Params {
+    return new SoulType__Params(this);
+  }
+}
+
+export class SoulType__Params {
+  _event: SoulType;
+
+  constructor(event: SoulType) {
+    this._event = event;
+  }
+
+  get tokenId(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get soulType(): string {
+    return this._event.parameters[1].value.toString();
   }
 }
 
@@ -513,6 +561,29 @@ export class AvatarNFT extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
+  hasTokenControl(tokenId: BigInt): boolean {
+    let result = super.call(
+      "hasTokenControl",
+      "hasTokenControl(uint256):(bool)",
+      [ethereum.Value.fromUnsignedBigInt(tokenId)]
+    );
+
+    return result[0].toBoolean();
+  }
+
+  try_hasTokenControl(tokenId: BigInt): ethereum.CallResult<boolean> {
+    let result = super.tryCall(
+      "hasTokenControl",
+      "hasTokenControl(uint256):(bool)",
+      [ethereum.Value.fromUnsignedBigInt(tokenId)]
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBoolean());
+  }
+
   isApprovedForAll(owner: Address, operator: Address): boolean {
     let result = super.call(
       "isApprovedForAll",
@@ -558,6 +629,27 @@ export class AvatarNFT extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
+  mintFor(to: Address, tokenURI: string): BigInt {
+    let result = super.call("mintFor", "mintFor(address,string):(uint256)", [
+      ethereum.Value.fromAddress(to),
+      ethereum.Value.fromString(tokenURI)
+    ]);
+
+    return result[0].toBigInt();
+  }
+
+  try_mintFor(to: Address, tokenURI: string): ethereum.CallResult<BigInt> {
+    let result = super.tryCall("mintFor", "mintFor(address,string):(uint256)", [
+      ethereum.Value.fromAddress(to),
+      ethereum.Value.fromString(tokenURI)
+    ]);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBigInt());
+  }
+
   name(): string {
     let result = super.call("name", "name():(string)", []);
 
@@ -571,49 +663,6 @@ export class AvatarNFT extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toString());
-  }
-
-  onERC721Received(
-    param0: Address,
-    param1: Address,
-    param2: BigInt,
-    param3: Bytes
-  ): Bytes {
-    let result = super.call(
-      "onERC721Received",
-      "onERC721Received(address,address,uint256,bytes):(bytes4)",
-      [
-        ethereum.Value.fromAddress(param0),
-        ethereum.Value.fromAddress(param1),
-        ethereum.Value.fromUnsignedBigInt(param2),
-        ethereum.Value.fromBytes(param3)
-      ]
-    );
-
-    return result[0].toBytes();
-  }
-
-  try_onERC721Received(
-    param0: Address,
-    param1: Address,
-    param2: BigInt,
-    param3: Bytes
-  ): ethereum.CallResult<Bytes> {
-    let result = super.tryCall(
-      "onERC721Received",
-      "onERC721Received(address,address,uint256,bytes):(bytes4)",
-      [
-        ethereum.Value.fromAddress(param0),
-        ethereum.Value.fromAddress(param1),
-        ethereum.Value.fromUnsignedBigInt(param2),
-        ethereum.Value.fromBytes(param3)
-      ]
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBytes());
   }
 
   owner(): Address {
@@ -667,6 +716,21 @@ export class AvatarNFT extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toBytes());
+  }
+
+  repoAddr(): Address {
+    let result = super.call("repoAddr", "repoAddr():(address)", []);
+
+    return result[0].toAddress();
+  }
+
+  try_repoAddr(): ethereum.CallResult<Address> {
+    let result = super.tryCall("repoAddr", "repoAddr():(address)", []);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toAddress());
   }
 
   supportsInterface(interfaceId: Bytes): boolean {
@@ -741,6 +805,25 @@ export class AvatarNFT extends ethereum.SmartContract {
   try_tokenURI(tokenId: BigInt): ethereum.CallResult<string> {
     let result = super.tryCall("tokenURI", "tokenURI(uint256):(string)", [
       ethereum.Value.fromUnsignedBigInt(tokenId)
+    ]);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toString());
+  }
+
+  types(param0: BigInt): string {
+    let result = super.call("types", "types(uint256):(string)", [
+      ethereum.Value.fromUnsignedBigInt(param0)
+    ]);
+
+    return result[0].toString();
+  }
+
+  try_types(param0: BigInt): ethereum.CallResult<string> {
+    let result = super.tryCall("types", "types(uint256):(string)", [
+      ethereum.Value.fromUnsignedBigInt(param0)
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -933,6 +1016,78 @@ export class MintCall__Outputs {
   }
 }
 
+export class MintForCall extends ethereum.Call {
+  get inputs(): MintForCall__Inputs {
+    return new MintForCall__Inputs(this);
+  }
+
+  get outputs(): MintForCall__Outputs {
+    return new MintForCall__Outputs(this);
+  }
+}
+
+export class MintForCall__Inputs {
+  _call: MintForCall;
+
+  constructor(call: MintForCall) {
+    this._call = call;
+  }
+
+  get to(): Address {
+    return this._call.inputValues[0].value.toAddress();
+  }
+
+  get tokenURI(): string {
+    return this._call.inputValues[1].value.toString();
+  }
+}
+
+export class MintForCall__Outputs {
+  _call: MintForCall;
+
+  constructor(call: MintForCall) {
+    this._call = call;
+  }
+
+  get value0(): BigInt {
+    return this._call.outputValues[0].value.toBigInt();
+  }
+}
+
+export class PostCall extends ethereum.Call {
+  get inputs(): PostCall__Inputs {
+    return new PostCall__Inputs(this);
+  }
+
+  get outputs(): PostCall__Outputs {
+    return new PostCall__Outputs(this);
+  }
+}
+
+export class PostCall__Inputs {
+  _call: PostCall;
+
+  constructor(call: PostCall) {
+    this._call = call;
+  }
+
+  get tokenId(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+
+  get uri_(): string {
+    return this._call.inputValues[1].value.toString();
+  }
+}
+
+export class PostCall__Outputs {
+  _call: PostCall;
+
+  constructor(call: PostCall) {
+    this._call = call;
+  }
+}
+
 export class RenounceOwnershipCall extends ethereum.Call {
   get inputs(): RenounceOwnershipCall__Inputs {
     return new RenounceOwnershipCall__Inputs(this);
@@ -1068,7 +1223,7 @@ export class SafeTransferFrom1Call__Inputs {
     return this._call.inputValues[2].value.toBigInt();
   }
 
-  get _data(): Bytes {
+  get data(): Bytes {
     return this._call.inputValues[3].value.toBytes();
   }
 }

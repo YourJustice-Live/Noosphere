@@ -7,17 +7,17 @@ dataSources:
   # Hub contract
   - kind: ethereum
     name: Hub
-    network: rinkeby
+    network: mumbai
     source:
-      address: "0xbf10eFEd01E280a4c21D11caE18404B67BF8bd78"
+      address: "0xC46971d2a76DeC2DB76554c12eF07A0B2A407451"
       abi: Hub
-      startBlock: 10851420
+      startBlock: 27137673
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
-        - ContractCreated
+        - JurisdictionEntity
       abis:
         - name: Hub
           file: ./abis/Hub.json
@@ -30,11 +30,11 @@ dataSources:
   # Avatar NFT contract
   - kind: ethereum
     name: AvatarNFT
-    network: rinkeby
+    network: mumbai
     source:
-      address: "0xE253c1F803C1835325360a28eBDE83346f30cC38"
+      address: "0x29fEA694c32B51Ea283F7952f066Da3e12f33375"
       abi: AvatarNFT
-      startBlock: 10851421
+      startBlock: 27137686
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -48,24 +48,25 @@ dataSources:
       eventHandlers:
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
+        - event: SoulType(indexed uint256,string)
+          handler: handleSoulType
         - event: URI(string,indexed uint256)
           handler: handleURI
       file: ./src/mappings/avatarNftMappings.ts
-  # Action repository contract
+  # Action repository (history) contract
   - kind: ethereum
     name: ActionRepo
-    network: rinkeby
+    network: mumbai
     source:
-      address: "0x9DFd9bc6600E6Ba1B14E7b6f2250D340936EB5B4"
+      address: "0x695b590Dc9455299f349BCC4252650237D586512"
       abi: ActionRepo
-      startBlock: 10851539
+      startBlock: 27137725
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
-        - ActionAdded
-        - ActionURI
+        - ActionEntity
       abis:
         - name: ActionRepo
           file: ./abis/ActionRepo.json
@@ -75,11 +76,39 @@ dataSources:
         - event: ActionURI(indexed bytes32,string)
           handler: handleActionURI
       file: ./src/mappings/actionRepoMappings.ts
+  # Rule repository contract
+  - kind: ethereum
+    name: RuleRepo
+    network: mumbai
+    source:
+      address: "0xCd8F2a69Ca83e9866298F3f5919a89e82522BEdB"
+      abi: RuleRepo
+      startBlock: 27137620
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - JurisdictionRuleEntity
+        - JurisdictionRuleEffectEntity
+      abis:
+        - name: RuleRepo
+          file: ./abis/RuleRepo.json
+      eventHandlers:
+        - event: Rule(indexed address,indexed uint256,bytes32,string,string,bool)
+          handler: handleRule
+        - event: RuleEffect(indexed address,indexed uint256,bool,uint8,string)
+          handler: handleRuleEffect
+        - event: Confirmation(indexed address,indexed uint256,string,bool,uint256)
+          handler: handleConfirmation
+        - event: RuleDisabled(indexed address,uint256,bool)
+          handler: handleRuleDisabled
+      file: ./src/mappings/ruleRepoMappings.ts
 templates:
   # Jurisdiction contract template
   - kind: ethereum
     name: Jurisdiction
-    network: rinkeby
+    network: mumbai
     source:
       abi: Jurisdiction
     mapping:
@@ -87,10 +116,10 @@ templates:
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
-        - TransferSingle
-        - RuleAdded
-        - RuleEffects
-        - Confirmation
+        - CaseEntity
+        - JurisdictionEntity
+        - AvatarNftEntity
+        - AvatarNftReputationEntity
       abis:
         - name: Jurisdiction
           file: ./abis/Jurisdiction.json
@@ -101,21 +130,15 @@ templates:
           handler: handleContractUri
         - event: TransferByToken(indexed address,indexed uint256,indexed uint256,uint256,uint256)
           handler: handleTransferByToken
-        - event: Rule(indexed uint256,bytes32,string,string,bool)
-          handler: handleRule
-        - event: RuleEffect(indexed uint256,bool,uint8,string)
-          handler: handleRuleEffect
-        - event: Confirmation(indexed uint256,string,bool,uint256)
-          handler: handleConfirmation
-        - event: CaseCreated(indexed uint256,address)
-          handler: handleCaseCreated
+        - event: ReactionCreated(indexed uint256,address)
+          handler: handleReactionCreated
         - event: OpinionChange(uint256,indexed address,indexed uint256,string,bool,uint256)
           handler: handleOpinionChange
       file: ./src/mappings/jurisdictionMappings.ts
   # Case contract template
   - kind: ethereum
     name: Case
-    network: rinkeby
+    network: mumbai
     source:
       abi: Case
     mapping:
@@ -123,13 +146,10 @@ templates:
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
-        - TransferSingle
-        - RuleAdded
-        - Post
-        - Stage
-        - Verdict
-        - Cancelled
-        - RuleConfirmed
+        - CaseEntity
+        - CaseEventEntity
+        - CasePostEntity
+        - CaseNominateEntity
       abis:
         - name: Case
           file: ./abis/Case.json
@@ -138,7 +158,7 @@ templates:
           handler: handleTransferByToken
         - event: RuleAdded(address,uint256)
           handler: handleRuleAdded
-        - event: Post(indexed address,string,string)
+        - event: Post(indexed address,uint256,string,string)
           handler: handlePost
         - event: Stage(uint8)
           handler: handleStage
@@ -148,4 +168,6 @@ templates:
           handler: handleCancelled
         - event: RuleConfirmed(uint256)
           handler: handleRuleConfirmed
+        - event: Nominate(address,indexed uint256,string)
+          handler: handleNominate
       file: ./src/mappings/caseMappings.ts

@@ -7,6 +7,7 @@ type AvatarNftEntity @entity {
   id: ID! # token id
   idBigInt: BigInt! # token id which is useful for sorting
   owner: String! # account address
+  type: String! # type to determine that the entity is created by an account or contract
   uri: String # metadata uri
   uriData: Bytes
   uriImage: String
@@ -60,7 +61,6 @@ type JurisdictionRuleEntity @entity {
   jurisdiction: JurisdictionEntity!
   about: ActionEntity!
   aboutSubject: String
-  aboutUriName: String
   ruleId: BigInt!
   affected: String
   uri: String
@@ -73,6 +73,7 @@ type JurisdictionRuleEntity @entity {
   confirmationEvidence: Boolean
   confirmationWitness: BigInt
   isPositive: Boolean
+  isDisabled: Boolean!
 }
 
 type JurisdictionRuleEffectEntity @entity {
@@ -91,7 +92,6 @@ type ActionEntity @entity {
   tool: String
   uri: String
   uriData: Bytes
-  uriName: String
   rules: [JurisdictionRuleEntity!]! @derivedFrom(field: "about")
 }
 
@@ -101,6 +101,7 @@ type CaseEntity @entity {
   createdDate: BigInt
   jurisdiction: JurisdictionEntity!
   stage: Int
+  judgeAssignmentDate: BigInt # date when the first judge was assigned
   verdictAuthor: String # avatar nft id
   verdictConfirmedRules: [JurisdictionRuleEntity!]
   verdictUri: String
@@ -118,6 +119,7 @@ type CaseEntity @entity {
   witnesses: [String!]! # avatar nft ids
   affecteds: [String!]! # avatar nft ids
   participantsWithConfirmationPosts: [String!]!
+  nominates: [CaseNominateEntity!]! @derivedFrom(field: "caseEntity")
 }
 
 type CasePostEntity @entity {
@@ -137,4 +139,14 @@ type CaseEventEntity @entity {
   createdDate: BigInt!
   type: String!
   data: Bytes
+}
+
+type CaseNominateEntity @entity {
+  id: ID! # combination of case address and event transaction address
+  caseEntity: CaseEntity!
+  createdDate: BigInt!
+  nominator: AvatarNftEntity!
+  nominated: AvatarNftEntity!
+  uri: String
+  uriData: Bytes
 }
